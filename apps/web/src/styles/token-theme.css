@@ -77,6 +77,11 @@
   --shadow-xl: 0 0 #0000;
   --shadow-2xl: 0 0 #0000;
 
+  /* Hero heading only (approved for Landing). Everywhere else the page title is 32px. */
+  --text-display: 2.75rem;
+  --text-display--line-height: 1.1;
+  --text-display--font-weight: 600;
+
   --text-page-title: 2rem;
   --text-page-title--line-height: 1.25;
   --text-page-title--font-weight: 600;

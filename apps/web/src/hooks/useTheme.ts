@@ -1,24 +1,33 @@
 /**
  * File: useTheme.ts
- * Purpose: Holds the light/dark theme and a toggle that applies and stores it.
+ * Purpose: Shared light/dark theme: every caller sees a change made by any other caller.
  * Exports: useTheme
- * Used by: components/layout/ThemeToggle.tsx
+ * Used by: components/layout/ThemeToggle.tsx, components/landing/HeroVideo.tsx
  */
-import { useState } from 'react'
-import { applyTheme, readCurrentTheme, storeTheme, type Theme } from '@/utils/theme'
+import { useSyncExternalStore } from "react";
+import {
+  applyTheme,
+  readCurrentTheme,
+  storeTheme,
+  subscribeToTheme,
+  type Theme,
+} from "@/utils/theme";
 
-type UseThemeResult = { theme: Theme; isDark: boolean; toggleTheme: () => void }
+type UseThemeResult = {
+  theme: Theme;
+  isDark: boolean;
+  toggleTheme: () => void;
+};
 
-/** Theme state seeded from the class the inline script set before first paint. */
+/** The root `.dark` class is the single source of truth; this hook only observes it. */
 export function useTheme(): UseThemeResult {
-  const [theme, setTheme] = useState<Theme>(readCurrentTheme)
+  const theme = useSyncExternalStore(subscribeToTheme, readCurrentTheme);
 
   function toggleTheme(): void {
-    const next: Theme = theme === 'dark' ? 'light' : 'dark'
-    applyTheme(next)
-    storeTheme(next)
-    setTheme(next)
+    const next: Theme = theme === "dark" ? "light" : "dark";
+    applyTheme(next);
+    storeTheme(next);
   }
 
-  return { theme, isDark: theme === 'dark', toggleTheme }
+  return { theme, isDark: theme === "dark", toggleTheme };
 }
