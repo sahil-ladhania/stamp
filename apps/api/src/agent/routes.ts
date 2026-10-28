@@ -1,21 +1,41 @@
 /**
  * File: routes.ts
- * Purpose: The graph's routing rules: the budget check before each node, and the one conditional retry edge after verify.
- * Exports: routeTo, routeAfterVerify, shouldRetry, isRetryEntry, Route
+ * Purpose: The graph's routing rules: the budget check before each node (a stop goes through verify when there are unchecked drafts, then score), and the one conditional retry edge after verify.
+ * Exports: routeTo, routeAfterVerify, shouldRetry, isRetryEntry, hasUnverifiedWork, BUDGET_STOP_TARGETS, Route
  * Used by: agent/graph.ts
  */
 import type { RunnableConfig } from "@langchain/core/runnables";
 import { END } from "@langchain/langgraph";
 import { canRetry, checkBudget, type BudgetClock } from "./budget.js";
 import { getDeps } from "./deps.js";
-import type { NodeName } from "./pipeline.js";
+import { stageOf, type NodeName } from "./pipeline.js";
 import type { State } from "./state.js";
 
 export type Route = NodeName | typeof END;
 
+/** Where a failed budget check can send the run: verify, when it has drafts to check, otherwise score. */
+export const BUDGET_STOP_TARGETS = ["verify", "score"] as const;
+
+const VERIFY_STAGE = stageOf("verify");
+
 /**
- * Edge into `node`: a failed run ends, an exhausted budget skips ahead to score and then save (the
- * run is then partial), otherwise the node runs. Score is cheap code-only work, so it always runs.
+ * True when the run holds drafts or gates that verify has not checked: a drafted section or the gates
+ * result exists, and verify has not run yet. Verify is code only and cheap, and claims that were never
+ * checked cannot be published, so a run that stops on time still checks what it has.
+ */
+export function hasUnverifiedWork(state: State): boolean {
+  const drafted = Object.values(state.drafts).some(
+    (draft) => draft?.status === "drafted",
+  );
+  return (
+    (drafted || state.gates !== null) && !state.completed.includes(VERIFY_STAGE)
+  );
+}
+
+/**
+ * Edge into `node`: a failed run ends, otherwise the node runs when its time check passes. An exhausted
+ * budget goes to verify if there is unchecked work, then on to score and save (the run is then partial);
+ * with nothing to check it goes straight to score. Score is cheap code-only work, so it always runs.
  * The budget is checked here, before each node starts.
  */
 export function routeTo(node: NodeName) {
@@ -24,7 +44,10 @@ export function routeTo(node: NodeName) {
       return END;
     }
     const { clock, now } = getDeps(config);
-    return checkBudget(clock, now(), node).ok ? node : "score";
+    if (checkBudget(clock, now(), node).ok) {
+      return node;
+    }
+    return node !== "verify" && hasUnverifiedWork(state) ? "verify" : "score";
   };
 }
 

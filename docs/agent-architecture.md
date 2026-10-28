@@ -146,7 +146,7 @@ Time caps per stage (seconds). A stage also gets less when the run is running la
 - Extract needs 20 seconds left to start, and a retry needs 45 seconds left (the 34-second retry pass plus the 10 seconds of probe, score and save).
 
 - **Checked before each stage.** Every edge goes through one routing rule (`routes.ts`). A stage starts only if its minimum time remains (`NODE_MIN_REMAINING_MS` in `budget.ts`).
-- **When time runs out,** the run skips ahead to `score`, then `save`, and the guide is partial. The stages in between never start, so they emit no events. `verify` and `score` are code only and need no minimum time, so `score` always runs. After a budget stop it may find no gates or claims, so it must treat missing facts as unknown.
+- **When time runs out,** the run skips ahead, then `score`, then `save`, and the guide is partial. If the run holds drafted sections or gates that `verify` has not checked, it goes through `verify` first; with no drafts it goes straight to `score`. The stages in between never start, so they emit no events. `verify` and `score` are code only and need no minimum time, so they always run: `verify` also runs right after `extract` with no time left. `routes.ts` states the rule (`hasUnverifiedWork`) so it does not depend on that minimum being 0, and a stop never sends the run back to `verify` once it has run. A stop before `extract` has no drafts, so `score` may find no gates or claims and must treat missing facts as unknown.
 - **Retry edge:** verify goes back to search only when a section has no matched quote, `retryCount` is 0 and at least 45 seconds remain. An edge cannot write state, so the search stage counts the retry when it starts one.
 - **A failure ends the run** with no save: the failing stage emits `stage.started` but not `stage.done`, and the executor sends `run.error`.
 - **An abort ends the run** at once. The run returns an `INTERNAL` failure at the stage that was running, and no more events are sent.
@@ -260,13 +260,13 @@ Time caps per stage (seconds). A stage also gets less when the run is running la
 
 **7 Score** (`nodes/score.ts`, `scoring/`, code only)
 - `scoreDifficulty` and `classifyArchetype` run on the verified gates. A missing fact is unknown: no review gate assumed, and an unknown wait counts 2, so the score is a lower bound.
-- A run stopped by the budget before verify has gates the code never checked, so they score as unknown as well.
+- Gates the code never checked (verify has not run) score as unknown as well. Routing makes this rare: a run with gates or drafts goes through verify first, even after a budget stop.
 - Score always runs, also after a budget stop.
 
 **8 Save** (`nodes/save.ts`, `guide/assemble*.ts`)
 - The guide is built from the drafts for structure and from the verified claims for content. A slot with no verified claim (no draft, the section failed, or the draft is newer than the last verify) becomes an Uncertain claim with no sources, with one of three texts: "Not found in the fetched sources.", "Could not be read reliably from the fetched sources." or "Not researched before the time budget ran out." The requirements and limits lists always hold at least one claim for that reason.
 - The guide is checked against `GuideSchema` and stored through `saveLiveGuide` (live guides last 7 days). Coverage is `partial` when the budget stopped the run or a stage did not finish.
-- `INTERNAL` when no claim is Sourced or Tested, or the guide does not pass the schema (the log names the paths of the problems, never the guide's text). A run stopped before verify has no verified claims, so it fails this way.
+- `INTERNAL` when no claim is Sourced or Tested, or the guide does not pass the schema (the log names the paths of the problems, never the guide's text). A run stopped before extract has no drafts, so it has no verified claims and fails this way.
 - A library guide that owns the slug is never overwritten: the run reports `done`, points at the library guide (`libraryProtected`), and writes no log rows.
 - The checks are written to `verification_log` (one row per quote check or probe, with the run id; the page's content hash and any reason or HTTP status are in `detail`). A failure to write them is logged and does not fail the run.
 

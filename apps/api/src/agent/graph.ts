@@ -1,11 +1,16 @@
 /**
  * File: graph.ts
- * Purpose: Wires the nine stages into the LangGraph pipeline: a budget check before each node and one retry edge.
+ * Purpose: Wires the nine stages into the LangGraph pipeline: a budget check before each node (a stop goes through verify, then score and save) and one retry edge.
  * Exports: buildGraph, AgentGraph, RECURSION_LIMIT
  * Used by: agent/run-real-agent.ts
  */
 import { END, START, StateGraph } from "@langchain/langgraph";
-import { isRetryEntry, routeAfterVerify, routeTo } from "./routes.js";
+import {
+  BUDGET_STOP_TARGETS,
+  isRetryEntry,
+  routeAfterVerify,
+  routeTo,
+} from "./routes.js";
 import type { NodeFn, NodeSet } from "./stage-node.js";
 import { AgentState } from "./state.js";
 
@@ -30,7 +35,8 @@ function countRetry(search: NodeFn): NodeFn {
 
 /**
  * Stages 0 to 8 in order. Every edge goes through `routeTo`, which ends a failed run and sends an
- * exhausted budget to score, then save; the one extra edge is verify -> search (see routes.ts).
+ * exhausted budget to verify (when it has unchecked drafts), then score, then save; the one extra edge
+ * is verify -> search (see routes.ts).
  * The nodes are passed in (the runner supplies the real ones), so the wiring is testable with no-op nodes.
  */
 export function buildGraph(nodes: NodeSet) {
@@ -44,12 +50,34 @@ export function buildGraph(nodes: NodeSet) {
     .addNode("probe", nodes.probe)
     .addNode("score", nodes.score)
     .addNode("save", nodes.save)
-    .addConditionalEdges(START, routeTo("resolve"), ["resolve", "score"])
-    .addConditionalEdges("resolve", routeTo("plan"), ["plan", "score", END])
-    .addConditionalEdges("plan", routeTo("search"), ["search", "score", END])
-    .addConditionalEdges("search", routeTo("fetch"), ["fetch", "score", END])
-    .addConditionalEdges("fetch", routeTo("extract"), ["extract", "score", END])
-    .addConditionalEdges("extract", routeTo("verify"), ["verify", "score", END])
+    .addConditionalEdges(START, routeTo("resolve"), [
+      "resolve",
+      ...BUDGET_STOP_TARGETS,
+    ])
+    .addConditionalEdges("resolve", routeTo("plan"), [
+      "plan",
+      ...BUDGET_STOP_TARGETS,
+      END,
+    ])
+    .addConditionalEdges("plan", routeTo("search"), [
+      "search",
+      ...BUDGET_STOP_TARGETS,
+      END,
+    ])
+    .addConditionalEdges("search", routeTo("fetch"), [
+      "fetch",
+      ...BUDGET_STOP_TARGETS,
+      END,
+    ])
+    .addConditionalEdges("fetch", routeTo("extract"), [
+      "extract",
+      ...BUDGET_STOP_TARGETS,
+      END,
+    ])
+    .addConditionalEdges("extract", routeTo("verify"), [
+      ...BUDGET_STOP_TARGETS,
+      END,
+    ])
     .addConditionalEdges("verify", routeAfterVerify, [
       "search",
       "probe",

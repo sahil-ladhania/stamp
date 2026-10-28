@@ -111,7 +111,7 @@ describe("saveNode", () => {
     expect(trace(h.events)).toEqual(["stage.started:8"]);
   });
 
-  it("fails as INTERNAL when the budget stopped the run before verify, so there are no claims", async () => {
+  it("fails as INTERNAL when the state holds no verified claims at all (a defensive check: routing always verifies drafts first)", async () => {
     const { update } = await save({ claims: [], completed: [0, 1, 2, 3, 4] });
     expect(failureOf(update)).toMatchObject({ code: "INTERNAL" });
   });
