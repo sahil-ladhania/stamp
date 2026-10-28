@@ -19,22 +19,22 @@ export const SOURCES = {
   hubspotForum: {
     url: 'https://community.hubspot.com/t/ai-connector-as-legacy-public-app-install-limitation/148177',
     title: 'HubSpot community: AI connector as legacy public app install limitation',
-    tier: 'third-party',
+    tier: 'third_party',
   },
   composioCustomVsManaged: {
     url: 'https://docs.composio.dev/docs/custom-app-vs-managed-app.md',
     title: 'Composio docs: custom app vs managed app',
-    tier: 'third-party',
+    tier: 'third_party',
   },
   composioCustomAuth: {
     url: 'https://docs.composio.dev/docs/auth-configuration/custom-auth-configs',
     title: 'Composio docs: custom auth configs',
-    tier: 'third-party',
+    tier: 'third_party',
   },
   nangoGithub: {
     url: 'https://www.nango.dev/docs/api-integrations/github-app-oauth/how-to-register-your-own-github-app-api-oauth-app',
     title: 'Nango: register your own GitHub OAuth app',
-    tier: 'third-party',
+    tier: 'third_party',
   },
   googleVerification: {
     url: 'https://developers.google.com/health/app-verification',
@@ -54,6 +54,6 @@ export const SOURCES = {
   nangoSalesforce: {
     url: 'https://nango.dev/docs/api-integrations/salesforce/salesforce-api-oauth-app-setup',
     title: 'Nango: Salesforce OAuth app setup',
-    tier: 'third-party',
+    tier: 'third_party',
   },
 } as const satisfies Record<string, Source>

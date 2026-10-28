@@ -9,12 +9,17 @@
  * Used by: mocks/*, components/shared/*, utils/evidence.ts, utils/archetype.ts, pages/*
  */
 
+import type { RunErrorCode, SourceTier } from '@stamp/schema'
+import type { RunViewEvent } from '@/utils/run-view'
+
+// The run vocabulary comes from @stamp/schema; the guide types below move over in Phase 2.
+export type { RunErrorCode, SourceTier }
+
 export type EvidenceKind = 'tested' | 'sourced' | 'uncertain'
 export type Archetype = 'instant' | 'hidden-limits' | 'review-needed' | 'partner-gated' | 'enterprise'
 export type GuideMode = 'library' | 'live'
 export type GuideStatus = 'full' | 'partial' | 'not-oauth' | 'no-docs'
 export type Actor = 'agent' | 'human' | 'agent-assist'
-export type SourceTier = 'official' | 'third-party'
 
 export type Source = {
   url: string
@@ -109,24 +114,8 @@ export type GuideSummary = Pick<
   'slug' | 'appName' | 'archetype' | 'mode' | 'asOf' | 'headline'
 > & { difficulty: Difficulty['score'] }
 
-export type RunErrorCode = 'AMBIGUOUS_APP' | 'NOT_OAUTH' | 'NO_PUBLIC_DOCS' | 'INTERNAL'
-
-/** Stream events from docs/api-design.md. The run ID is omitted: a mock stream has one run. */
-export type RunEvent =
-  | { type: 'stage.started'; stage: number; name: string }
-  | { type: 'stage.done'; stage: number; durationMs: number }
-  | { type: 'search.query'; query: string }
-  | { type: 'page.fetched'; url: string; tier: SourceTier }
-  | { type: 'claim.verified'; claimId: string; url: string }
-  | { type: 'claim.downgraded'; claimId: string; reason: string }
-  | { type: 'run.done'; slug: string; status: 'done' | 'partial' }
-  | {
-      type: 'run.error'
-      stage: number
-      code: RunErrorCode
-      message: string
-      options?: { name: string; domain: string }[]
-    }
+/** A run progress event as the Live run page reads it (the schema event without its run id). */
+export type RunEvent = RunViewEvent
 
 /** A run event with the time, in ms from run start, at which the mock playback emits it. */
 export type TimedRunEvent = { atMs: number; event: RunEvent }
