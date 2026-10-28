@@ -1,13 +1,13 @@
 /**
  * File: SourcesSection.tsx
- * Purpose: Guide section 8: every source the guide cites, plus the verification summary.
+ * Purpose: Guide section 9: every source the guide cites, plus the verification summary.
  * Exports: SourcesSection
  * Used by: components/guide/GuideView.tsx
  */
 import type { ReactElement } from "react";
 import { PageSection } from "@/components/shared/PageSection";
 import { SourceLink } from "@/components/shared/SourceLink";
-import type { Guide } from "@/mocks/types";
+import type { Guide } from "@/types/guide-model";
 import { TIER_LABEL } from "@/utils/source-tier";
 import { VerificationSummary } from "./VerificationSummary";
 

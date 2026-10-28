@@ -1,10 +1,11 @@
 /**
  * File: verdict.ts
- * Purpose: Turns a guide into the rows shown on the verdict stamp. Pure; no scoring happens here.
+ * Purpose: Turns a guide into the rows shown on the verdict stamp. Pure; no scoring happens here. Each row keeps
+ *          the label of the claim it quotes.
  * Exports: VerdictRow, getVerdictRows
  * Used by: components/guide/VerdictStamp.tsx
  */
-import type { Claim, EvidenceKind, Guide } from "@/mocks/types";
+import type { Claim, EvidenceKind, Guide } from "@/types/guide-model";
 
 export type VerdictRow = {
   label: string;
@@ -14,12 +15,12 @@ export type VerdictRow = {
   detail?: string;
 };
 
-function row(label: string, value: string, claim?: Claim): VerdictRow {
+function row(label: string, claim: Claim, value: string = claim.text): VerdictRow {
   return {
     label,
     value,
-    kind: claim?.label ?? "uncertain",
-    detail: claim?.reason ?? claim?.sources[0]?.title,
+    kind: claim.label,
+    detail: claim.reason ?? claim.sources[0]?.title,
   };
 }
 
@@ -33,22 +34,18 @@ function unknownRow(label: string): VerdictRow {
   };
 }
 
-/**
- * A milestone's first claim is its headline claim and its last is its wait claim.
- * Rows: first test, production, approval wait, top blocker, next step.
- */
+/** Rows: first test, production, approval wait, top blocker, next step. */
 export function getVerdictRows(guide: Guide): VerdictRow[] {
   const [firstTest, production] = guide.milestones;
   const blocker = guide.blockers.find((item) => item.id === guide.topBlockerId);
   const step = guide.steps.find((item) => item.id === guide.nextStepId);
-
   return [
-    row("First test", firstTest.duration, firstTest.claims[0]),
-    row("Production", production.wait, production.claims[0]),
-    row("Approval wait", production.duration, production.claims.at(-1)),
+    row("First test", firstTest.effort),
+    row("Production", production.effort),
+    row("Approval wait", production.wait),
     blocker
-      ? row("Top blocker", blocker.title, blocker.claim)
+      ? row("Top blocker", blocker.symptom, blocker.title)
       : unknownRow("Top blocker"),
-    step ? row("Next step", step.title, step.claim) : unknownRow("Next step"),
+    step ? row("Next step", step.detail, step.title) : unknownRow("Next step"),
   ];
 }

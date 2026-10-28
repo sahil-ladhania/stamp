@@ -1,18 +1,19 @@
 /**
  * File: BlockersSection.tsx
- * Purpose: Guide section 6: every blocker with its fix, or a missing-section note on a partial guide.
+ * Purpose: Guide section 7: every blocker with its fix. An Uncertain or empty section says so, and keeps whatever blockers there are.
  * Exports: BlockersSection
  * Used by: components/guide/GuideView.tsx
  */
 import type { ReactElement } from "react";
 import { PageSection } from "@/components/shared/PageSection";
-import type { Blocker } from "@/mocks/types";
+import type { Blocker } from "@/types/guide-model";
 import { BlockerCard } from "./BlockerCard";
 import { MissingSection } from "./MissingSection";
+import { UncertainNote } from "./UncertainNote";
 
 type BlockersSectionProps = {
   blockers: readonly Blocker[];
-  topBlockerId: string;
+  topBlockerId: string | null;
   isMissing: boolean;
 };
 
@@ -27,9 +28,13 @@ export function BlockersSection({
       title="Blockers"
       description="What can stop you, and how to get unstuck."
     >
-      {isMissing ? (
-        <MissingSection />
-      ) : (
+      {isMissing && <MissingSection />}
+      {blockers.length === 0 && !isMissing && (
+        <UncertainNote>
+          Uncertain: Stamp found no blockers in its sources.
+        </UncertainNote>
+      )}
+      {blockers.length > 0 && (
         <ul className="flex flex-col gap-4">
           {blockers.map((blocker) => (
             <BlockerCard

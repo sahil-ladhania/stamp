@@ -31,7 +31,7 @@ const LIMITS = [
   {
     limit: "Coverage is small.",
     detail:
-      "The library has five apps. Any other app is researched live, from public pages.",
+      "The library holds a small set of reviewed guides. Any other app is researched live, from public pages.",
   },
   {
     limit: "Guides age.",

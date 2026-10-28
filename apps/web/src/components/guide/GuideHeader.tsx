@@ -1,15 +1,17 @@
 /**
  * File: GuideHeader.tsx
- * Purpose: Top of a guide: app name, headline, kind of hard, as-of date, Copy link and the difficulty breakdown.
+ * Purpose: Top of a guide: app name, the headline with its evidence, kind of hard, as-of date, Copy link and the difficulty breakdown.
  * Exports: GuideHeader
  * Used by: components/guide/GuideView.tsx
  */
+import type { GuideMode } from "@stamp/schema";
 import type { ReactElement } from "react";
 import { AppIcon } from "@/components/shared/AppIcon";
 import { SectionHeading } from "@/components/shared/SectionHeading";
-import type { Guide, GuideMode } from "@/mocks/types";
+import type { Guide } from "@/types/guide-model";
 import { ARCHETYPE_LABEL } from "@/utils/archetype";
 import { formatAsOf } from "@/utils/format-date";
+import { ClaimEvidence } from "./ClaimEvidence";
 import { CopyLinkButton } from "./CopyLinkButton";
 import { DifficultyBreakdown } from "./DifficultyBreakdown";
 
@@ -32,6 +34,8 @@ export function GuideHeader({ guide }: { guide: Guide }): ReactElement {
         description={guide.headline}
         aside={<CopyLinkButton slug={guide.slug} />}
       />
+      {/* The headline is a claim, so it carries its label like every other claim. */}
+      <ClaimEvidence claim={guide.summary} />
       <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-small text-ink-muted">
         <span className="text-data text-ink">
           {ARCHETYPE_LABEL[guide.archetype]}

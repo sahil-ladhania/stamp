@@ -1,12 +1,12 @@
 /**
  * File: MilestoneBar.tsx
- * Purpose: The two milestones on one track: first test and production, each with its time, what it waits on and its claims.
- *          The track is not to scale: the docs give no durations to scale it by.
+ * Purpose: The two milestones on one track: first test and production, each with how long it takes and what it
+ *          waits on, and the evidence for both. The track is not to scale: no source gives durations to scale it by.
  * Exports: MilestoneBar
  * Used by: components/guide/MilestonesSection.tsx
  */
 import type { ReactElement } from "react";
-import type { Milestone } from "@/mocks/types";
+import type { Milestone } from "@/types/guide-model";
 import { ClaimEvidence } from "./ClaimEvidence";
 
 export function MilestoneBar({
@@ -26,27 +26,23 @@ export function MilestoneBar({
             className="absolute -top-[7px] left-0 size-3 rounded-full bg-ink"
           />
           <h3 className="text-card-title text-ink">{milestone.title}</h3>
-          <dl className="flex flex-col gap-2">
-            <div className="grid gap-1 tablet:grid-cols-[5.5rem_1fr] tablet:gap-3">
-              <dt className="text-small text-ink-muted">Time</dt>
-              <dd className="text-data text-ink">{milestone.duration}</dd>
-            </div>
-            <div className="grid gap-1 tablet:grid-cols-[5.5rem_1fr] tablet:gap-3">
-              <dt className="text-small text-ink-muted">Waits on</dt>
-              <dd className="text-body text-ink">{milestone.wait}</dd>
-            </div>
-          </dl>
-          <ul className="flex flex-col gap-3">
-            {milestone.claims.map((claim) => (
-              <li
-                key={claim.id}
-                className="flex flex-col gap-2 rounded-md border border-rule bg-card p-3"
+          <dl className="flex flex-col gap-3">
+            {[
+              { label: "Time", claim: milestone.effort, textClass: "text-data" },
+              { label: "Waits on", claim: milestone.wait, textClass: "text-body" },
+            ].map(({ label, claim, textClass }) => (
+              <div
+                key={label}
+                className="grid gap-1 tablet:grid-cols-[5.5rem_1fr] tablet:gap-3"
               >
-                <p className="text-body text-ink">{claim.text}</p>
-                <ClaimEvidence claim={claim} />
-              </li>
+                <dt className="text-small text-ink-muted">{label}</dt>
+                <dd className="flex flex-col gap-2">
+                  <span className={`${textClass} text-ink`}>{claim.text}</span>
+                  <ClaimEvidence claim={claim} />
+                </dd>
+              </div>
             ))}
-          </ul>
+          </dl>
         </li>
       ))}
     </ol>

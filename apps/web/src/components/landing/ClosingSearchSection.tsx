@@ -6,13 +6,10 @@
  */
 import type { ReactElement } from "react";
 import { Container } from "@/components/layout/Container";
-import { SearchBar } from "@/components/shared/SearchBar";
 import { SectionHeading } from "@/components/shared/SectionHeading";
-import { useMockSearch } from "@/hooks/useMockSearch";
+import { StartRunSearch } from "@/components/shared/StartRunSearch";
 
 export function ClosingSearchSection(): ReactElement {
-  const { submit } = useMockSearch();
-
   return (
     <section
       aria-labelledby="closing-heading"
@@ -25,10 +22,10 @@ export function ClosingSearchSection(): ReactElement {
         <SectionHeading
           id="closing-heading"
           title="Get a guide for any app"
-          description="Search any app. If it is not in the library, the agent researches it live."
+          description="Search any app. If it has no guide yet, the agent researches it live."
           className="desktop:col-span-5"
         />
-        <SearchBar onSubmit={submit} className="desktop:col-span-7" />
+        <StartRunSearch className="desktop:col-span-7" />
       </Container>
     </section>
   );

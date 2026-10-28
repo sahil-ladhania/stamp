@@ -4,7 +4,7 @@
  * Exports: SortOrder, sortByDifficulty
  * Used by: components/app-home/LibrarySection.tsx
  */
-import type { GuideSummary } from "@/mocks/types";
+import type { GuideSummary } from "@stamp/schema";
 
 export type SortOrder = "easiest" | "hardest";
 

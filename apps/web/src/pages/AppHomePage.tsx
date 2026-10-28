@@ -1,31 +1,36 @@
 /**
  * File: AppHomePage.tsx
- * Purpose: App home route `/app`. Maps the `?state=` scenario to the library status and composes the sections.
+ * Purpose: App home route `/app`. Loads the library and composes the search, the library list and the live note.
  * Exports: AppHomePage
  * Used by: router.tsx
  */
 import type { ReactElement } from "react";
-import type { LibraryStatus } from "@/components/app-home/library-status";
 import { LibrarySection } from "@/components/app-home/LibrarySection";
 import { LiveResearchNote } from "@/components/app-home/LiveResearchNote";
 import { LookupSection } from "@/components/app-home/LookupSection";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
-import { useMockScenario } from "@/hooks/useMockScenario";
-import { LIBRARY_SUMMARIES } from "@/mocks/guides";
-import { PAGE_SCENARIOS } from "@/mocks/scenarios";
+import { useGuides } from "@/hooks/useGuides";
+import { getLibraryStatus } from "@/utils/library-status";
 
 export function AppHomePage(): ReactElement {
   useDocumentTitle("Look up an app");
-  const { scenario } = useMockScenario(PAGE_SCENARIOS["app-home"]);
-  const status: LibraryStatus =
-    scenario === "loading" || scenario === "empty" || scenario === "error"
-      ? scenario
-      : "ready";
+  const { data, error, isLoading, reload } = useGuides();
+  const guides = data ?? [];
+  const status = getLibraryStatus({
+    isLoading,
+    hasError: error !== null,
+    count: guides.length,
+  });
 
   return (
     <>
-      <LookupSection key={scenario} scenario={scenario} />
-      <LibrarySection status={status} guides={LIBRARY_SUMMARIES} />
+      <LookupSection />
+      <LibrarySection
+        status={status}
+        guides={guides}
+        error={error}
+        onRetry={reload}
+      />
       <LiveResearchNote />
     </>
   );

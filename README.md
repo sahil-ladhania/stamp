@@ -105,7 +105,7 @@ Try the live agent with any app outside this list.
    | api | `AGENT_EXTRACT_CONCURRENCY` | Parallel extraction calls, 1 to 8; default 5 |
    | api | `AGENT_PROBE` | `off` skips the outbound authorize-URL probe; default `on` |
    | api | `NODE_ENV` | `development` locally; `production` on Railway |
-   | web | `VITE_API_URL` | API base URL |
+   | web | `VITE_API_URL` | Leave empty in development: the Vite dev server proxies `/api` to `http://localhost:3000`, so the browser only talks to its own origin and CORS never applies. In production, set it to the API origin with no trailing slash, for example `https://stamp-api.up.railway.app`. The API then allows only the origin in its `WEB_ORIGIN`, so that must equal the web app's origin. Every `VITE_` variable is public |
 
 4. Set up the database and load the library guides:
 
@@ -149,7 +149,7 @@ Try the live agent with any app outside this list.
 
 | Part | Host | Notes |
 | --- | --- | --- |
-| `apps/web` | Vercel | Set `VITE_API_URL`; SPA rewrite for `/g/:slug` |
+| `apps/web` | Vercel | Set `VITE_API_URL` to the API origin; SPA rewrite for `/g/:slug`. Set the API's `WEB_ORIGIN` to this site's origin |
 | `apps/api` | Railway | Always on; set all API env variables |
 | MySQL | Railway | Copy its connection string into `DATABASE_URL` |
 

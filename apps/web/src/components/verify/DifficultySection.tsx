@@ -1,19 +1,19 @@
 /**
  * File: DifficultySection.tsx
- * Purpose: How we verify section 4: the fixed difficulty rule, with HubSpot worked through from the mock guide.
+ * Purpose: How we verify section 4: the fixed difficulty rule, with HubSpot worked through as an editorial example.
  * Exports: DifficultySection
  * Used by: pages/HowWeVerifyPage.tsx
  */
 import type { ReactElement } from "react";
 import { AppIcon } from "@/components/shared/AppIcon";
-import { hubspotGuide } from "@/mocks/guides/hubspot";
+import { HUBSPOT_EXAMPLE } from "@/content/verify-examples";
 import { DifficultyRuleTable } from "./DifficultyRuleTable";
 import { ScoreBands } from "./ScoreBands";
 import { PageSection } from "@/components/shared/PageSection";
 
-const { slug, appName, difficulty } = hubspotGuide;
+const { slug, appName, difficulty } = HUBSPOT_EXAMPLE;
 
-// Built from the mock so the sentence cannot disagree with the highlighted cells.
+// Built from the example so the sentence cannot disagree with the highlighted cells.
 const FACTOR_SUMMARY = difficulty.factors
   .map((factor) => `${factor.name.toLowerCase()} ${factor.points}`)
   .join(", ");

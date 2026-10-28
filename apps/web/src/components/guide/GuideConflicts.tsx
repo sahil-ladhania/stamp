@@ -1,12 +1,13 @@
 /**
  * File: GuideConflicts.tsx
- * Purpose: Guide section 7: sources that disagree. Shown only when there are any, or on a partial guide.
+ * Purpose: Guide section 8: sources that disagree. Shown only when there are any, or on a partial guide where
+ *          Stamp could not say whether it checked.
  * Exports: GuideConflicts
  * Used by: components/guide/GuideView.tsx
  */
 import type { ReactElement } from "react";
 import { PageSection } from "@/components/shared/PageSection";
-import type { Conflict } from "@/mocks/types";
+import type { Conflict } from "@/types/guide-model";
 import { ConflictCard } from "./ConflictCard";
 import { MissingSection } from "./MissingSection";
 
@@ -25,11 +26,10 @@ export function GuideConflicts({
     <PageSection
       id="conflicts"
       title="When sources disagree"
-      description="Stamp keeps both claims and says which one it trusts."
+      description="Stamp keeps both sources and says which one it trusts."
     >
-      {isMissing ? (
-        <MissingSection />
-      ) : (
+      {isMissing && <MissingSection />}
+      {conflicts.length > 0 && (
         <div className="grid gap-4 desktop:grid-cols-2">
           {conflicts.map((conflict) => (
             <ConflictCard key={conflict.id} conflict={conflict} />

@@ -1,6 +1,6 @@
 /**
  * File: SearchBar.tsx
- * Purpose: App search form: one input, one "Get the guide" button, inline length check.
+ * Purpose: App search form: one input, one "Get the guide" button, inline length check. Disabled while a run starts.
  * Exports: SearchBar
  * Used by: Landing, App home, Not found
  */
@@ -10,8 +10,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
-type SearchBarProps = {
+export type SearchBarProps = {
   onSubmit: (app: string) => void;
+  /** Disables the box while a run starts, so a second click cannot start another. */
+  isPending?: boolean;
+  /** A fixed id, for a control elsewhere on the page that moves focus here. */
+  inputId?: string;
   size?: "md" | "lg";
   /** `secondary` when another button on the page is the red primary action. */
   buttonVariant?: "primary" | "secondary";
@@ -26,6 +30,8 @@ const MAX_LENGTH = 100;
 /** Presentational: the page decides what a submit does. */
 export function SearchBar({
   onSubmit,
+  isPending = false,
+  inputId: inputIdProp,
   size = "md",
   buttonVariant = "primary",
   defaultValue = "",
@@ -34,7 +40,8 @@ export function SearchBar({
 }: SearchBarProps): ReactElement {
   const [value, setValue] = useState(defaultValue);
   const [error, setError] = useState<string | null>(null);
-  const inputId = useId();
+  const generatedId = useId();
+  const inputId = inputIdProp ?? generatedId;
   const errorId = `${inputId}-error`;
 
   function handleSubmit(event: FormEvent<HTMLFormElement>): void {
@@ -74,6 +81,7 @@ export function SearchBar({
             placeholder={placeholder}
             maxLength={MAX_LENGTH}
             autoComplete="off"
+            disabled={isPending}
             aria-invalid={error ? true : undefined}
             aria-describedby={error ? errorId : undefined}
             className={cn("pl-10", size === "lg" ? "h-12" : undefined)}
@@ -83,6 +91,7 @@ export function SearchBar({
           type="submit"
           variant={buttonVariant}
           size={size}
+          disabled={isPending}
           className="tablet:shrink-0"
         >
           Get the guide

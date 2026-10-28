@@ -18,10 +18,10 @@ alwaysApply: false
 - No global state library. Use React state and the URL.
 
 ## Data
-- Call the API only through `src/lib/api.ts`.
+- Call the API only through the services in `src/services/`, which use the one Axios instance in `src/lib/api-client.ts`.
 - Parse every API response with Zod schemas from `@stamp/schema`.
 - Read run progress only through the `useRunStream` hook.
-- Components never call `fetch` or `EventSource` directly.
+- Components and hooks never call Axios, `fetch` or `EventSource` directly. Only services do.
 
 ## States
 - Every data view handles loading, empty, error and partial states.

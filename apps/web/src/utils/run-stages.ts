@@ -2,7 +2,7 @@
  * File: run-stages.ts
  * Purpose: The nine pipeline stages and who runs each, from docs/agent-architecture.md.
  * Exports: StageKind, RunStage, RUN_STAGES, STAGE_KIND_LABEL
- * Used by: mocks/run-events.ts, utils/run-view.ts, components/verify/StageList.tsx, components/run/StageItem.tsx
+ * Used by: utils/run-view.ts, components/verify/StageList.tsx, components/run/StageItem.tsx
  */
 
 /** model = AI model, external = outside call, code = our code. */

@@ -1,11 +1,13 @@
 /**
  * File: NextStepCard.tsx
- * Purpose: The one step to do first: title, who does it, how long, and its evidence. Unknown if not researched.
+ * Purpose: The one step to do first: title, who does it, how long (with its label), and its detail with evidence.
+ *          Unknown if not researched.
  * Exports: NextStepCard
  * Used by: components/guide/StartHereSection.tsx
  */
 import { useId, type ReactElement } from "react";
-import type { Step } from "@/mocks/types";
+import { EvidenceLabel } from "@/components/shared/EvidenceLabel";
+import type { Step } from "@/types/guide-model";
 import { ActorTag } from "./ActorTag";
 import { ClaimEvidence } from "./ClaimEvidence";
 import { UnknownValue } from "./UnknownValue";
@@ -31,12 +33,11 @@ export function NextStepCard({
           <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-small text-ink-muted">
             <ActorTag actor={step.actor} />
             <span aria-hidden>·</span>
-            <span className="text-data text-ink">{step.effort}</span>
+            <span className="text-data text-ink">{step.effort.text}</span>
+            <EvidenceLabel kind={step.effort.label} />
           </p>
-          {step.detail && (
-            <p className="text-body text-ink-muted">{step.detail}</p>
-          )}
-          <ClaimEvidence claim={step.claim} />
+          <p className="text-body text-ink-muted">{step.detail.text}</p>
+          <ClaimEvidence claim={step.detail} />
         </>
       ) : (
         <UnknownValue />

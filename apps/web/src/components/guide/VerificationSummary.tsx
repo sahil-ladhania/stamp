@@ -7,19 +7,18 @@
 import type { ReactElement } from "react";
 import { Link } from "react-router";
 import { EvidenceLabel } from "@/components/shared/EvidenceLabel";
-import type { Guide } from "@/mocks/types";
-import { collectClaims, countByLabel } from "@/utils/claims";
+import type { Guide } from "@/types/guide-model";
+import { countByLabel } from "@/utils/claims";
 import { EVIDENCE_KINDS } from "@/utils/evidence";
 import { pluralize } from "@/utils/plural";
 
 export function VerificationSummary({ guide }: { guide: Guide }): ReactElement {
-  const claims = collectClaims(guide);
-  const counts = countByLabel(claims);
+  const counts = countByLabel(guide.claims);
 
   return (
     <div className="flex flex-col gap-3 rounded-md border border-rule bg-card p-card">
       <p className="text-card-title text-ink">
-        {pluralize(claims.length, "claim")} in this guide
+        {pluralize(guide.claims.length, "claim")} in this guide
       </p>
       <ul className="flex flex-wrap gap-x-5 gap-y-2">
         {EVIDENCE_KINDS.map((kind) => (

@@ -6,7 +6,7 @@
  */
 import type { ReactElement } from "react";
 import { EvidenceLabel } from "@/components/shared/EvidenceLabel";
-import type { EvidenceKind } from "@/mocks/types";
+import type { EvidenceKind } from "@/types/guide-model";
 
 type Outcome = {
   answer: "Yes" | "No";

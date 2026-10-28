@@ -9,7 +9,7 @@ import { AppIcon } from "@/components/shared/AppIcon";
 import { DifficultyDots } from "@/components/shared/DifficultyDots";
 import { EvidenceLabel } from "@/components/shared/EvidenceLabel";
 import { cn } from "@/lib/utils";
-import type { Guide } from "@/mocks/types";
+import type { Guide } from "@/types/guide-model";
 import { ARCHETYPE_LABEL } from "@/utils/archetype";
 import { getVerdictRows } from "@/utils/verdict";
 import { StampFrame } from "./StampFrame";

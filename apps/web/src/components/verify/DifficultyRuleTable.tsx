@@ -6,8 +6,8 @@
  */
 import type { ReactElement } from "react";
 import { cn } from "@/lib/utils";
-import { DIFFICULTY_FACTORS, POINT_COLUMNS } from "@/mocks/difficulty-rule";
-import type { Difficulty } from "@/mocks/types";
+import { DIFFICULTY_FACTORS, POINT_COLUMNS } from "@/content/difficulty-rule";
+import type { Difficulty } from "@/types/guide-model";
 
 type DifficultyRuleTableProps = {
   example: Difficulty;

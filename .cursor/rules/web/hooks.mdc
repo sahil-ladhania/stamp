@@ -17,7 +17,7 @@ alwaysApply: false
 - No JSX and no styling inside hooks.
 
 ## Data
-- Data hooks call only `src/lib/api.ts`.
+- Data hooks call only the services in `src/services/`.
 - Validate data with `@stamp/schema` before returning it.
 
 ## Effects

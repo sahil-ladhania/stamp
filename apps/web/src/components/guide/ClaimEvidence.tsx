@@ -1,16 +1,22 @@
 /**
  * File: ClaimEvidence.tsx
- * Purpose: The evidence for one claim: its label, its source links with their tier, and the reason if Uncertain.
+ * Purpose: The evidence for one claim: its label, its source links with their tier, the verbatim quote, and the
+ *          control to report it as wrong.
  * Exports: ClaimEvidence
- * Used by: components/guide/ConflictCard.tsx, StepCard.tsx, BlockerCard.tsx, MilestoneBar.tsx, NextStepCard.tsx
+ * Used by: components/guide/* (every claim on a guide)
  */
 import type { ReactElement } from "react";
 import { EvidenceLabel } from "@/components/shared/EvidenceLabel";
 import { SourceLink } from "@/components/shared/SourceLink";
-import type { Claim } from "@/mocks/types";
+import type { Claim } from "@/types/guide-model";
 import { TIER_LABEL } from "@/utils/source-tier";
+import { ReportClaim } from "./ReportClaim";
+import { SourceQuotes } from "./SourceQuotes";
 
-/** Every claim shows a label and either a source or a reason, so nothing is bare. */
+/**
+ * Every claim shows a label and its sources. An unknown fact says what is unknown in its own text, so its reason
+ * only appears in the label's hover and focus detail instead of repeating the text.
+ */
 export function ClaimEvidence({ claim }: { claim: Claim }): ReactElement {
   return (
     <div className="flex flex-col gap-2">
@@ -28,9 +34,8 @@ export function ClaimEvidence({ claim }: { claim: Claim }): ReactElement {
           </span>
         ))}
       </div>
-      {claim.reason && (
-        <p className="text-small text-ink-muted">{claim.reason}</p>
-      )}
+      <SourceQuotes sources={claim.sources} />
+      <ReportClaim claim={claim} />
     </div>
   );
 }

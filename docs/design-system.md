@@ -102,7 +102,8 @@ flowchart TD
     V --> N[Next step + top blocker cards]:::unc
     N --> M[MilestoneBar: effort vs wait]:::ink
     M --> S[StepCards: actor, effort, label]:::src
-    S --> B[BlockerCards]:::unc
+    S --> R[Requirements, scopes and limits: claims with labels]:::src
+    R --> B[BlockerCards]:::unc
     B --> C[ConflictCards, if any]:::unc
     C --> F[Sources + verification summary]:::ok
 
@@ -113,7 +114,7 @@ flowchart TD
     classDef ok fill:#E6F4EC,stroke:#1F6B43,color:#1F6B43
 ```
 
-Top to bottom = most important to least.
+Top to bottom = most important to least. The Requirements, scopes and limits section has three short groups, each item a claim with its label, sources and quote; scopes show the scope string in mono, and an empty group shows an Uncertain note.
 
 ---
 

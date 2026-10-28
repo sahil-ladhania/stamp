@@ -1,16 +1,18 @@
 /**
  * File: StepsSection.tsx
- * Purpose: Guide section 5: who does what. A count per actor, then every step as a card.
+ * Purpose: Guide section 5: who does what. A count per actor, then every step as a card. An Uncertain or empty
+ *          section says so, and keeps whatever steps there are.
  * Exports: StepsSection
  * Used by: components/guide/GuideView.tsx
  */
 import type { ReactElement } from "react";
 import { PageSection } from "@/components/shared/PageSection";
-import type { Step } from "@/mocks/types";
+import type { Step } from "@/types/guide-model";
 import { countActors } from "@/utils/actor";
 import { ActorTag } from "./ActorTag";
 import { MissingSection } from "./MissingSection";
 import { StepCard } from "./StepCard";
+import { UncertainNote } from "./UncertainNote";
 
 type StepsSectionProps = { steps: readonly Step[]; isMissing: boolean };
 
@@ -24,9 +26,13 @@ export function StepsSection({
       title="Steps"
       description="Each step says who does it: the agent, you, or both."
     >
-      {isMissing ? (
-        <MissingSection />
-      ) : (
+      {isMissing && <MissingSection />}
+      {steps.length === 0 && !isMissing && (
+        <UncertainNote>
+          Uncertain: Stamp found no steps in its sources.
+        </UncertainNote>
+      )}
+      {steps.length > 0 && (
         <>
           <ul
             aria-label="Steps by who does them"

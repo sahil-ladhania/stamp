@@ -1,17 +1,17 @@
 /**
  * File: StepCard.tsx
- * Purpose: One step: its number, title, who does it, how long, the detail and the evidence.
+ * Purpose: One step: its number, title, who does it, how long (with its own label), the detail and the evidence.
  * Exports: StepCard
  * Used by: components/guide/StepsSection.tsx
  */
 import type { ReactElement } from "react";
-import type { Step } from "@/mocks/types";
+import type { Step } from "@/types/guide-model";
 import { ActorTag } from "./ActorTag";
 import { ClaimEvidence } from "./ClaimEvidence";
 
 type StepCardProps = { step: Step; number: number };
 
-/** Render inside an `ol`. A missing detail reads Unknown. */
+/** Render inside an `ol`. Both the effort and the detail are claims, so both show their label. */
 export function StepCard({ step, number }: StepCardProps): ReactElement {
   return (
     <li className="grid grid-cols-[2.25rem_1fr] gap-4 rounded-md border border-rule bg-card p-4 tablet:p-6">
@@ -26,10 +26,11 @@ export function StepCard({ step, number }: StepCardProps): ReactElement {
         <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-small text-ink-muted">
           <ActorTag actor={step.actor} />
           <span aria-hidden>·</span>
-          <span className="text-data text-ink">{step.effort}</span>
+          <span className="text-data text-ink">{step.effort.text}</span>
         </p>
-        <p className="text-body text-ink-muted">{step.detail ?? "Unknown"}</p>
-        <ClaimEvidence claim={step.claim} />
+        <ClaimEvidence claim={step.effort} />
+        <p className="text-body text-ink-muted">{step.detail.text}</p>
+        <ClaimEvidence claim={step.detail} />
       </div>
     </li>
   );

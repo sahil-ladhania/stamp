@@ -1,37 +1,31 @@
 /**
  * File: RunHeader.tsx
- * Purpose: Top of the Live run page: the heading and lead, the live "Now" line while running, and the next actions.
+ * Purpose: Top of the Live run page: the heading and lead, the polite status line, and the next actions.
  * Exports: RunHeader
  * Used by: components/run/RunScreen.tsx
  */
-import type { ReactElement } from "react";
-import { Link } from "react-router";
+import type { ReactElement, ReactNode } from "react";
 import { AppIcon } from "@/components/shared/AppIcon";
 import { SectionHeading } from "@/components/shared/SectionHeading";
-import { findLibrarySlug } from "@/mocks/guides";
-import { buttonVariants } from "@/components/ui/button-variants";
 import type { RunCopy } from "./run-copy";
 
 type RunHeaderProps = {
   copy: RunCopy;
-  appName: string | null;
-  currentStageName: string | null;
+  /** The run's slug, for the app mark. Only the library apps have one. */
+  appSlug: string | null;
+  /** Announced politely on every change. Hidden once the run ends: the heading says it. */
+  statusLine: string;
   isRunning: boolean;
+  actions: ReactNode;
 };
 
 export function RunHeader({
   copy,
-  appName,
-  currentStageName,
+  appSlug,
+  statusLine,
   isRunning,
+  actions,
 }: RunHeaderProps): ReactElement {
-  const appSlug = appName ? findLibrarySlug(appName) : null;
-  const status = isRunning
-    ? currentStageName
-      ? `Now: ${currentStageName}.`
-      : ""
-    : `${copy.heading}.`;
-
   return (
     <div className="flex flex-col gap-4">
       <SectionHeading
@@ -46,29 +40,13 @@ export function RunHeader({
         }
         description={copy.lead}
       />
-      {/* Announced politely on every stage change. Hidden once the run ends: the heading says it. */}
       <p
         role="status"
-        className={isRunning && status ? "text-data text-ink" : "sr-only"}
+        className={isRunning && statusLine ? "text-data text-ink" : "sr-only"}
       >
-        {status}
+        {statusLine}
       </p>
-      {copy.actions.length > 0 && (
-        <div className="flex flex-wrap items-center gap-3">
-          {copy.actions.map((action) => (
-            <Link
-              key={action.label}
-              to={action.to}
-              className={buttonVariants({
-                variant: action.variant,
-                size: "lg",
-              })}
-            >
-              {action.label}
-            </Link>
-          ))}
-        </div>
-      )}
+      {actions}
     </div>
   );
 }

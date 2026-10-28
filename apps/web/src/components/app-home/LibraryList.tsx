@@ -1,19 +1,23 @@
 /**
  * File: LibraryList.tsx
- * Purpose: The library list in all four states: ready rows, loading skeleton, empty message and error with retry.
+ * Purpose: The library list in all four states: ready rows, loading skeleton, empty state and error with retry.
  * Exports: LibraryList
  * Used by: components/app-home/LibrarySection.tsx
  */
+import type { GuideSummary } from "@stamp/schema";
 import type { ReactElement } from "react";
-import { Link } from "react-router";
-import { buttonVariants } from "@/components/ui/button-variants";
-import type { GuideSummary } from "@/mocks/types";
-import type { LibraryStatus } from "./library-status";
+import { Button } from "@/components/ui/button";
+import type { ApiError } from "@/lib/api-error";
+import { getApiErrorMessage } from "@/utils/error-messages";
+import type { LibraryStatus } from "@/utils/library-status";
+import { LibraryEmptyState } from "./LibraryEmptyState";
 import { LibraryRow } from "./LibraryRow";
 
 type LibraryListProps = {
   status: LibraryStatus;
   guides: readonly GuideSummary[];
+  error: ApiError | null;
+  onRetry: () => void;
 };
 
 const SKELETON_ROWS = [1, 2, 3, 4, 5] as const;
@@ -22,6 +26,8 @@ const SKELETON_ROWS = [1, 2, 3, 4, 5] as const;
 export function LibraryList({
   status,
   guides,
+  error,
+  onRetry,
 }: LibraryListProps): ReactElement {
   if (status === "loading") {
     return (
@@ -43,15 +49,7 @@ export function LibraryList({
       </div>
     );
   }
-
-  if (status === "empty") {
-    return (
-      <p className="rounded-md border border-rule bg-card p-card text-body text-ink">
-        The library is empty right now. Search for an app instead.
-      </p>
-    );
-  }
-
+  if (status === "empty") return <LibraryEmptyState />;
   if (status === "error") {
     return (
       <div
@@ -59,15 +57,14 @@ export function LibraryList({
         className="flex flex-col items-start gap-4 rounded-md border border-rule bg-card p-card"
       >
         <p className="text-body text-ink">
-          The library did not load. Check your connection, then retry.
+          {`The library did not load. ${error ? getApiErrorMessage(error) : "Try again."}`}
         </p>
-        <Link to="/app" className={buttonVariants({ variant: "secondary" })}>
+        <Button variant="secondary" onClick={onRetry}>
           Retry loading the library
-        </Link>
+        </Button>
       </div>
     );
   }
-
   return (
     <ul className="flex flex-col gap-3">
       {guides.map((guide) => (
