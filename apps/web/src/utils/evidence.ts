@@ -1,7 +1,7 @@
 /**
  * File: evidence.ts
  * Purpose: Single source for the three evidence labels: word, icon, colour classes and meaning.
- * Exports: EVIDENCE_KINDS, EVIDENCE_META
+ * Exports: EVIDENCE_KINDS, EVIDENCE_META, EvidenceSize, evidencePillClass
  * Used by: components/shared/EvidenceLabel.tsx, How we verify and Landing sections
  */
 import { Check, CircleHelp, Link as LinkIcon, type LucideIcon } from 'lucide-react'
@@ -14,6 +14,15 @@ type EvidenceMeta = {
   className: string
   meaning: string
   howSet: string
+}
+
+export type EvidenceSize = 'md' | 'sm'
+
+/** The shared pill shape for a label: `sm` is the compact form used in rows and tables. */
+export function evidencePillClass(size: EvidenceSize = 'md'): string {
+  return size === 'sm'
+    ? 'inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-0.5 text-[0.6875rem] leading-5 font-semibold'
+    : 'inline-flex items-center gap-1 rounded-full border border-transparent px-3 py-1 text-stamp-label'
 }
 
 export const EVIDENCE_KINDS: readonly EvidenceKind[] = ['tested', 'sourced', 'uncertain']

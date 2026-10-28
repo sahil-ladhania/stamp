@@ -7,7 +7,7 @@
  */
 import type { ReactElement } from "react";
 import { Link } from "react-router";
-import { Container } from "@/components/layout/Container";
+import { PageContainer } from "@/components/layout/PageContainer";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { buttonVariants } from "@/components/ui/button-variants";
 
@@ -17,7 +17,7 @@ export function VerifyClosing(): ReactElement {
       aria-labelledby="verify-closing-heading"
       className="border-t border-rule py-12"
     >
-      <Container className="flex flex-col gap-6">
+      <PageContainer className="flex flex-col gap-6">
         <SectionHeading
           id="verify-closing-heading"
           title="See it on a real guide"
@@ -34,7 +34,7 @@ export function VerifyClosing(): ReactElement {
             Go to the home page
           </Link>
         </div>
-      </Container>
+      </PageContainer>
     </section>
   );
 }

@@ -7,7 +7,7 @@
  */
 import type { GuideSummary } from "@stamp/schema";
 import type { ReactElement } from "react";
-import { Container } from "@/components/layout/Container";
+import { PageContainer } from "@/components/layout/PageContainer";
 import { ExampleApps } from "@/components/shared/ExampleApps";
 import { StartRunSearch } from "@/components/shared/StartRunSearch";
 import type { Guide } from "@/types/guide-model";
@@ -23,8 +23,7 @@ type HeroProps = {
 export function Hero({ sampleGuide, exampleGuides }: HeroProps): ReactElement {
   return (
     <section aria-labelledby="hero-heading" className="py-12">
-      <Container
-        size="wide"
+      <PageContainer
         className="grid gap-12 desktop:grid-cols-12 desktop:items-center"
       >
         <div className="flex flex-col gap-6 desktop:col-span-5">
@@ -49,7 +48,7 @@ export function Hero({ sampleGuide, exampleGuides }: HeroProps): ReactElement {
         <div className="desktop:col-span-7">
           <HeroVideo sampleGuide={sampleGuide} />
         </div>
-      </Container>
+      </PageContainer>
     </section>
   );
 }

@@ -7,7 +7,7 @@
 import type { ReactElement } from 'react'
 import { NavLink } from 'react-router'
 import { cn } from '@/lib/utils'
-import { Container } from './Container'
+import { PageContainer } from './PageContainer'
 import { NAV_ITEMS } from './nav-items'
 import { ThemeToggle } from './ThemeToggle'
 import { Wordmark } from './Wordmark'
@@ -16,7 +16,7 @@ import { Wordmark } from './Wordmark'
 export function SiteHeader(): ReactElement {
   return (
     <header className="border-b border-rule">
-      <Container size="wide" className="flex h-16 items-center justify-between gap-3">
+      <PageContainer className="flex h-16 items-center justify-between gap-3">
         <Wordmark />
         <nav aria-label="Main" className="flex items-center gap-1 tablet:gap-4">
           {NAV_ITEMS.map((item) => (
@@ -38,7 +38,7 @@ export function SiteHeader(): ReactElement {
           ))}
           <ThemeToggle />
         </nav>
-      </Container>
+      </PageContainer>
     </header>
   )
 }

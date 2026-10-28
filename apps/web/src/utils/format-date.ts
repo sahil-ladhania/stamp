@@ -17,3 +17,8 @@ const formatter = new Intl.DateTimeFormat('en-GB', {
 export function formatAsOf(isoDate: string): string {
   return formatter.format(new Date(isoDate))
 }
+
+/** Turns a retrieval time into `Retrieved 28 Oct 2026`. */
+export function formatRetrieved(isoDate: string): string {
+  return `Retrieved ${formatter.format(new Date(isoDate))}`
+}

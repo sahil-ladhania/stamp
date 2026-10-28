@@ -8,7 +8,7 @@
 import type { GuideSummary } from "@stamp/schema";
 import type { ReactElement } from "react";
 import { Link } from "react-router";
-import { Container } from "@/components/layout/Container";
+import { PageContainer } from "@/components/layout/PageContainer";
 import { AppCard } from "@/components/shared/AppCard";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { buttonVariants } from "@/components/ui/button-variants";
@@ -33,7 +33,7 @@ export function KindsOfHardSection({
       aria-labelledby="kinds-heading"
       className="border-t border-rule py-12"
     >
-      <Container size="wide" className="flex flex-col gap-8">
+      <PageContainer className="flex flex-col gap-8">
         <SectionHeading
           id="kinds-heading"
           title="Guides in the library"
@@ -73,7 +73,7 @@ export function KindsOfHardSection({
             ))}
           </ul>
         )}
-      </Container>
+      </PageContainer>
     </section>
   );
 }

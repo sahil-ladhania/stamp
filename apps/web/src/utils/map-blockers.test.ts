@@ -24,10 +24,19 @@ describe('blockerTitle', () => {
     expect(blockerTitle(symptom('The 26th install is blocked.'))).toBe('The 26th install is blocked')
   })
 
-  it('cuts a long sentence at 80 characters with an ellipsis', () => {
+  it('cuts a long sentence at a clause break, as a complete phrase', () => {
+    expect(
+      blockerTitle(
+        symptom('During testing, the OAuth screen displays a strong warning page to users, discouraging most users from proceeding.'),
+      ),
+    ).toBe('During testing, the OAuth screen displays a strong warning page to users')
+  })
+
+  it('falls back to a word cut, never ending mid-word, when there is no clause break', () => {
     const title = blockerTitle(symptom(`${'word '.repeat(40)}end.`))
-    expect(title).toHaveLength(80)
+    expect(title.length).toBeLessThanOrEqual(91)
     expect(title.endsWith('…')).toBe(true)
+    expect(title.slice(0, -1).trimEnd().split(' ').every((part) => part === 'word')).toBe(true)
   })
 
   it('does not quote an unknown symptom as a title', () => {

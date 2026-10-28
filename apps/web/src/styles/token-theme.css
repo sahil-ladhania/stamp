@@ -12,9 +12,21 @@
   --breakpoint-tablet: 48rem;
   --breakpoint-desktop: 64rem;
 
-  --max-width-content: 55rem;
-  /* Approved deviation from docs/design-system.md (880px): Landing and the header/footer bar only. */
+  /* The one page frame (docs/design-system.md): header, every page and the footer. Reading text is capped at 70ch inside it. */
   --max-width-wide: 70rem;
+
+  /* The Landing stamp press: plays once, when the verdict first enters the view. */
+  --animate-stamp: stamp-press 250ms ease-out both;
+  @keyframes stamp-press {
+    from {
+      opacity: 0;
+      transform: scale(1.5) rotate(-18deg);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) rotate(-8deg);
+    }
+  }
 
   --color-paper: var(--paper);
   --color-card: var(--card);

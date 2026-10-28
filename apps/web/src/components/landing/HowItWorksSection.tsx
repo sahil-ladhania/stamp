@@ -6,7 +6,7 @@
  */
 import type { ReactElement } from "react";
 import { Link } from "react-router";
-import { Container } from "@/components/layout/Container";
+import { PageContainer } from "@/components/layout/PageContainer";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 
 // A real sequence, so the steps are numbered. Content from docs/solution.md and docs/flow.md.
@@ -31,7 +31,7 @@ export function HowItWorksSection(): ReactElement {
       aria-labelledby="how-heading"
       className="border-t border-rule py-12"
     >
-      <Container size="wide" className="flex flex-col gap-8">
+      <PageContainer className="flex flex-col gap-8">
         <SectionHeading id="how-heading" title="How Stamp works" />
         <ol className="grid gap-8 tablet:grid-cols-3">
           {STEPS.map((step, index) => (
@@ -59,7 +59,7 @@ export function HowItWorksSection(): ReactElement {
             Read how we verify
           </Link>
         </div>
-      </Container>
+      </PageContainer>
     </section>
   );
 }

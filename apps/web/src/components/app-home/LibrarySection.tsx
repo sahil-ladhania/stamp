@@ -7,7 +7,7 @@
 import type { GuideSummary } from "@stamp/schema";
 import { useState, type ReactElement } from "react";
 import { Link } from "react-router";
-import { Container } from "@/components/layout/Container";
+import { PageContainer } from "@/components/layout/PageContainer";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import type { ApiError } from "@/lib/api-error";
 import type { LibraryStatus } from "@/utils/library-status";
@@ -35,7 +35,7 @@ export function LibrarySection({
       aria-labelledby="library-heading"
       className="border-t border-rule py-12"
     >
-      <Container className="flex flex-col gap-6">
+      <PageContainer className="flex flex-col gap-6">
         <SectionHeading
           id="library-heading"
           title="The library"
@@ -63,7 +63,7 @@ export function LibrarySection({
           error={error}
           onRetry={onRetry}
         />
-      </Container>
+      </PageContainer>
     </section>
   );
 }

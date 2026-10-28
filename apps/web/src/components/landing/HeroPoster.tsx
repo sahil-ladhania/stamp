@@ -7,7 +7,7 @@
  */
 import type { ReactElement } from "react";
 import { Link } from "react-router";
-import { VerdictStamp } from "@/components/guide/VerdictStamp";
+import { Verdict } from "@/components/verdict/Verdict";
 import { buttonVariants } from "@/components/ui/button-variants";
 import type { Guide } from "@/types/guide-model";
 
@@ -15,7 +15,7 @@ import type { Guide } from "@/types/guide-model";
 export function HeroPoster({ guide }: { guide: Guide | null }): ReactElement {
   return (
     <div className="flex aspect-video flex-col justify-center gap-4 rounded-md border border-rule bg-paper p-4 tablet:p-6">
-      {guide && <VerdictStamp guide={guide} size="sm" />}
+      {guide && <Verdict guide={guide} variant="compact" />}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-small text-ink">
           {guide

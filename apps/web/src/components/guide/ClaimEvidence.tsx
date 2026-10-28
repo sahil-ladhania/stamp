@@ -10,7 +10,7 @@ import { EvidenceLabel } from "@/components/shared/EvidenceLabel";
 import { SourceLink } from "@/components/shared/SourceLink";
 import type { Claim } from "@/types/guide-model";
 import { TIER_LABEL } from "@/utils/source-tier";
-import { ReportClaim } from "./ReportClaim";
+import { ReportClaim } from "@/components/evidence/ReportClaim";
 import { SourceQuotes } from "./SourceQuotes";
 
 /**

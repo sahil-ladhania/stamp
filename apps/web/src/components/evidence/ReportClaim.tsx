@@ -3,7 +3,7 @@
  * Purpose: The "Report wrong claim" control on one claim: a button, then a short form with an optional note, then a
  *          confirmation. It acts on the guide it sits in and renders nothing outside a guide.
  * Exports: ReportClaim
- * Used by: components/guide/ClaimEvidence.tsx
+ * Used by: components/evidence/EvidencePanel.tsx
  */
 import { useId, useState, type FormEvent, type ReactElement } from "react";
 import { Button } from "@/components/ui/button";

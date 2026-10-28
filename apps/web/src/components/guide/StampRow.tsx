@@ -2,7 +2,7 @@
  * File: StampRow.tsx
  * Purpose: One labelled row inside a stamp's definition list: a quiet label and the answer beside it.
  * Exports: StampRow
- * Used by: components/guide/VerdictStamp.tsx, components/guide/ResultStamp.tsx
+ * Used by: components/guide/ResultStamp.tsx
  */
 import type { ReactElement, ReactNode } from "react";
 

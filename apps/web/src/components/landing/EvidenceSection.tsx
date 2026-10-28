@@ -7,7 +7,7 @@
  */
 import type { ReactElement } from "react";
 import { Link } from "react-router";
-import { Container } from "@/components/layout/Container";
+import { PageContainer } from "@/components/layout/PageContainer";
 import { EvidenceDefinitionList } from "@/components/shared/EvidenceDefinitionList";
 import { EvidenceLabel } from "@/components/shared/EvidenceLabel";
 import { SectionHeading } from "@/components/shared/SectionHeading";
@@ -27,7 +27,7 @@ export function EvidenceSection({ sample }: { sample: LandingSample }): ReactEle
       aria-labelledby="evidence-heading"
       className="border-t border-rule py-12"
     >
-      <Container size="wide" className="flex flex-col gap-8">
+      <PageContainer className="flex flex-col gap-8">
         <SectionHeading
           id="evidence-heading"
           title="Every claim has a label"
@@ -63,7 +63,7 @@ export function EvidenceSection({ sample }: { sample: LandingSample }): ReactEle
             </div>
           )}
         </div>
-      </Container>
+      </PageContainer>
     </section>
   );
 }

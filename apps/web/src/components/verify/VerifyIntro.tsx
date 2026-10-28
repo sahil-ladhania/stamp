@@ -6,7 +6,7 @@
  */
 import type { ReactElement } from "react";
 import { Link } from "react-router";
-import { Container } from "@/components/layout/Container";
+import { PageContainer } from "@/components/layout/PageContainer";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { VERIFY_SECTIONS } from "./verify-sections";
 
@@ -20,7 +20,7 @@ const RULES = [
 
 export function VerifyIntro(): ReactElement {
   return (
-    <Container className="grid gap-8 py-12 desktop:grid-cols-12 desktop:items-start">
+    <PageContainer className="grid gap-8 py-12 desktop:grid-cols-12 desktop:items-start">
       <div className="flex flex-col gap-6 desktop:col-span-7">
         <SectionHeading
           level={1}
@@ -61,6 +61,6 @@ export function VerifyIntro(): ReactElement {
           ))}
         </ul>
       </section>
-    </Container>
+    </PageContainer>
   );
 }

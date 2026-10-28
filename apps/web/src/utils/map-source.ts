@@ -24,5 +24,11 @@ export function sourceTitle(url: string): string {
 }
 
 export function mapSource(source: WireSource): Source {
-  return { url: source.url, title: sourceTitle(source.url), tier: source.tier, quote: source.quote }
+  return {
+    url: source.url,
+    title: sourceTitle(source.url),
+    tier: source.tier,
+    quote: source.quote,
+    retrievedAt: source.retrievedAt,
+  }
 }

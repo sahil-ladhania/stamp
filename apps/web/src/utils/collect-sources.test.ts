@@ -15,6 +15,12 @@ describe('collectSources', () => {
     expect(sources.map((source) => source.url)).toEqual(['https://docs.example.com/oauth'])
   })
 
+  it('counts how many claims cite each source', () => {
+    const [source] = collectSources(sampleGuide)
+    // verdict summary, requirements.0, scopes.0.reason, steps.0.detail, blockers.0 symptom and cause, production.wait
+    expect(source?.usedBy).toBe(7)
+  })
+
   it('adds the sources of a conflict, which belong to no claim', () => {
     const urls = collectSources(conflictGuide).map((source) => source.url)
     expect(urls).toContain('https://forum.example.org/t/1')

@@ -7,10 +7,10 @@
  */
 import type { ReactElement } from "react";
 import { Link } from "react-router";
-import { VerdictStamp } from "@/components/guide/VerdictStamp";
-import { Container } from "@/components/layout/Container";
+import { PageContainer } from "@/components/layout/PageContainer";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { buttonVariants } from "@/components/ui/button-variants";
+import { Verdict } from "@/components/verdict/Verdict";
 import { cn } from "@/lib/utils";
 import { sampleGuideOf, type LandingSample } from "@/utils/landing-sample";
 
@@ -41,7 +41,7 @@ export function VerdictSection({ sample }: { sample: LandingSample }): ReactElem
       aria-labelledby="verdict-heading"
       className="border-t border-rule py-12"
     >
-      <Container size="wide" className="flex flex-col gap-8">
+      <PageContainer className="flex flex-col gap-8">
         <SectionHeading
           id="verdict-heading"
           title="The verdict comes before the steps"
@@ -56,7 +56,7 @@ export function VerdictSection({ sample }: { sample: LandingSample }): ReactElem
           )}
           {guide && (
             <div className="desktop:col-span-7">
-              <VerdictStamp guide={guide} isTilted />
+              <Verdict guide={guide} />
             </div>
           )}
           <div
@@ -88,7 +88,7 @@ export function VerdictSection({ sample }: { sample: LandingSample }): ReactElem
             )}
           </div>
         </div>
-      </Container>
+      </PageContainer>
     </section>
   );
 }

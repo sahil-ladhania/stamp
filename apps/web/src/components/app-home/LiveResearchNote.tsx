@@ -6,7 +6,7 @@
  */
 import type { ReactElement } from "react";
 import { Link } from "react-router";
-import { Container } from "@/components/layout/Container";
+import { PageContainer } from "@/components/layout/PageContainer";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 
 export function LiveResearchNote(): ReactElement {
@@ -15,7 +15,7 @@ export function LiveResearchNote(): ReactElement {
       aria-labelledby="live-note-heading"
       className="border-t border-rule py-12"
     >
-      <Container className="flex flex-col items-start gap-4">
+      <PageContainer className="flex flex-col items-start gap-4">
         <SectionHeading
           id="live-note-heading"
           title="Not on the list?"
@@ -27,7 +27,7 @@ export function LiveResearchNote(): ReactElement {
         >
           Read how we verify
         </Link>
-      </Container>
+      </PageContainer>
     </section>
   );
 }
