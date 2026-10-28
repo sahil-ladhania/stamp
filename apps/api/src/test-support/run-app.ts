@@ -13,7 +13,7 @@ import { fakeDb } from "./fake-db.js";
 import { serve, type TestServer } from "./serve.js";
 import { testConfig } from "./test-config.js";
 
-/** Call at the top of a test file that mocks prisma, config and run-agent; serves a fresh app per test. */
+/** Call at the top of a test file that mocks prisma and config (and usually run-agent); serves a fresh app per test. */
 export function useRunsApp(): {
   url: () => string;
   agent: ReturnType<typeof vi.mocked<typeof runAgent>>;
@@ -23,7 +23,7 @@ export function useRunsApp(): {
 
   beforeEach(async () => {
     fakeDb.reset();
-    agent.mockReset();
+    if (vi.isMockFunction(runAgent)) runAgent.mockReset();
     vi.spyOn(process.stderr, "write").mockReturnValue(true);
     server = await serve(createApp(testConfig));
   });

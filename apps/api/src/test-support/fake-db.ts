@@ -12,7 +12,10 @@ type GuideStub = {
   mode: "LIBRARY" | "LIVE";
   expiresAt?: Date | null;
 };
-type StoredGuide = Required<GuideStub> & { id: string };
+type StoredGuide = Required<GuideStub> & { id: string } & Record<
+    string,
+    unknown
+  >;
 type RunWhere = {
   id?: string;
   status?: Run["status"];
@@ -112,6 +115,34 @@ function createFakeDb() {
     findUnique: vi.fn(
       async ({ where }: { where: { slug: string } }) =>
         guides.get(where.slug) ?? null,
+    ),
+    upsert: vi.fn(
+      async ({
+        where,
+        create,
+        update,
+      }: {
+        where: { slug: string };
+        create: Record<string, unknown>;
+        update: Record<string, unknown>;
+      }) => {
+        const existing = guides.get(where.slug);
+        if (existing) return Object.assign(existing, update);
+        const now = new Date();
+        const row: StoredGuide = Object.assign(
+          {
+            id: `guide_${where.slug}`,
+            slug: where.slug,
+            mode: "LIVE" as const,
+            expiresAt: null,
+            createdAt: now,
+            updatedAt: now,
+          },
+          create,
+        );
+        guides.set(where.slug, row);
+        return row;
+      },
     ),
   };
 
