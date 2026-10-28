@@ -4,6 +4,7 @@
  * Exports: listGuides, getGuide, createReport
  * Used by: routes/guides.ts
  */
+import { CreateClaimReportInputSchema } from "@stamp/schema";
 import type { Request, Response } from "express";
 import { getValid } from "../middleware/validate.js";
 import { SlugParamsSchema } from "../schemas/params.js";
@@ -22,7 +23,12 @@ export async function getGuide(_req: Request, res: Response): Promise<void> {
 }
 
 /** Flags a wrong claim on a guide. */
-export async function createReport(req: Request, res: Response): Promise<void> {
+export async function createReport(
+  _req: Request,
+  res: Response,
+): Promise<void> {
   const { slug } = getValid(res, "params", SlugParamsSchema);
-  await reportsService.createClaimReport({ ...req.body, slug });
+  const input = getValid(res, "body", CreateClaimReportInputSchema);
+  const result = await reportsService.createClaimReport({ ...input, slug });
+  res.status(201).json(result);
 }
