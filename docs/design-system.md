@@ -87,6 +87,9 @@ Map these variables into the Tailwind theme so classes like `bg-paper` and `text
 | Content width | 880 px max, centred |
 | Card padding | 16 px (mobile), 24 px (desktop) |
 | Section gap | 32 px |
+| Breakpoint: phone | Default (base styles); no min-width |
+| Breakpoint: tablet | 768 px (`tablet:` in Tailwind) |
+| Breakpoint: desktop | 1024 px (`desktop:` in Tailwind) |
 
 ---
 

@@ -1,0 +1,129 @@
+/**
+ * File: token-theme.css
+ * Purpose: Tailwind @theme mapping and Stamp typography/layout utilities.
+ * Exports: theme tokens and @utility classes.
+ * Used by: index.css
+ */
+
+@theme inline {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+
+  --breakpoint-tablet: 48rem;
+  --breakpoint-desktop: 64rem;
+
+  --max-width-content: 55rem;
+
+  --color-paper: var(--paper);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-rule: var(--rule);
+  --color-stamp: var(--stamp);
+  --color-on-stamp: var(--on-stamp);
+  --color-tested: var(--tested);
+  --color-tested-bg: var(--tested-bg);
+  --color-sourced: var(--sourced);
+  --color-sourced-bg: var(--sourced-bg);
+  --color-uncertain: var(--uncertain);
+  --color-uncertain-bg: var(--uncertain-bg);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: var(--radius);
+  --radius-md: var(--radius);
+  --radius-lg: var(--radius);
+  --radius-xl: var(--radius);
+
+  --shadow-2xs: 0 0 #0000;
+  --shadow-xs: 0 0 #0000;
+  --shadow-sm: 0 0 #0000;
+  --shadow: 0 0 #0000;
+  --shadow-md: 0 0 #0000;
+  --shadow-lg: 0 0 #0000;
+  --shadow-xl: 0 0 #0000;
+  --shadow-2xl: 0 0 #0000;
+
+  --text-page-title: 2rem;
+  --text-page-title--line-height: 1.25;
+  --text-page-title--font-weight: 600;
+
+  --text-section: 1.5rem;
+  --text-section--line-height: 1.25;
+  --text-section--font-weight: 600;
+
+  --text-card-title: 1.125rem;
+  --text-card-title--line-height: 1.25;
+  --text-card-title--font-weight: 600;
+
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.5;
+  --text-body--font-weight: 400;
+
+  --text-small: 0.8125rem;
+  --text-small--line-height: 1.5;
+  --text-small--font-weight: 400;
+
+  --text-data: 0.8125rem;
+  --text-data--line-height: 1.5;
+  --text-data--font-weight: 400;
+
+  --text-stamp-label: 0.8125rem;
+  --text-stamp-label--line-height: 1.5;
+  --text-stamp-label--font-weight: 600;
+}
+
+@utility text-stamp-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-stamp-label);
+  line-height: var(--text-stamp-label--line-height);
+  font-weight: var(--text-stamp-label--font-weight);
+}
+
+@utility text-data {
+  font-family: var(--font-mono);
+  font-size: var(--text-data);
+  line-height: var(--text-data--line-height);
+  font-weight: var(--text-data--font-weight);
+}
+
+@utility p-card {
+  padding: 1rem;
+}
+
+@media (width >= 64rem) {
+  .p-card {
+    padding: 1.5rem;
+  }
+}

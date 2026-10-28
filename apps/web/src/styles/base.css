@@ -1,0 +1,41 @@
+/**
+ * File: base.css
+ * Purpose: Global element styles (body, focus, reduced motion).
+ * Exports: base layer rules via index.css import.
+ * Used by: index.css
+ */
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans;
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-paper text-ink text-body min-h-svh antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--sourced);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
