@@ -46,7 +46,7 @@ export function slugify(input: string): string {
   const base = appLabelFromUrl(value) ?? value;
   return base
     .normalize("NFKD")
-    .replace(/[̀-ͯ]/g, "")
+    .replace(/[\u0300-\u036F]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .slice(0, MAX_SLUG_LENGTH)
     .replace(/^-+|-+$/g, "");
