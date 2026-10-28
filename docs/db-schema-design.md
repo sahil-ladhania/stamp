@@ -121,7 +121,7 @@ erDiagram
 | `claimId` | string | Path inside the guide, e.g. `steps.5` |
 | `method` | enum | `QUOTE_MATCH`, `PROBE`, `MANUAL`, `BROWSER` |
 | `result` | enum | `PASS`, `FAIL` |
-| `detail` | text, nullable | e.g. "quote not found" |
+| `detail` | text, nullable | JSON written by the agent: `contentHash` (the page version a quote was checked against, from `page_cache`), plus `reason` (e.g. `quote_not_found`, `page_not_fetched`) or the probe's HTTP `status`. Kept in `detail` so no column was added |
 | `sourceUrl` | text, nullable | Page that was checked |
 | `checkedAt` | datetime | |
 
