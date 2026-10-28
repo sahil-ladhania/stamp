@@ -22,10 +22,24 @@ export const SourceSchema = z.strictObject({
 });
 export type Source = z.infer<typeof SourceSchema>;
 
-export const ClaimSchema = z.strictObject({
-  id: ClaimIdSchema,
-  text: z.string().min(1),
-  label: EvidenceLabelSchema,
-  sources: z.array(SourceSchema).min(1),
-});
+/**
+ * A sourced or tested claim needs at least one source. An uncertain claim may have none:
+ * that is how an unknown fact is represented, and its text says what is unknown.
+ */
+export const ClaimSchema = z
+  .strictObject({
+    id: ClaimIdSchema,
+    text: z.string().min(1),
+    label: EvidenceLabelSchema,
+    sources: z.array(SourceSchema),
+  })
+  .superRefine((claim, ctx) => {
+    if (claim.label !== "uncertain" && claim.sources.length === 0) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["sources"],
+        message: "A sourced or tested claim needs at least one source",
+      });
+    }
+  });
 export type Claim = z.infer<typeof ClaimSchema>;
