@@ -168,7 +168,7 @@ erDiagram
 ```prisma
 generator client {
   provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  output   = "../generated/prisma"
 }
 
 datasource db {

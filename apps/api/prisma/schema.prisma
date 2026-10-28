@@ -1,0 +1,131 @@
+// Stamp database schema — see docs/db-schema-design.md
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum GuideMode {
+  LIBRARY
+  LIVE
+}
+
+enum Archetype {
+  INSTANT
+  HIDDEN_LIMITS
+  REVIEW
+  PARTNER_GATED
+  ENTERPRISE
+  UNKNOWN
+}
+
+enum RunStatus {
+  RUNNING
+  DONE
+  PARTIAL
+  FAILED
+}
+
+enum SourceTier {
+  OFFICIAL
+  THIRD_PARTY
+  FORUM
+}
+
+enum CheckMethod {
+  QUOTE_MATCH
+  PROBE
+  MANUAL
+  BROWSER
+}
+
+enum CheckResult {
+  PASS
+  FAIL
+}
+
+model Guide {
+  id         String    @id @default(cuid())
+  slug       String    @unique
+  appName    String
+  domain     String
+  mode       GuideMode
+  archetype  Archetype
+  difficulty Int
+  data       Json
+  asOf       DateTime
+  expiresAt  DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  runs    Run[]
+  checks  VerificationLog[]
+  reports ClaimReport[]
+
+  @@index([mode, difficulty])
+  @@map("guides")
+}
+
+model Run {
+  id           String    @id @default(cuid())
+  slug         String
+  status       RunStatus @default(RUNNING)
+  stageReached Int?
+  errorCode    String?
+  activeSlug   String?   @unique
+  guideId      String?
+  guide        Guide?    @relation(fields: [guideId], references: [id])
+  startedAt    DateTime  @default(now())
+  finishedAt   DateTime?
+
+  checks VerificationLog[]
+
+  @@index([slug, startedAt])
+  @@map("runs")
+}
+
+model PageCache {
+  urlHash     String     @id
+  url         String     @db.Text
+  tier        SourceTier
+  text        String     @db.LongText
+  contentHash String
+  fetchedAt   DateTime   @default(now())
+  expiresAt   DateTime
+
+  @@index([expiresAt])
+  @@map("page_cache")
+}
+
+model VerificationLog {
+  id        String      @id @default(cuid())
+  guideId   String
+  guide     Guide       @relation(fields: [guideId], references: [id], onDelete: Cascade)
+  runId     String?
+  run       Run?        @relation(fields: [runId], references: [id])
+  claimId   String
+  method    CheckMethod
+  result    CheckResult
+  detail    String?     @db.Text
+  sourceUrl String?     @db.Text
+  checkedAt DateTime    @default(now())
+
+  @@index([guideId, claimId])
+  @@map("verification_log")
+}
+
+model ClaimReport {
+  id        String   @id @default(cuid())
+  guideId   String
+  guide     Guide    @relation(fields: [guideId], references: [id], onDelete: Cascade)
+  claimId   String
+  note      String?  @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([guideId])
+  @@map("claim_reports")
+}
