@@ -15,10 +15,6 @@ export const runsRouter: Router = Router();
 
 const runIdParam = validate(RunIdParamsSchema, "params");
 
-runsRouter.post(
-  "/",
-  validate(StartRunInputSchema, "body"),
-  asyncHandler(createRun),
-);
+runsRouter.post("/", validate(StartRunInputSchema, "body"), asyncHandler(createRun));
 runsRouter.get("/:id", runIdParam, asyncHandler(getRun));
 runsRouter.get("/:id/stream", runIdParam, asyncHandler(streamRun));
