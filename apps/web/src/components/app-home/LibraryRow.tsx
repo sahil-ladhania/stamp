@@ -1,15 +1,15 @@
 /**
  * File: LibraryRow.tsx
- * Purpose: One library guide as a row: difficulty first, then app and kind of hard, the headline and the as-of date.
+ * Purpose: One library guide as a row: difficulty first, then app and kind of hard, what that kind means and the as-of date.
  * Exports: LibraryRow
  * Used by: components/app-home/LibraryList.tsx
  */
+import type { GuideSummary } from "@stamp/schema";
 import type { ReactElement } from "react";
 import { Link } from "react-router";
 import { AppIcon } from "@/components/shared/AppIcon";
 import { DifficultyDots } from "@/components/shared/DifficultyDots";
-import type { GuideSummary } from "@/mocks/types";
-import { ARCHETYPE_LABEL } from "@/utils/archetype";
+import { ARCHETYPE_BLURB, ARCHETYPE_LABEL } from "@/utils/archetype";
 import { formatAsOf } from "@/utils/format-date";
 
 /** From 1024px the row is four columns, so difficulty lines up down the left edge for scanning. */
@@ -29,7 +29,9 @@ export function LibraryRow({ guide }: { guide: GuideSummary }): ReactElement {
           {ARCHETYPE_LABEL[guide.archetype]}
         </span>
       </div>
-      <p className="text-body text-ink-muted">{guide.headline}</p>
+      <p className="text-body text-ink-muted">
+        {ARCHETYPE_BLURB[guide.archetype]}
+      </p>
       <p className="text-small text-ink-muted desktop:text-right">
         As of {formatAsOf(guide.asOf)}
       </p>

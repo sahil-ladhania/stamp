@@ -4,11 +4,11 @@
  * Exports: ExampleApps
  * Used by: components/landing/Hero.tsx, Not found page (step 2)
  */
+import type { GuideSummary } from "@stamp/schema";
 import { useId, type ReactElement } from "react";
 import { Link } from "react-router";
 import { AppIcon } from "@/components/shared/AppIcon";
 import { cn } from "@/lib/utils";
-import type { GuideSummary } from "@/mocks/types";
 
 type ExampleAppsProps = {
   apps: readonly GuideSummary[];

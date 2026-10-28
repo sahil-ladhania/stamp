@@ -9,17 +9,15 @@
  * Used by: mocks/*, components/shared/*, utils/evidence.ts, utils/archetype.ts, pages/*
  */
 
-import type { RunErrorCode, SourceTier } from '@stamp/schema'
+import type { Actor, Archetype, RunErrorCode, SourceTier } from '@stamp/schema'
 import type { RunViewEvent } from '@/utils/run-view'
 
 // The run vocabulary comes from @stamp/schema; the guide types below move over in Phase 2.
-export type { RunErrorCode, SourceTier }
+export type { Actor, Archetype, RunErrorCode, SourceTier }
 
 export type EvidenceKind = 'tested' | 'sourced' | 'uncertain'
-export type Archetype = 'instant' | 'hidden-limits' | 'review-needed' | 'partner-gated' | 'enterprise'
 export type GuideMode = 'library' | 'live'
 export type GuideStatus = 'full' | 'partial' | 'not-oauth' | 'no-docs'
-export type Actor = 'agent' | 'human' | 'agent-assist'
 
 export type Source = {
   url: string

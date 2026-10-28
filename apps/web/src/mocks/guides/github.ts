@@ -60,7 +60,7 @@ export const githubGuide: Guide = {
     {
       id: 'steps.2',
       title: 'Add the redirect URL and scopes',
-      actor: 'agent-assist',
+      actor: 'agent_assist',
       effort: 'Unknown',
       detail: null,
       claim: uncertainClaim('steps.2', 'Add the redirect URL and scopes.', NO_SOURCE_REASON),

@@ -15,7 +15,7 @@ const CAP_TEXT = 'New HubSpot apps stop at 25 installs until they are listed on 
 export const hubspotGuide: Guide = {
   slug: 'hubspot',
   appName: 'HubSpot',
-  archetype: 'hidden-limits',
+  archetype: 'hidden_limits',
   mode: 'library',
   status: 'full',
   asOf: MOCK_AS_OF,
@@ -86,7 +86,7 @@ export const hubspotGuide: Guide = {
     {
       id: 'steps.4',
       title: 'Add the redirect URL',
-      actor: 'agent-assist',
+      actor: 'agent_assist',
       effort: 'Unknown',
       detail: 'Composio docs show two different callback paths. See the source conflict below.',
       claim: uncertainClaim('steps.4', 'The callback path is /api/v3/ or /api/v3.1/.', 'Sources disagree', [
@@ -97,7 +97,7 @@ export const hubspotGuide: Guide = {
     {
       id: 'steps.5',
       title: 'Copy the client ID and secret into the auth config',
-      actor: 'agent-assist',
+      actor: 'agent_assist',
       effort: 'Unknown',
       detail: 'Copy the client secret into the auth config.',
       claim: uncertainClaim('steps.5', 'Copy the client ID and secret into the auth config.', NO_SOURCE_REASON),

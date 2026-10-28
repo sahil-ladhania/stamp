@@ -15,7 +15,7 @@ const SECOND_REVIEW_TEXT = 'A second review follows, with a screen recording.'
 export const linkedinGuide: Guide = {
   slug: 'linkedin',
   appName: 'LinkedIn',
-  archetype: 'partner-gated',
+  archetype: 'partner_gated',
   mode: 'library',
   status: 'full',
   asOf: MOCK_AS_OF,

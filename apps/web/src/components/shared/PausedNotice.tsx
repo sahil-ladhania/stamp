@@ -1,8 +1,8 @@
 /**
  * File: PausedNotice.tsx
- * Purpose: Notice shown when the daily run cap is reached: live research is off, the library still works.
+ * Purpose: Notice shown when the daily run cap is reached: live research is off, but guides Stamp already has still open.
  * Exports: PausedNotice
- * Used by: components/app-home/LookupSection.tsx
+ * Used by: components/shared/StartRunSearch.tsx
  */
 import type { ReactElement } from "react";
 import { CirclePause } from "lucide-react";
@@ -18,8 +18,8 @@ export function PausedNotice(): ReactElement {
       <div className="flex flex-col gap-1">
         <p className="text-card-title text-ink">Live generation paused</p>
         <p className="text-body text-ink-muted">
-          Stamp cannot research new apps right now. The five library guides
-          still open.
+          Stamp cannot research new apps right now. Guides it has already
+          researched still open.
         </p>
       </div>
     </div>

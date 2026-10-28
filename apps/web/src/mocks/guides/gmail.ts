@@ -14,7 +14,7 @@ const CASA_TEXT = 'Restricted scopes need a third-party security assessment (CAS
 export const gmailGuide: Guide = {
   slug: 'gmail',
   appName: 'Gmail',
-  archetype: 'review-needed',
+  archetype: 'review',
   mode: 'library',
   status: 'full',
   asOf: MOCK_AS_OF,
