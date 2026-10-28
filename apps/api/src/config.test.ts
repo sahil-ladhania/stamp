@@ -32,6 +32,17 @@ describe("loadConfig", () => {
     expect(loadConfig(rest).PORT).toBe(3000);
   });
 
+  it("defaults the rate limit to 10 requests per 60 seconds and no proxy hops", () => {
+    const config = loadConfig(validEnv);
+    expect(config.RATE_LIMIT_MAX).toBe(10);
+    expect(config.RATE_LIMIT_WINDOW_SECONDS).toBe(60);
+    expect(config.TRUST_PROXY_HOPS).toBe(0);
+  });
+
+  it("rejects a rate limit of zero", () => {
+    expect(() => loadConfig({ ...validEnv, RATE_LIMIT_MAX: "0" })).toThrow();
+  });
+
   it("ignores unrelated environment variables", () => {
     const config = loadConfig({ ...validEnv, PATH: "/usr/bin", HOME: "/root" });
     expect(config).not.toHaveProperty("PATH");

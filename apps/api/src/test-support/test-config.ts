@@ -16,4 +16,7 @@ export const testConfig: EnvConfig = {
   DAILY_RUN_CAP: 10,
   ENABLE_BROWSER_AGENT: false,
   PORT: 3000,
+  RATE_LIMIT_MAX: 10,
+  RATE_LIMIT_WINDOW_SECONDS: 60,
+  TRUST_PROXY_HOPS: 0,
 };

@@ -19,6 +19,11 @@ export const EnvSchema = z.object({
     .enum(["true", "false"])
     .transform((value) => value === "true"),
   PORT: z.coerce.number().int().positive().default(3000),
+  // Per-IP limit on POST /api/runs and POST /api/guides/:slug/reports (set by env, not code).
+  RATE_LIMIT_MAX: z.coerce.number().int().positive().default(10),
+  RATE_LIMIT_WINDOW_SECONDS: z.coerce.number().int().positive().default(60),
+  // Reverse proxies in front of the API (Railway: 1), so req.ip is the real client.
+  TRUST_PROXY_HOPS: z.coerce.number().int().nonnegative().default(0),
 });
 
 export type EnvConfig = z.infer<typeof EnvSchema>;
