@@ -30,22 +30,15 @@ export type AgentOutcome =
   | { ok: true; slug: string; status: "done" | "partial" }
   | { ok: false; failure: AgentFailure };
 
-/** Real mode placeholder until the LangGraph pipeline replaces it: every run ends with an INTERNAL failure. */
-function runRealAgentPlaceholder(): Promise<AgentOutcome> {
-  return Promise.resolve({
-    ok: false,
-    failure: {
-      stage: 0,
-      code: "INTERNAL",
-      message: "The research agent is not available yet.",
-    },
-  });
-}
-
-/** Entry point the executor calls; AGENT_MODE picks the scripted stub or the real agent. */
-export function runAgent(input: RunAgentInput): Promise<AgentOutcome> {
+/**
+ * Entry point the executor calls; AGENT_MODE picks the scripted stub or the real LangGraph agent.
+ * The real agent is imported only in real mode, so stub mode (the default outside production) never
+ * loads the model, search and database clients.
+ */
+export async function runAgent(input: RunAgentInput): Promise<AgentOutcome> {
   if (getConfig().AGENT_MODE === "stub") {
     return runStubAgent(input);
   }
-  return runRealAgentPlaceholder();
+  const { runRealAgent } = await import("./run-real-agent.js");
+  return runRealAgent(input);
 }

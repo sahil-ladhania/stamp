@@ -2,7 +2,7 @@
  * File: run-real-agent.ts
  * Purpose: Runs the LangGraph pipeline for one run and returns the AgentOutcome the executor expects.
  * Exports: runRealAgent, RealAgentOptions
- * Used by: agent/run-agent.ts once AGENT_MODE=real is switched over (not yet; it still uses the placeholder)
+ * Used by: agent/run-agent.ts when AGENT_MODE is real
  */
 import { getConfig } from "../config.js";
 import { logger } from "../lib/logger.js";
