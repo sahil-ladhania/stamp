@@ -1,0 +1,35 @@
+---
+description: Stamp web: rules for custom React hooks
+globs: apps/web/src/hooks/**
+alwaysApply: false
+---
+
+# web-hooks
+
+> **Purpose:** Keep hooks clean, single-purpose and leak-free.
+>
+> **Applies to:** `apps/web/src/hooks/**`
+
+## Shape
+- One hook per file, named `useX.ts`.
+- Each hook does one job. If it does two, split it.
+- Return a typed object (`{ data, error, isLoading }`), not a long tuple.
+- No JSX and no styling inside hooks.
+
+## Data
+- Data hooks call only `src/lib/api.ts`.
+- Validate data with `@stamp/schema` before returning it.
+
+## Effects
+- Clean up every effect: close `EventSource`, clear timers, abort `AbortController`.
+- Keep dependency arrays complete. Never disable `react-hooks/exhaustive-deps`.
+- Never call hooks conditionally or in loops.
+
+## State
+- Derive values instead of storing duplicate state.
+- Use `useMemo` and `useCallback` only for a real, measured cost.
+
+## Reuse
+- When a component has more than one effect or tangled state, move that logic into a hook.
+- Extract pure logic from hooks into `src/utils/` and test it there.
+- Reuse one shared async-state helper instead of rewriting loading and error logic in every hook.

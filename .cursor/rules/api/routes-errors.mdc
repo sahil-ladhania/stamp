@@ -1,0 +1,27 @@
+---
+description: Stamp api: routes, validation and error contract
+globs: apps/api/src/routes/**, apps/api/src/middleware/**, packages/schema/**
+alwaysApply: false
+---
+
+# api-routes-errors
+
+> **Purpose:** Keep the API contract strict and identical to docs/api-design.md.
+>
+> **Applies to:** Routes and middleware in `apps/api`, and `packages/schema`.
+
+## Routes
+- Routes stay thin: validate, call a service, respond.
+- Routes never call Prisma, OpenAI or Tavily directly.
+- Wrap every handler with `asyncHandler`, so routes need no try/catch.
+- Match the paths, status codes and shapes in `docs/api-design.md`.
+
+## Validation
+- Validate every body, param and query with the `validate(schema)` middleware.
+- Schemas come from `@stamp/schema`.
+
+## Errors
+- Errors always use `{ "error": { "code", "message" } }`.
+- Use only these codes: `VALIDATION_ERROR`, `NOT_FOUND`, `RATE_LIMITED`, `RUN_CAP_REACHED`, `INTERNAL`.
+- One central `errorHandler` middleware formats every error.
+- Never send raw exception text or stack traces to the client.

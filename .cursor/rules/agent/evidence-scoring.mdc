@@ -1,0 +1,31 @@
+---
+description: Stamp agent: claims, labels, source ranking and the difficulty rule
+globs: apps/api/src/agent/nodes/**
+alwaysApply: false
+---
+
+# agent-evidence-scoring
+
+> **Purpose:** Keep every guide honest and every score explainable.
+>
+> **Applies to:** `apps/api/src/agent/nodes/**`
+
+## Claims
+- Every claim needs a source URL and a verbatim quote from a page fetched in this run.
+- Drop any claim whose URL was not fetched in this run.
+
+## Labels
+- Only code sets labels. The model never sets Tested or Sourced.
+- Verify quotes by exact match after `normalizeText` (whitespace and case).
+- Log every check with the page `contentHash`.
+- Time estimates stay Uncertain until tested.
+
+## Sources
+- Mark the app's official domain as OFFICIAL.
+- Prefer official sources, then newer ones.
+- When sources disagree, keep both, label the claim Uncertain and record why.
+
+## Scoring
+- Compute difficulty only with the rule function. Never ask the model for a score.
+- Rule: review gate (0-3) + approval wait (0-3) + prerequisites (0-2) + hidden limits (0-1).
+- Map the total: 0-1 = 1, 2-3 = 2, 4-5 = 3, 6-7 = 4, 8-9 = 5.

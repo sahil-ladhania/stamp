@@ -1,0 +1,40 @@
+---
+description: Stamp web: design tokens, guide page order and evidence label rules
+globs: apps/web/src/components/**, apps/web/src/pages/**, apps/web/src/styles/**
+alwaysApply: false
+---
+
+# web-design-system
+
+> **Purpose:** Keep the UI consistent with docs/design-system.md.
+>
+> **Applies to:** Components, pages and styles in `apps/web`.
+
+## Tokens
+- Use design tokens only (`--paper`, `--ink`, `--stamp`, and so on). No raw hex values in components.
+- Dark mode uses the `.dark` class. Never hard-code a dark colour.
+- On a stamp-filled button, text uses `--on-stamp`.
+
+## Typography
+- Inter for reading text. JetBrains Mono for scopes, URLs, labels and the stamp.
+- Sentence case everywhere.
+
+## Guide page order (fixed)
+1. Header: app name, archetype, difficulty dots
+2. VerdictStamp
+3. Next step and top blocker
+4. MilestoneBar
+5. StepCards
+6. BlockerCards
+7. ConflictCards (if any)
+8. Sources and verification summary
+
+## Evidence
+- Render evidence only through `EvidenceLabel`.
+- Every label shows an icon, a word and a colour. Never colour alone.
+- Icons: check = Tested, link = Sourced, help-circle = Uncertain (Lucide).
+
+## Layout
+- Spacing scale: 4, 8, 12, 16, 24, 32, 48 px.
+- Radius 6 px. Content width 880 px max.
+- No shadows. Hover raises the border colour only.

@@ -1,0 +1,29 @@
+---
+description: Stamp: what to test, how to test, and test hygiene
+globs: **/*.test.ts, **/*.test.tsx, **/tests/**
+alwaysApply: false
+---
+
+# global-testing
+
+> **Purpose:** Prove the deterministic parts work, without calling live services.
+>
+> **Applies to:** All test files in every workspace.
+
+## What to test
+- Every util in `utils/`.
+- The difficulty rule: every factor and every score band.
+- The quote verifier: match, no match, whitespace and case differences.
+- Zod schemas in `@stamp/schema`: one valid and one invalid example each.
+- Agent nodes: with saved page fixtures.
+
+## How
+- Use Vitest.
+- Never call OpenAI, Tavily or provider endpoints in tests. Use fixtures or mocks.
+- Keep fixtures in a `fixtures/` folder next to the tests.
+- Name tests by behaviour: "downgrades a claim when the quote is missing".
+- One behaviour per test.
+
+## Hygiene
+- `pnpm test` must pass before every commit.
+- Never skip or delete a failing test to make a build pass.

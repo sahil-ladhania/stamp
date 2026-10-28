@@ -1,0 +1,31 @@
+---
+description: Stamp agent: fixed LangGraph pipeline, model vs code split, budgets and events
+globs: apps/api/src/agent/**
+alwaysApply: false
+---
+
+# agent-graph-budgets
+
+> **Purpose:** Keep the agent predictable in time, cost and shape.
+>
+> **Applies to:** `apps/api/src/agent/**`
+
+## Graph shape
+- Keep the fixed graph: stages 0 to 8, one conditional retry edge.
+- Do not add stages, edges or agents without updating `docs/agent-architecture.md`.
+- One file per stage in `src/agent/nodes/`. Graph wiring lives in `src/agent/graph.ts`.
+
+## Model vs code
+- Call the AI model only in `plan` and `extract`.
+- `resolve`, `verify`, `score` and `save` are plain, tested code.
+- Use the fast model for `plan` and the strong model for `extract`. Use a low temperature.
+
+## Budgets
+- Max 120 seconds per run, 6 pages, 1 retry.
+- Check the budget before each stage.
+- When time runs out, save a partial guide. Never crash the run.
+
+## Events
+- Emit `stage.started` and `stage.done` for every stage.
+- Emit claim events from `verify` only.
+- Type every event with `@stamp/schema`.

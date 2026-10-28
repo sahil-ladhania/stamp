@@ -1,0 +1,39 @@
+---
+description: Stamp: TypeScript, naming, lint and commit rules for every workspace
+globs: 
+alwaysApply: true
+---
+
+# global-typescript-style
+
+> **Purpose:** Make all code look and behave the same across the monorepo.
+>
+> **Applies to:** Every file in the repo (always on).
+
+## TypeScript
+- Use strict TypeScript and ESM everywhere.
+- Never use `any`. Use `unknown` and parse it with Zod.
+- Prefer `type` aliases for data shapes; derive shared shapes with `z.infer`.
+- Mark function return types on every exported function.
+
+## Naming
+- Files: kebab-case (`hash-url.ts`). React components: PascalCase (`StepCard.tsx`). Hooks: `useX.ts`.
+- Variables and functions: camelCase. Constants: UPPER_SNAKE_CASE.
+- Booleans start with `is`, `has` or `should`.
+- Slugs are lowercase app names (`hubspot`).
+
+## Terms
+- Say "provider OAuth app" and "user connection". Do not mix in synonyms.
+- Use the label words exactly: Tested, Sourced, Uncertain.
+
+## Lint and format
+- ESLint (`@stamp/eslint-config`) and Prettier (root `.prettierrc`) must pass.
+- Never disable a lint rule without a comment that says why.
+
+## Errors
+- Never swallow an error. Handle it, or rethrow it with a typed code.
+- Never use `console.log` for real logging; use the logger.
+
+## Commits
+- Use conventional commits: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`.
+- One logical change per commit.

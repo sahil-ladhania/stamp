@@ -1,0 +1,48 @@
+---
+description: Stamp: file headers, file size limits, DRY, helpers and functional style
+globs: 
+alwaysApply: true
+---
+
+# global-code-structure
+
+> **Purpose:** Keep every file small, commented, DRY and easy to read.
+>
+> **Applies to:** Every code file in the repo (always on).
+
+## File header
+- Start every code file with a header comment: what the file is for, what it exports, who uses it.
+
+```ts
+/**
+ * File: hash-url.ts
+ * Purpose: Builds a stable SHA-256 key for a URL (used as page_cache primary key).
+ * Exports: hashUrl
+ * Used by: services/page-cache.ts, agent/nodes/fetch.ts
+ */
+```
+
+## Comments
+- Comment the "why" of non-obvious logic. Never comment every line.
+- Add a one-line doc comment to every exported function.
+- Delete comments that no longer match the code.
+
+## Size
+- Keep every file at 200 lines or fewer.
+- 300 lines is the absolute maximum, for rare cases only.
+- Above 200 lines, split the file by responsibility.
+- Keep functions under about 40 lines, with one job each.
+
+## DRY
+- When code repeats a second time, extract it into a helper or util.
+- Never copy-paste logic between files. Import it.
+- Put a helper in the right place:
+  - used by one app: that app's `utils/`
+  - part of the shared contract (for example `slugify`): `@stamp/schema`
+- Name helpers by what they do: `normalizeText`, `hashUrl`, `withTimeout`.
+
+## Style
+- Prefer plain functions and composition.
+- No factories, class hierarchies or heavy design patterns.
+- Prefer pure functions; keep I/O at the edges.
+- No dead code and no commented-out code.

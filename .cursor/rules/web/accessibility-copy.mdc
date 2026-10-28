@@ -1,0 +1,26 @@
+---
+description: Stamp web: accessibility and UI copy rules
+globs: apps/web/**
+alwaysApply: false
+---
+
+# web-accessibility-copy
+
+> **Purpose:** Make the app usable by everyone and clear to read.
+>
+> **Applies to:** `apps/web/**`
+
+## Accessibility
+- All text meets WCAG AA contrast (4.5:1) in light and dark modes.
+- Every interactive element is keyboard reachable, with a visible focus ring.
+- Evidence details open on hover and on focus.
+- Icon-only buttons need an `aria-label`.
+- Use real buttons and links, not clickable divs.
+- Respect `prefers-reduced-motion`.
+
+## Copy
+- Use sentence case. No terminal punctuation on labels and buttons.
+- Buttons start with a verb: "Copy link", "Retry run".
+- Errors say what happened, then what to do.
+- Never write "successfully", "please" or "click here".
+- Say "Uncertain" plainly. Never soften or hide it.

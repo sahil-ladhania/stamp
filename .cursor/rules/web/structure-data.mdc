@@ -1,0 +1,28 @@
+---
+description: Stamp web: app structure, routes, API calls and data states
+globs: apps/web/**
+alwaysApply: false
+---
+
+# web-structure-data
+
+> **Purpose:** Keep the web app's structure and data flow predictable.
+>
+> **Applies to:** `apps/web/**`
+
+## Structure
+- Use function components only. One component per file.
+- Pages live in `src/pages/`. Components live in `src/components/`.
+- Routes: `/`, `/run/:id`, `/g/:slug`, `/how-we-verify`.
+- shadcn/ui primitives stay in `src/components/ui/`. Wrap them; do not rewrite them.
+- No global state library. Use React state and the URL.
+
+## Data
+- Call the API only through `src/lib/api.ts`.
+- Parse every API response with Zod schemas from `@stamp/schema`.
+- Read run progress only through the `useRunStream` hook.
+- Components never call `fetch` or `EventSource` directly.
+
+## States
+- Every data view handles loading, empty, error and partial states.
+- A partial guide shows which sections are Uncertain and offers Retry.

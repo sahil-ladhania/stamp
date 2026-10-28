@@ -1,0 +1,29 @@
+---
+description: Stamp api: SSE streaming, rate limits, run cap, timeouts and logging
+globs: apps/api/src/**
+alwaysApply: false
+---
+
+# api-streaming-guardrails
+
+> **Purpose:** Keep the live demo stable and cheap.
+>
+> **Applies to:** `apps/api/src/**`
+
+## SSE
+- Set SSE headers and flush them at once.
+- Send the run snapshot first, then live events.
+- Send a heartbeat comment every 15 seconds.
+- End the stream after `run.done` or `run.error`.
+- Stop writing when the client disconnects.
+- Write events only through the `sendSseEvent` util.
+
+## Guardrails
+- Rate-limit `POST /api/runs` and `POST /api/guides/:slug/reports` per IP.
+- Enforce `DAILY_RUN_CAP` before a run starts.
+- Allow CORS only from `WEB_ORIGIN`.
+- Put a timeout on every external call (`withTimeout`).
+
+## Logging
+- Log in a structured format with the run ID.
+- Never log secrets or full page text.

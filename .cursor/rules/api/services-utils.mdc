@@ -1,0 +1,33 @@
+---
+description: Stamp api: middleware, services, utils and clients (the backend version of hooks)
+globs: apps/api/src/**
+alwaysApply: false
+---
+
+# api-services-utils
+
+> **Purpose:** Keep backend code reusable, so routes and nodes never repeat logic.
+>
+> **Applies to:** `apps/api/src/**`
+
+## Middleware (`src/middleware/`)
+- One middleware per file: `validate`, `asyncHandler`, `errorHandler`, `rateLimit`, `runCap`.
+- Every route reuses them. Never re-implement validation or error handling in a route.
+
+## Services (`src/services/`)
+- One service per domain: `runs`, `guides`, `reports`, `page-cache`.
+- Services never touch `req` or `res`.
+- Services take plain input and return plain output.
+
+## Utils (`src/utils/`)
+- Pure functions with no I/O: `normalizeText`, `hashUrl`, `withTimeout`, `slugify`, `sendSseEvent`.
+- Every util has a unit test.
+- Agent nodes reuse the same utils. Example: `normalizeText` powers quote matching.
+
+## Clients (`src/lib/`)
+- One instance each: Prisma, OpenAI, Tavily.
+- Never create a client inside a function that runs per request.
+
+## Config (`src/config.ts`)
+- Read env variables through one Zod-validated config module.
+- Fail at startup if a required variable is missing.

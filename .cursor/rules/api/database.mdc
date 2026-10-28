@@ -1,0 +1,31 @@
+---
+description: Stamp api: Prisma 7, MySQL, migrations, guide JSON and the run lock
+globs: apps/api/prisma/**, apps/api/prisma.config.ts, apps/api/src/lib/prisma.ts, apps/api/src/services/**
+alwaysApply: false
+---
+
+# api-database
+
+> **Purpose:** Keep data valid, migrations safe and the run lock reliable.
+>
+> **Applies to:** Prisma schema and config, the Prisma client, and services in `apps/api`.
+
+## Prisma
+- One `PrismaClient` in `src/lib/prisma.ts`, created with the MariaDB adapter.
+- Import `dotenv/config` before Prisma loads.
+- The schema follows `docs/db-schema-design.md`.
+
+## Migrations
+- Change the schema only through `prisma migrate`.
+- Never edit a migration that has been applied.
+- No raw SQL unless a comment explains why Prisma cannot do it.
+
+## Guide data
+- Validate `guides.data` with Zod on every write and every read.
+- Save guides through one function that also syncs `difficulty` and `archetype`.
+- Seed library guides with upserts, so seeding can run twice safely.
+
+## Run lock
+- Set `runs.activeSlug` when a run starts.
+- Clear it in a `finally` block when the run ends.
+- Treat a lock older than 3 minutes as stale and clear it.

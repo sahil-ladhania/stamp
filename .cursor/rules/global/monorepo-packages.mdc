@@ -1,0 +1,30 @@
+---
+description: Stamp: pnpm, Turborepo workspaces and shared package rules
+globs: 
+alwaysApply: true
+---
+
+# global-monorepo-packages
+
+> **Purpose:** Keep the monorepo clean and the shared contract in one place.
+>
+> **Applies to:** Every file in the repo (always on).
+
+## Package manager
+- Use pnpm only. Never use npm or yarn.
+- Add a dependency with `pnpm --filter <workspace> add <pkg>`.
+- Add a new dependency only with a one-line reason in the commit message.
+
+## Workspaces
+- Apps: `apps/web`, `apps/api`. Packages: `@stamp/schema`, `@stamp/typescript-config`, `@stamp/eslint-config`.
+- Link packages with `"workspace:*"`.
+- Create a new package only if 2 or more workspaces import it.
+
+## Shared contract
+- Guide, Claim, API bodies and stream events are defined once, in `@stamp/schema`.
+- Never redefine a shared type inside an app. Import it.
+- A change to `@stamp/schema` must build and pass tests in both apps.
+
+## Turbo
+- Packages build before apps (`build` depends on `^build`).
+- Run tasks from the root: `pnpm dev`, `pnpm build`, `pnpm test`, `pnpm lint`.
