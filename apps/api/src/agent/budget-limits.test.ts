@@ -39,15 +39,19 @@ describe("pageAllowance", () => {
 });
 
 describe("canRetry", () => {
-  it("allows one retry while at least 40 s remain", () => {
-    expect(RETRY_MIN_REMAINING_MS).toBe(40_000);
+  it("allows one retry while at least 45 s remain", () => {
+    expect(RETRY_MIN_REMAINING_MS).toBe(45_000);
     expect(canRetry(clock, at(60), 0)).toBe(true);
-    expect(canRetry(clock, at(80), 0)).toBe(true);
+    expect(canRetry(clock, at(75), 0)).toBe(true);
   });
 
-  it("refuses a retry with less than 40 s left", () => {
-    expect(canRetry(clock, at(80.001), 0)).toBe(false);
+  it("refuses a retry with less than 45 s left", () => {
+    expect(canRetry(clock, at(75.001), 0)).toBe(false);
     expect(canRetry(clock, at(110), 0)).toBe(false);
+  });
+
+  it("still allows a retry when verify ends at the first pass's worst case of 74 s", () => {
+    expect(canRetry(clock, at(74), 0)).toBe(true);
   });
 
   it("refuses a second retry whatever the time", () => {

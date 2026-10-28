@@ -45,7 +45,7 @@ const BaseEnvSchema = z.object({
     .max(RUN_BUDGET.maxDurationMs)
     .default(RUN_BUDGET.maxDurationMs),
   // Parallel extraction calls (one per guide section).
-  AGENT_EXTRACT_CONCURRENCY: z.coerce.number().int().min(1).max(8).default(4),
+  AGENT_EXTRACT_CONCURRENCY: z.coerce.number().int().min(1).max(8).default(5),
   // "off" skips the outbound authorize-URL probe.
   AGENT_PROBE: z.enum(["on", "off"]).default("on"),
 });

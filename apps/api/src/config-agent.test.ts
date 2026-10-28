@@ -113,7 +113,7 @@ describe("loadConfig agent limits", () => {
   it("defaults to the full 120 s budget, 4 parallel extractions and the probe on", () => {
     const config = loadConfig(baseEnv);
     expect(config.AGENT_RUN_BUDGET_MS).toBe(120_000);
-    expect(config.AGENT_EXTRACT_CONCURRENCY).toBe(4);
+    expect(config.AGENT_EXTRACT_CONCURRENCY).toBe(5);
     expect(config.AGENT_PROBE).toBe("on");
   });
 

@@ -74,7 +74,7 @@ describe("routeTo", () => {
 describe("shouldRetry", () => {
   const missing = { missingSections: ["steps"] };
 
-  it("retries when a section is missing, the retry is unused and 40 s remain", () => {
+  it("retries when a section is missing, the retry is unused and 45 s remain", () => {
     const h = createHarness();
     h.setRemaining(RETRY_MIN_REMAINING_MS);
     expect(shouldRetry(makeState(missing), h.deps.clock, h.deps.now())).toBe(
@@ -82,7 +82,7 @@ describe("shouldRetry", () => {
     );
   });
 
-  it("does not retry with one millisecond less than 40 s", () => {
+  it("does not retry with one millisecond less than 45 s", () => {
     const h = createHarness();
     h.setRemaining(RETRY_MIN_REMAINING_MS - 1);
     expect(shouldRetry(makeState(missing), h.deps.clock, h.deps.now())).toBe(
@@ -128,7 +128,7 @@ describe("routeAfterVerify", () => {
     expect(routeAfterVerify(state, h.config)).toBe("probe");
   });
 
-  it("skips the retry when under 40 s remain but still probes if 3 s remain", () => {
+  it("skips the retry when under 45 s remain but still probes if 3 s remain", () => {
     const h = createHarness();
     h.setRemaining(RETRY_MIN_REMAINING_MS - 1);
     expect(
