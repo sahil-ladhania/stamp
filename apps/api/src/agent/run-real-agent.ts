@@ -7,10 +7,12 @@
 import { getConfig } from "../config.js";
 import { logger } from "../lib/logger.js";
 import { createRunUsage, summarizeUsage } from "../lib/usage.js";
-import { RUN_ERROR_MESSAGES } from "../services/run-messages.js";
+import { errorText } from "../utils/error-text.js";
+import { makeFailure } from "./agent-failure.js";
 import { startBudget } from "./budget.js";
 import type { AgentDeps } from "./deps.js";
 import { buildGraph, RECURSION_LIMIT } from "./graph.js";
+import { defaultNodes } from "./nodes/index.js";
 import { isPartial } from "./pipeline.js";
 import type { AgentOutcome, RunAgentInput } from "./run-agent.js";
 import type { NodeSet } from "./stage-node.js";
@@ -26,10 +28,7 @@ export type RealAgentOptions = {
 };
 
 function internal(stage: number): AgentOutcome {
-  return {
-    ok: false,
-    failure: { stage, code: "INTERNAL", message: RUN_ERROR_MESSAGES.INTERNAL },
-  };
+  return { ok: false, failure: makeFailure(stage, "INTERNAL") };
 }
 
 /** A failure ends the run; otherwise the run is done only if a guide was saved. */
@@ -80,7 +79,10 @@ export async function runRealAgent(
 
   let outcome: AgentOutcome;
   try {
-    const state = await buildGraph(options.nodes).invoke(
+    const state = await buildGraph({
+      ...defaultNodes,
+      ...options.nodes,
+    }).invoke(
       { typed: input.app, slug: input.slug },
       {
         configurable: { deps },
@@ -94,8 +96,7 @@ export async function runRealAgent(
       logger.error("agent run failed", {
         runId: input.runId,
         stage: stageReached,
-        detail:
-          err instanceof Error ? `${err.name}: ${err.message}` : "unknown",
+        detail: errorText(err),
       });
     }
     outcome = internal(stageReached);

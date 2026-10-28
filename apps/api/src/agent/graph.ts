@@ -5,7 +5,6 @@
  * Used by: agent/run-real-agent.ts
  */
 import { END, START, StateGraph } from "@langchain/langgraph";
-import { defaultNodes } from "./nodes/index.js";
 import { isRetryEntry, routeAfterVerify, routeTo } from "./routes.js";
 import type { NodeFn, NodeSet } from "./stage-node.js";
 import { AgentState } from "./state.js";
@@ -32,10 +31,9 @@ function countRetry(search: NodeFn): NodeFn {
 /**
  * Stages 0 to 8 in order. Every edge goes through `routeTo`, which ends a failed run and sends an
  * exhausted budget to score, then save; the one extra edge is verify -> search (see routes.ts).
- * `overrides` swaps nodes, for tests and for the steps that fill the stages in.
+ * The nodes are passed in (the runner supplies the real ones), so the wiring is testable with no-op nodes.
  */
-export function buildGraph(overrides: Partial<NodeSet> = {}) {
-  const nodes: NodeSet = { ...defaultNodes, ...overrides };
+export function buildGraph(nodes: NodeSet) {
   return new StateGraph(AgentState)
     .addNode("resolve", nodes.resolve)
     .addNode("plan", nodes.plan)

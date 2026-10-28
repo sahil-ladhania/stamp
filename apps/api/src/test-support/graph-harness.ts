@@ -1,7 +1,7 @@
 /**
  * File: graph-harness.ts
  * Purpose: Test rig for the agent graph: a fake clock, a recorded event list, an abort controller and a state factory.
- * Exports: createHarness, makeState, trace, recorded, Harness
+ * Exports: createHarness, makeState, trace, recorded, NOOP_NODES, Harness
  * Used by: agent/graph*.test.ts, agent/state.test.ts, agent/routes.test.ts, agent/stage-node.test.ts, agent/emit.test.ts, agent/run-real-agent*.test.ts
  */
 import type { RunnableConfig } from "@langchain/core/runnables";
@@ -11,10 +11,21 @@ import type { AgentDeps } from "../agent/deps.js";
 import { buildGraph, RECURSION_LIMIT } from "../agent/graph.js";
 import type { AgentEvent } from "../agent/run-agent.js";
 import type { NodeName } from "../agent/pipeline.js";
-import { stageNode, type NodeFn, type NodeSet } from "../agent/stage-node.js";
+import {
+  noop,
+  stageNode,
+  type NodeFn,
+  type NodeSet,
+} from "../agent/stage-node.js";
+import { PIPELINE } from "../agent/pipeline.js";
 import type { State } from "../agent/state.js";
 
 const START_TIME = 1_000_000;
+
+/** Nine stage nodes that only emit their stage events: the graph wiring is tested without any real stage. */
+export const NOOP_NODES: NodeSet = Object.fromEntries(
+  PIPELINE.map(({ node }) => [node, stageNode(node, noop)]),
+) as NodeSet;
 
 /** A complete state with every channel at its starting value. */
 export function makeState(overrides: Partial<State> = {}): State {
@@ -82,9 +93,9 @@ export function createHarness(options: { budgetMs?: number } = {}) {
     setRemaining: (ms: number): void => {
       time.now = START_TIME + clock.maxDurationMs - ms;
     },
-    /** Runs the graph with these nodes swapped in. */
+    /** Runs the graph with no-op nodes, and these swapped in. */
     run: (overrides: Partial<NodeSet> = {}) =>
-      buildGraph(overrides).invoke(
+      buildGraph({ ...NOOP_NODES, ...overrides }).invoke(
         { typed: "Notion", slug: "notion" },
         { ...config, recursionLimit: RECURSION_LIMIT },
       ),
