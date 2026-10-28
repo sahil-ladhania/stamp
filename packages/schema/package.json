@@ -1,0 +1,30 @@
+{
+  "name": "@stamp/schema",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check-types": "tsc --noEmit -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@stamp/eslint-config": "workspace:*",
+    "@stamp/typescript-config": "workspace:*",
+    "@typescript/native": "npm:typescript@7.0.2",
+    "@types/node": "^24.19.2",
+    "eslint": "^10.13.0",
+    "typescript": "npm:@typescript/typescript6@^6.0.2"
+  }
+}
