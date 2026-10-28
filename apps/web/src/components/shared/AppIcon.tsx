@@ -2,7 +2,7 @@
  * File: AppIcon.tsx
  * Purpose: Monochrome marks for the five library apps (Simple Icons paths, currentColor).
  * Exports: AppIcon
- * Used by: AppCard, LibraryRow, ExampleApps, GuideHeader, AmbiguousOptions, ConflictCard, RunHeader
+ * Used by: AppCard, ExampleApps, GuideHeader, AmbiguousOptions, ConflictCard, RunHeader
  */
 import type { ReactElement } from "react";
 import { cn } from "@/lib/utils";
