@@ -1,23 +1,26 @@
 /**
  * File: Hero.tsx
- * Purpose: Landing hero: the problem and search on the left, the demo video on the right.
+ * Purpose: Landing hero: the problem and search on the left, the demo video on the right. The example links show
+ *          only when the library has guides.
  * Exports: Hero
  * Used by: pages/LandingPage.tsx
  */
+import type { GuideSummary } from "@stamp/schema";
 import type { ReactElement } from "react";
 import { Container } from "@/components/layout/Container";
 import { ExampleApps } from "@/components/shared/ExampleApps";
-import { SearchBar } from "@/components/shared/SearchBar";
-import { useMockSearch } from "@/hooks/useMockSearch";
-import { LIBRARY_SUMMARIES } from "@/mocks/library";
+import { StartRunSearch } from "@/components/shared/StartRunSearch";
 import type { Guide } from "@/types/guide-model";
 import { HeroVideo } from "./HeroVideo";
 
-type HeroProps = { sampleGuide: Guide | null; isVideoFailed?: boolean };
+type HeroProps = {
+  /** The sample guide for the video's fallback poster. Null when there is none. */
+  sampleGuide: Guide | null;
+  /** Library guides to link as examples. Empty while loading, on failure, or when the library has none. */
+  exampleGuides: readonly GuideSummary[];
+};
 
-export function Hero({ sampleGuide, isVideoFailed = false }: HeroProps): ReactElement {
-  const { submit } = useMockSearch();
-
+export function Hero({ sampleGuide, exampleGuides }: HeroProps): ReactElement {
   return (
     <section aria-labelledby="hero-heading" className="py-12">
       <Container
@@ -34,20 +37,17 @@ export function Hero({ sampleGuide, isVideoFailed = false }: HeroProps): ReactEl
           <p className="text-card-title font-normal text-ink-muted">
             See if it takes an hour or six weeks, and what will block approval.
           </p>
-          <SearchBar
-            size="lg"
-            onSubmit={submit}
-            placeholder="Search an app, like HubSpot"
-          />
+          <StartRunSearch size="lg" placeholder="Search an app, like HubSpot" />
           <div className="flex flex-col gap-3">
-            <ExampleApps apps={LIBRARY_SUMMARIES} />
+            {exampleGuides.length > 0 && <ExampleApps apps={exampleGuides} />}
             <p className="text-small text-ink-muted">
-              Any other app is researched live. You watch each search.
+              An app with no guide yet is researched live. You watch each
+              search.
             </p>
           </div>
         </div>
         <div className="desktop:col-span-7">
-          <HeroVideo sampleGuide={sampleGuide} isForcedFailure={isVideoFailed} />
+          <HeroVideo sampleGuide={sampleGuide} />
         </div>
       </Container>
     </section>

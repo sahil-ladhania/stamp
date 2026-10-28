@@ -13,12 +13,14 @@ import { EvidenceLabel } from "@/components/shared/EvidenceLabel";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { SourceLink } from "@/components/shared/SourceLink";
 import { cn } from "@/lib/utils";
-import type { Guide } from "@/types/guide-model";
+import { sampleGuideOf, type LandingSample } from "@/utils/landing-sample";
 import { pickEvidenceSample } from "@/utils/pick-evidence-sample";
 
-export function EvidenceSection({ guide }: { guide: Guide | null }): ReactElement {
-  const sample = guide ? pickEvidenceSample(guide) : null;
-  const source = sample?.sources[0];
+export function EvidenceSection({ sample }: { sample: LandingSample }): ReactElement {
+  const guide = sampleGuideOf(sample);
+  const claim = guide ? pickEvidenceSample(guide) : null;
+  const source = claim?.sources[0];
+  const isLoading = sample.status === "loading";
 
   return (
     <section
@@ -41,13 +43,21 @@ export function EvidenceSection({ guide }: { guide: Guide | null }): ReactElemen
         />
         <div className="grid gap-8 desktop:grid-cols-12 desktop:items-start">
           <EvidenceDefinitionList
-            className={cn(sample ? "desktop:col-span-7" : "desktop:col-span-12")}
+            className={cn(
+              claim || isLoading ? "desktop:col-span-7" : "desktop:col-span-12",
+            )}
           />
-          {sample && source && (
+          {isLoading && (
+            <div
+              aria-hidden
+              className="h-28 rounded-md border border-rule bg-card desktop:col-span-5"
+            />
+          )}
+          {claim && source && (
             <div className="flex flex-col gap-3 rounded-md border border-rule bg-card p-card desktop:col-span-5">
-              <p className="text-body text-ink">{sample.text}</p>
+              <p className="text-body text-ink">{claim.text}</p>
               <div className="flex flex-wrap items-center gap-3">
-                <EvidenceLabel kind={sample.label} detail={source.title} />
+                <EvidenceLabel kind={claim.label} detail={source.title} />
                 <SourceLink source={source} />
               </div>
             </div>

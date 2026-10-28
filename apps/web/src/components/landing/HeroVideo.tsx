@@ -19,14 +19,9 @@ import { VideoControls } from "./VideoControls";
 type HeroVideoProps = {
   /** The sample guide for the fallback poster. Null when there is none. */
   sampleGuide: Guide | null;
-  /** Forces the failed state (the `?state=video-error` scenario). */
-  isForcedFailure?: boolean;
 };
 
-export function HeroVideo({
-  sampleGuide,
-  isForcedFailure = false,
-}: HeroVideoProps): ReactElement {
+export function HeroVideo({ sampleGuide }: HeroVideoProps): ReactElement {
   const { theme } = useTheme();
   const isReducedMotion = useReducedMotion();
   const source = pickVideoSource(HERO_VIDEO, theme);
@@ -36,7 +31,7 @@ export function HeroVideo({
       shouldAutoplay: !isReducedMotion,
     });
 
-  if (!source || isForcedFailure || hasFailed) {
+  if (!source || hasFailed) {
     return <HeroPoster guide={sampleGuide} />;
   }
 

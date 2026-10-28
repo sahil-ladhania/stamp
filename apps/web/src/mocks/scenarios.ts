@@ -6,7 +6,6 @@
  */
 
 export const PAGE_SCENARIOS = {
-  landing: ["default", "video-error"],
   "not-found": ["default", "suggestion", "unknown-guide"],
 } as const;
 

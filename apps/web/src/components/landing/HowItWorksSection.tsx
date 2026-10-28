@@ -13,11 +13,11 @@ import { SectionHeading } from "@/components/shared/SectionHeading";
 const STEPS = [
   {
     title: "Search an app",
-    body: "Type a name or a website. A library guide opens straight away.",
+    body: "Type a name or a website. A guide that already exists opens straight away.",
   },
   {
     title: "Watch the research",
-    body: "Any other app is researched live. You see each search, each page and each claim kept or marked Uncertain.",
+    body: "An app with no guide yet is researched live. You see each search, each page and each claim kept or marked Uncertain.",
   },
   {
     title: "Share the guide",
