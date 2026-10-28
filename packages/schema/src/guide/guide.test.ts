@@ -6,7 +6,7 @@
  */
 import { describe, expect, it } from "vitest";
 import { GuideSchema, GuideSummarySchema } from "./guide.js";
-import { minimalGuide } from "../test-fixtures.js";
+import { minimalClaim, minimalGuide } from "../test-fixtures.js";
 
 describe("GuideSummarySchema", () => {
   it("accepts a valid library list item", () => {
@@ -39,6 +39,55 @@ describe("GuideSchema", () => {
   it("accepts a minimal valid guide", () => {
     const result = GuideSchema.safeParse(minimalGuide());
     expect(result.success).toBe(true);
+  });
+
+  it("accepts a guide whose unknown claims are uncertain with no sources", () => {
+    const unknown = (id: string) =>
+      minimalClaim({
+        id,
+        label: "uncertain",
+        text: "Not found in the fetched sources.",
+        sources: [],
+      });
+    const guide = minimalGuide({
+      coverage: "partial",
+      verdict: {
+        summary: unknown("verdict.summary"),
+        nextStepId: null,
+        topBlockerId: null,
+      },
+      milestones: {
+        firstTest: {
+          effort: unknown("milestones.firstTest.effort"),
+          wait: unknown("milestones.firstTest.wait"),
+        },
+        production: {
+          effort: unknown("milestones.production.effort"),
+          wait: unknown("milestones.production.wait"),
+        },
+      },
+    });
+    expect(GuideSchema.safeParse(guide).success).toBe(true);
+  });
+
+  it("rejects a guide with a sourced claim that has no sources, naming where", () => {
+    const guide = minimalGuide({
+      verdict: {
+        summary: minimalClaim({
+          id: "verdict.summary",
+          label: "sourced",
+          sources: [],
+        }),
+        nextStepId: "steps.0",
+        topBlockerId: "blockers.0",
+      },
+    });
+    const result = GuideSchema.safeParse(guide);
+    expect(result.success).toBe(false);
+    if (result.success) return;
+    expect(result.error.issues.map((issue) => issue.path.join("."))).toContain(
+      "verdict.summary.sources",
+    );
   });
 
   it("rejects a guide with mismatched difficulty score", () => {

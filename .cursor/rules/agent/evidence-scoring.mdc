@@ -12,6 +12,7 @@ alwaysApply: false
 
 ## Claims
 - Every claim needs a source URL and a verbatim quote from a page fetched in this run.
+- The one exception is an unknown: an Uncertain claim with no sources whose text says what is unknown. Sourced and Tested claims always need a source.
 - Drop any claim whose URL was not fetched in this run.
 
 ## Labels

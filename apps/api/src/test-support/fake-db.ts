@@ -5,6 +5,7 @@
  * Used by: services/run-*.test.ts, services/runs.test.ts, app-runs.test.ts
  */
 import { vi } from "vitest";
+import { createFakePageCache } from "./fake-page-cache.js";
 import { Prisma, type Run } from "../../generated/prisma/client.js";
 
 type GuideStub = {
@@ -12,7 +13,10 @@ type GuideStub = {
   mode: "LIBRARY" | "LIVE";
   expiresAt?: Date | null;
 };
-type StoredGuide = Required<GuideStub> & { id: string };
+type StoredGuide = Required<GuideStub> & { id: string } & Record<
+    string,
+    unknown
+  >;
 type RunWhere = {
   id?: string;
   status?: Run["status"];
@@ -108,27 +112,59 @@ function createFakeDb() {
     ),
   };
 
+  const pageCache = createFakePageCache();
+
   const guide = {
     findUnique: vi.fn(
       async ({ where }: { where: { slug: string } }) =>
         guides.get(where.slug) ?? null,
+    ),
+    upsert: vi.fn(
+      async ({
+        where,
+        create,
+        update,
+      }: {
+        where: { slug: string };
+        create: Record<string, unknown>;
+        update: Record<string, unknown>;
+      }) => {
+        const existing = guides.get(where.slug);
+        if (existing) return Object.assign(existing, update);
+        const now = new Date();
+        const row: StoredGuide = Object.assign(
+          {
+            id: `guide_${where.slug}`,
+            slug: where.slug,
+            mode: "LIVE" as const,
+            expiresAt: null,
+            createdAt: now,
+            updatedAt: now,
+          },
+          create,
+        );
+        guides.set(where.slug, row);
+        return row;
+      },
     ),
   };
 
   return {
     runs,
     guides,
-    prisma: { run, guide },
+    prisma: { run, guide, pageCache: pageCache.delegate },
+    pageCache,
     addRun,
     addGuide: (stub: GuideStub): StoredGuide => {
       const row = { id: `guide_${stub.slug}`, expiresAt: null, ...stub };
       guides.set(stub.slug, row);
       return row;
     },
-    /** Empties both tables and restores every delegate's original behaviour. */
+    /** Empties all tables and restores every delegate's original behaviour. */
     reset: (): void => {
       runs.clear();
       guides.clear();
+      pageCache.reset();
       [...Object.values(run), ...Object.values(guide)].forEach((fn) =>
         fn.mockReset(),
       );

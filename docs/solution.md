@@ -86,6 +86,7 @@ Every fact in a guide is a **claim**. A claim has text, a label, and sources.
 - Official docs win over third-party guides.
 - When sources disagree, Stamp shows both and explains which one it trusts.
 - Time estimates stay Uncertain until tested.
+- An Uncertain claim can have no source. Its text then says what is unknown, for example "Not found in the fetched sources."
 
 ---
 

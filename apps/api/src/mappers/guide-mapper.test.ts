@@ -34,4 +34,32 @@ describe("guide-mapper", () => {
       asOf: "2026-01-15T00:00:00.000Z",
     });
   });
+
+  it("maps a stored guide that holds an uncertain claim with no sources", () => {
+    const row = rowWithSummary({
+      id: "verdict.summary",
+      text: "Not found in the fetched sources.",
+      label: "uncertain",
+      sources: [],
+    });
+    expect(toGuide(row).verdict.summary.sources).toEqual([]);
+  });
+
+  it("rejects a stored guide whose sourced claim has no sources", () => {
+    const row = rowWithSummary({
+      id: "verdict.summary",
+      text: "Looks sourced but is not.",
+      label: "sourced",
+      sources: [],
+    });
+    expect(() => toGuide(row)).toThrow();
+  });
 });
+
+/** The sample row with its verdict summary replaced. */
+function rowWithSummary(summary: object) {
+  const data = sampleGuideRow().data as { verdict: object };
+  return sampleGuideRow({
+    data: { ...data, verdict: { ...data.verdict, summary } },
+  });
+}

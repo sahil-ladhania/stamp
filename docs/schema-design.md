@@ -56,7 +56,7 @@ Prisma-only (no `@stamp/schema` unless API exposes log): `CheckMethod`, `CheckRe
 | Type | Fields (summary) |
 | --- | --- |
 | Source | `url`, `quote`, `tier`, optional `retrievedAt` |
-| Claim | `id`, `text`, `label`, `sources[]` |
+| Claim | `id`, `text`, `label`, `sources[]` (empty only when the label is `uncertain`) |
 | Verdict | `summary` Claim, `nextStepId`, `topBlockerId` |
 | Milestones | `firstTest`, `production` — each `{ effort, wait }` Claims |
 | Requirements | Claim[] |
@@ -129,6 +129,7 @@ TimelineStageStatus, Toast, Theme, RouteParams, MockScenario (if mocks exist).
 - `NOT_OAUTH`, `NO_PUBLIC_DOCS`, `AMBIGUOUS_APP` → `run.error` only, no stub Guide.
 - Partial timeout run → Guide with `coverage: "partial"`.
 - `expiresAt` DB column only; not on Guide wire shape.
+- An unknown fact is one `uncertain` Claim with `sources: []`, and its text says what is unknown (for example "Not found in the fetched sources."). `sourced` and `tested` claims still need at least one source; the schema rejects them otherwise.
 
 ---
 
