@@ -4,13 +4,14 @@
  * Exports: runStubAgent
  * Used by: agent/run-agent.ts
  */
-import { STAGES, type Guide, type StageId } from "@stamp/schema";
+import type { Guide } from "@stamp/schema";
 import {
   LIVE_GUIDE_TTL_MS,
   saveLiveGuide,
   type SaveGuideResult,
 } from "../../services/guide-save.js";
 import { sleep } from "../../utils/sleep.js";
+import { stageName } from "../pipeline.js";
 import type { AgentEvent, AgentOutcome, RunAgentInput } from "../run-agent.js";
 import { buildPlan, type StageScript } from "./script.js";
 
@@ -20,13 +21,6 @@ const MAX_DELAY_MS = 400;
 function delayMs(): number {
   return (
     MIN_DELAY_MS + Math.floor(Math.random() * (MAX_DELAY_MS - MIN_DELAY_MS + 1))
-  );
-}
-
-function stageName(stage: StageId): string {
-  return (
-    STAGES.find((definition) => definition.id === stage)?.name ??
-    `stage_${stage}`
   );
 }
 
