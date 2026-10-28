@@ -28,8 +28,14 @@ export function toGuide(row: PrismaGuide): Guide {
   });
 }
 
+/** Columns the list endpoint selects; the guide JSON is left out of list queries. */
+export type GuideSummaryRow = Pick<
+  PrismaGuide,
+  "slug" | "appName" | "archetype" | "difficulty" | "mode" | "asOf"
+>;
+
 /** Maps a Prisma guide row to the home-page list item shape. */
-export function toGuideSummary(row: PrismaGuide): GuideSummary {
+export function toGuideSummary(row: GuideSummaryRow): GuideSummary {
   return GuideSummarySchema.parse({
     slug: row.slug,
     appName: row.appName,
