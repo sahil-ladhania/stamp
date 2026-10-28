@@ -75,7 +75,7 @@ export function VerdictRow({ row, href, isHighlighted }: VerdictRowProps): React
       isHighlighted={isHighlighted}
     >
       {isUnknown ? (
-        <UnknownValue text={claim === null ? "Not researched" : "Not found"} claim={claim ?? undefined} />
+        <UnknownValue claim={claim ?? undefined} />
       ) : (
         <>
           <span className="line-clamp-2 min-w-0 flex-1 basis-48 text-body text-ink">{row.value}</span>

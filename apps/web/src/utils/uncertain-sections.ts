@@ -4,7 +4,7 @@
  *          claim that fills it is Uncertain. An empty section is Uncertain only on a partial guide, where
  *          "nothing found" and "not reached" look the same.
  * Exports: GUIDE_SECTION, computeUncertainSections
- * Used by: utils/map-guide.ts, components/guide/GuideView.tsx
+ * Used by: utils/map-guide.ts, components/guide/GuideView.tsx, components/guide/guide-sections.ts
  */
 import type { Claim, Guide } from '@stamp/schema'
 

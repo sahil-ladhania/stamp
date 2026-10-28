@@ -42,7 +42,7 @@ export function Callout({
     >
       <Icon aria-hidden className={cn("mt-0.5 size-5 shrink-0", tone)} />
       <div className="flex min-w-0 flex-1 flex-col gap-2">
-        {title && <p className="text-body font-semibold text-ink">{title}</p>}
+        {title && <div className="text-body font-semibold text-ink">{title}</div>}
         {children && <div className="text-body text-ink">{children}</div>}
         {actions && <div className="flex flex-wrap items-center gap-3">{actions}</div>}
       </div>

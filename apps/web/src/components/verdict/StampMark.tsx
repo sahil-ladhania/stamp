@@ -22,9 +22,10 @@ export function StampMark({ score, className }: StampMarkProps): ReactElement {
       role="img"
       aria-label={`Difficulty ${score} of 5`}
       className={cn(
-        "flex size-20 shrink-0 -rotate-[8deg] flex-col items-center justify-center rounded-md border-2 border-stamp p-0.5 text-stamp",
+        "flex size-20 shrink-0 flex-col items-center justify-center rounded-md border-2 border-stamp p-0.5 text-stamp",
+        // The press animation ends turned by -8deg, so the static turn is only for the states without it.
+        isReduced || !isInView ? "-rotate-[8deg]" : "animate-stamp",
         !isReduced && !isInView && "opacity-0",
-        !isReduced && isInView && "animate-stamp",
         className,
       )}
     >

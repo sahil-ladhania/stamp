@@ -9,21 +9,26 @@ import type { ComponentProps, ReactElement, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import type { Claim } from "@/types/guide-model";
 import { EVIDENCE_META, evidencePillClass } from "@/utils/evidence";
+import { excerpt } from "@/utils/excerpt";
 
 type EvidenceChipProps = Omit<ComponentProps<"button">, "children"> & {
   claim: Claim;
   children: ReactNode;
+  /** Mono for a duration or another code-like value; false for a few words. */
+  isMono?: boolean;
 };
 
-export function EvidenceChip({ claim, children, className, ...props }: EvidenceChipProps): ReactElement {
+export function EvidenceChip({ claim, children, isMono = true, className, ...props }: EvidenceChipProps): ReactElement {
   const { word, icon: Icon, className: tone } = EVIDENCE_META[claim.label];
 
   return (
     <button
       type="button"
-      aria-label={`${children}. ${word}. Show evidence`}
+      aria-label={`${word}. Show evidence for: ${excerpt(claim.text)}`}
       className={cn(
-        "inline-flex cursor-pointer items-center gap-2 rounded-md border border-rule bg-card py-0.5 pr-1 pl-2 text-data text-ink transition-colors hover:border-ink-muted",
+        "inline-flex cursor-pointer items-center gap-2 rounded-md border border-rule bg-card py-0.5 pr-1 pl-2 text-ink transition-colors hover:border-ink-muted",
+        // text-data is the mono style, so a few words use the plain small size.
+        isMono ? "text-data" : "text-small",
         className,
       )}
       {...props}

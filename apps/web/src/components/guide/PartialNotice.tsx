@@ -1,10 +1,11 @@
 /**
  * File: PartialNotice.tsx
- * Purpose: Banner on a partial guide: which sections are Uncertain, and a button that researches the app again.
+ * Purpose: Note on a partial guide, under the verdict: which sections are Uncertain, and a button that researches the app again.
  * Exports: PartialNotice
  * Used by: components/guide/GuideView.tsx
  */
 import type { ReactElement } from "react";
+import { Callout } from "@/components/shared/Callout";
 import { Button } from "@/components/ui/button";
 import { useStartRun } from "@/hooks/useStartRun";
 import { getApiErrorMessage } from "@/utils/error-messages";
@@ -16,36 +17,26 @@ type PartialNoticeProps = {
   slug: string;
 };
 
-export function PartialNotice({
-  sections,
-  slug,
-}: PartialNoticeProps): ReactElement {
+export function PartialNotice({ sections, slug }: PartialNoticeProps): ReactElement {
   const { start, isPending, error } = useStartRun();
   const lead = "Stamp saved what it found and marked the rest Uncertain";
 
   return (
-    <section
-      aria-labelledby="partial-heading"
-      className="flex flex-col items-start gap-3 rounded-md border border-ink bg-card p-card"
+    <Callout
+      variant="warning"
+      title="This guide is partial"
+      actions={
+        <Button disabled={isPending} onClick={() => void start(slug, { force: true })}>
+          Retry run
+        </Button>
+      }
     >
-      <h2 id="partial-heading" className="text-card-title text-ink">
-        This guide is partial
-      </h2>
-      <p className="text-body text-ink-muted">
-        {sections.length > 0 ? `${lead}: ${formatList(sections)}.` : `${lead}.`}
-      </p>
-      <Button
-        size="lg"
-        disabled={isPending}
-        onClick={() => void start(slug, { force: true })}
-      >
-        Retry run
-      </Button>
+      <p className="text-ink-muted">{sections.length > 0 ? `${lead}: ${formatList(sections)}.` : `${lead}.`}</p>
       {error && (
-        <p role="alert" className="text-small text-ink">
+        <p role="alert" className="mt-2 text-small text-ink">
           {getApiErrorMessage(error)}
         </p>
       )}
-    </section>
+    </Callout>
   );
 }

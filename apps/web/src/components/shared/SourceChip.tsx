@@ -14,7 +14,14 @@ import type { Source } from "@/types/guide-model";
 import { sourceDomain, sourceInitial, sourceShortTitle } from "@/utils/source-display";
 import { TIER_SHORT_LABEL } from "@/utils/source-tier";
 
-export function SourceChip({ source, className }: { source: Source; className?: string }): ReactElement {
+type SourceChipProps = {
+  source: Source;
+  /** False leaves the tier tag off, for a table that has a tier column. */
+  hasTier?: boolean;
+  className?: string;
+};
+
+export function SourceChip({ source, hasTier = true, className }: SourceChipProps): ReactElement {
   const domain = sourceDomain(source.url);
   const title = sourceShortTitle(source.url);
   const tier = TIER_SHORT_LABEL[source.tier];
@@ -41,7 +48,9 @@ export function SourceChip({ source, className }: { source: Source; className?: 
           <span className="font-medium">{domain}</span>
           {title && <span className="text-ink-muted"> {title}</span>}
         </span>
-        <span className="shrink-0 rounded-sm border border-rule px-1.5 text-[0.6875rem] leading-5 text-ink-muted">{tier}</span>
+        {hasTier && (
+          <span className="shrink-0 rounded-sm border border-rule px-1.5 text-[0.6875rem] leading-5 text-ink-muted">{tier}</span>
+        )}
         <ExternalLink aria-hidden className="size-3.5 shrink-0 text-ink-muted" />
       </a>
     </Tooltip>

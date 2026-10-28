@@ -21,20 +21,22 @@ type ClaimEvidenceProps = {
   /** `badge` is the label with its count. `chip` wraps a value (the children) together with its label. */
   variant?: "badge" | "chip";
   children?: ReactNode;
+  /** For the chip: mono for a duration, false for a few words. */
+  isMono?: boolean;
   className?: string;
 };
 
 const PHONE = "(max-width: 47.9375rem)";
 
-export function ClaimEvidence({ claim, variant = "badge", children, className }: ClaimEvidenceProps): ReactElement {
+export function ClaimEvidence({ claim, variant = "badge", children, isMono, className }: ClaimEvidenceProps): ReactElement {
   const isPhone = useMediaQuery(PHONE);
   const trigger =
     variant === "chip" ? (
-      <EvidenceChip claim={claim} className={className}>
+      <EvidenceChip claim={claim} isMono={isMono} className={className}>
         {children}
       </EvidenceChip>
     ) : (
-      <EvidenceBadge kind={claim.label} count={claim.sources.length} className={className} />
+      <EvidenceBadge kind={claim.label} count={claim.sources.length} claimText={claim.text} className={className} />
     );
 
   if (isPhone) {

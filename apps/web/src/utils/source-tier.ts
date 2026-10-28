@@ -2,7 +2,7 @@
  * File: source-tier.ts
  * Purpose: Display names for the three source tiers, so every page words them the same way.
  * Exports: TIER_LABEL, TIER_SHORT_LABEL
- * Used by: components/guide/ConflictCard.tsx, components/run/TraceRow.tsx
+ * Used by: components/shared/SourceChip.tsx, components/guide/SourcesTable.tsx, components/run/TraceRow.tsx
  */
 import type { SourceTier } from "@stamp/schema";
 

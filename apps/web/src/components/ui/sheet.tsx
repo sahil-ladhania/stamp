@@ -39,13 +39,16 @@ export function SheetContent({ className, children, title, ...props }: SheetCont
       >
         <DialogPrimitive.Title className="sr-only">{title}</DialogPrimitive.Title>
         <DialogPrimitive.Description className="sr-only">Evidence for this claim</DialogPrimitive.Description>
+        {/* In flow, above the content, so it never covers the first line. */}
+        <div className="-mt-1 -mr-1 mb-1 flex justify-end">
+          <DialogPrimitive.Close
+            aria-label="Close"
+            className="inline-flex size-8 items-center justify-center rounded-md text-ink-muted hover:text-ink"
+          >
+            <X aria-hidden className="size-4" />
+          </DialogPrimitive.Close>
+        </div>
         {children}
-        <DialogPrimitive.Close
-          aria-label="Close"
-          className="absolute top-3 right-3 inline-flex size-8 items-center justify-center rounded-md text-ink-muted hover:text-ink"
-        >
-          <X aria-hidden className="size-4" />
-        </DialogPrimitive.Close>
       </DialogPrimitive.Content>
     </DialogPrimitive.Portal>
   )

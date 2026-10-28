@@ -16,14 +16,16 @@ type UnknownValueProps = {
   text?: string;
   /** The unknown claim, when there is one. Without it the label is static. */
   claim?: Claim;
+  /** False leaves the label off, for a value that is not a claim (for example a duration the text does not state). */
+  hasBadge?: boolean;
   className?: string;
 };
 
-export function UnknownValue({ text = "Not found", claim, className }: UnknownValueProps): ReactElement {
+export function UnknownValue({ text = "Not found", claim, hasBadge = true, className }: UnknownValueProps): ReactElement {
   return (
     <span className={cn("inline-flex flex-wrap items-center gap-2 text-body text-ink-muted", className)}>
       <span>{text}</span>
-      {claim ? <ClaimEvidence claim={claim} /> : <EvidenceLabel kind="uncertain" size="sm" />}
+      {claim ? <ClaimEvidence claim={claim} /> : hasBadge && <EvidenceLabel kind="uncertain" size="sm" />}
     </span>
   );
 }
