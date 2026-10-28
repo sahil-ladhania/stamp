@@ -13,7 +13,7 @@ alwaysApply: false
 ## Structure
 - Use function components only. One component per file.
 - Pages live in `src/pages/`. Components live in `src/components/`.
-- Routes: `/`, `/run/:id`, `/g/:slug`, `/how-we-verify`.
+- Routes: `/`, `/app`, `/run/:id`, `/g/:slug`, `/how-we-verify`, and `*` for not found.
 - shadcn/ui primitives stay in `src/components/ui/`. Wrap them; do not rewrite them.
 - No global state library. Use React state and the URL.
 

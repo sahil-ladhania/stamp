@@ -5,6 +5,24 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Stamp</title>
+    <meta
+      name="description"
+      content="Know what it takes to get your OAuth app stamped. An OAuth readiness report for any app: how hard, how long, what blocks approval."
+    />
+    <script>
+      // Runs before first paint so the saved theme never flashes. Keep in sync with utils/theme.ts.
+      ;(function () {
+        var isDark = false
+        try {
+          var stored = localStorage.getItem('stamp-theme')
+          isDark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches
+        } catch (error) {
+          // Storage can be blocked (private window). Fall back to the light theme.
+          isDark = false
+        }
+        if (isDark) document.documentElement.classList.add('dark')
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

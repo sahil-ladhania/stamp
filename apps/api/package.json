@@ -5,24 +5,30 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsx watch src/lib/server.ts",
+    "start": "tsx src/lib/server.ts",
+    "health": "curl -fsS http://localhost:3000/api/health",
+    "test": "vitest run"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
+    "@stamp/schema": "workspace:*",
     "@prisma/adapter-mariadb": "^7.10.1",
     "@prisma/client": "^7.10.1",
     "dotenv": "^18.0.9",
     "express": "^5.3.0",
-    "mariadb": "^3.5.4"
+    "mariadb": "^3.5.4",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@stamp/typescript-config": "workspace:*",
     "@types/express": "^5.0.6",
     "@types/node": "^24.19.2",
     "prisma": "7.10.1",
     "tsx": "^4.23.15",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vitest": "^4.0.18"
   }
 }

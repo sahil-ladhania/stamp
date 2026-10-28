@@ -13,6 +13,8 @@
   --breakpoint-desktop: 64rem;
 
   --max-width-content: 55rem;
+  /* Approved deviation from docs/design-system.md (880px): Landing and the header/footer bar only. */
+  --max-width-wide: 70rem;
 
   --color-paper: var(--paper);
   --color-card: var(--card);

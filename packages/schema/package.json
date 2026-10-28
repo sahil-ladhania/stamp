@@ -14,7 +14,8 @@
     "build": "tsc -p tsconfig.json",
     "check-types": "tsc --noEmit -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "vitest run"
   },
   "dependencies": {
     "zod": "^4.6.7"
@@ -25,6 +26,7 @@
     "@typescript/native": "npm:typescript@7.0.2",
     "@types/node": "^24.19.2",
     "eslint": "^10.13.0",
-    "typescript": "npm:@typescript/typescript6@^6.0.2"
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "vitest": "^4.0.18"
   }
 }
