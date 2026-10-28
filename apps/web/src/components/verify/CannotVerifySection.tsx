@@ -1,18 +1,19 @@
 /**
  * File: CannotVerifySection.tsx
- * Purpose: How we verify section 6: the honest limits of what Stamp can prove, in an amber panel.
+ * Purpose: How we verify section 6: the honest limits of what Stamp can prove, in one neutral callout. The colour of a label belongs
+ *          on a label, so the callout takes none.
  * Exports: CannotVerifySection
  * Used by: pages/HowWeVerifyPage.tsx
  */
 import type { ReactElement } from "react";
+import { Callout } from "@/components/shared/Callout";
 import { PageSection } from "@/components/shared/PageSection";
 
 // Each limit comes from docs/solution.md section 9, docs/features.md (S1) or docs/product.md.
 const LIMITS = [
   {
     limit: "Sourced means the page says it, not that the page is right.",
-    detail:
-      "The quote check proves the words are on the page. A provider page can be wrong or out of date.",
+    detail: "The quote check proves the words are on the page. A provider page can be wrong or out of date.",
   },
   {
     limit: "Approval waits are not tested.",
@@ -30,8 +31,7 @@ const LIMITS = [
   },
   {
     limit: "Coverage is small.",
-    detail:
-      "The library holds a small set of reviewed guides. Any other app is researched live, from public pages.",
+    detail: "The library holds a small set of reviewed guides. Any other app is researched live, from public pages.",
   },
   {
     limit: "Guides age.",
@@ -40,7 +40,6 @@ const LIMITS = [
   },
 ] as const;
 
-/** Amber is the Uncertain colour, so the limits read as what is not confirmed. */
 export function CannotVerifySection(): ReactElement {
   return (
     <PageSection
@@ -48,14 +47,16 @@ export function CannotVerifySection(): ReactElement {
       title="What Stamp cannot verify"
       description="A label is only as strong as what stands behind it. These are the limits."
     >
-      <ul className="flex flex-col divide-y divide-uncertain/30 rounded-md border border-uncertain bg-uncertain-bg px-4 tablet:px-6">
-        {LIMITS.map((item) => (
-          <li key={item.limit} className="flex flex-col gap-1 py-4">
-            <p className="text-card-title text-ink">{item.limit}</p>
-            <p className="text-body text-ink-muted">{item.detail}</p>
-          </li>
-        ))}
-      </ul>
+      <Callout>
+        <ul className="flex flex-col divide-y divide-rule">
+          {LIMITS.map((item) => (
+            <li key={item.limit} className="flex flex-col gap-1 py-3 first:pt-0 last:pb-0">
+              <p className="text-card-title text-ink">{item.limit}</p>
+              <p className="text-body text-ink-muted">{item.detail}</p>
+            </li>
+          ))}
+        </ul>
+      </Callout>
     </PageSection>
   );
 }
