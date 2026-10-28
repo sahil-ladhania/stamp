@@ -7,7 +7,7 @@
 import type { ReactElement } from "react";
 import { DifficultyDots } from "@/components/shared/DifficultyDots";
 import { cn } from "@/lib/utils";
-import { SCORE_BANDS } from "@/mocks/difficulty-rule";
+import { SCORE_BANDS } from "@/content/difficulty-rule";
 
 type ScoreBandsProps = { total: number; exampleName: string };
 

@@ -5,8 +5,8 @@
  * Exports: NotFoundHint, guessAppName, getNotFoundHint, getSearchPrefill
  * Used by: pages/NotFoundPage.tsx, components/not-found/NotFoundPanel.tsx, Guide page (step 6)
  */
-import { LIBRARY_SUMMARIES, findLibrarySlug } from "@/mocks/guides";
-import type { GuideSummary } from "@/mocks/types";
+import type { GuideSummary } from "@stamp/schema";
+import { LIBRARY_SUMMARIES, findLibrarySlug } from "@/mocks/library";
 
 export type NotFoundHint =
   | { kind: "default" }

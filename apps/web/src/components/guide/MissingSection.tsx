@@ -1,17 +1,17 @@
 /**
  * File: MissingSection.tsx
- * Purpose: Stands in for a section a partial run did not finish, so the gap is visible instead of silent.
+ * Purpose: Marks a section whose claims are all Uncertain, so the gap is visible instead of silent. The claims stay visible below it.
  * Exports: MissingSection
  * Used by: components/guide/StepsSection.tsx, BlockersSection.tsx, GuideConflicts.tsx
  */
 import type { ReactElement } from "react";
-import { CircleHelp } from "lucide-react";
+import { UncertainNote } from "./UncertainNote";
 
 export function MissingSection(): ReactElement {
   return (
-    <p className="flex items-start gap-3 rounded-md border border-uncertain bg-uncertain-bg p-4 text-body text-ink">
-      <CircleHelp aria-hidden className="mt-0.5 size-5 shrink-0" />
-      Uncertain: Stamp did not finish this section. Retry the run to fill it in.
-    </p>
+    <UncertainNote>
+      Uncertain: Stamp could not confirm anything in this section. Retry the run
+      to try again.
+    </UncertainNote>
   );
 }

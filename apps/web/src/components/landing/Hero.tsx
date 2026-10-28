@@ -9,12 +9,13 @@ import { Container } from "@/components/layout/Container";
 import { ExampleApps } from "@/components/shared/ExampleApps";
 import { SearchBar } from "@/components/shared/SearchBar";
 import { useMockSearch } from "@/hooks/useMockSearch";
-import { LIBRARY_SUMMARIES } from "@/mocks/guides";
+import { LIBRARY_SUMMARIES } from "@/mocks/library";
+import type { Guide } from "@/types/guide-model";
 import { HeroVideo } from "./HeroVideo";
 
-type HeroProps = { isVideoFailed?: boolean };
+type HeroProps = { sampleGuide: Guide | null; isVideoFailed?: boolean };
 
-export function Hero({ isVideoFailed = false }: HeroProps): ReactElement {
+export function Hero({ sampleGuide, isVideoFailed = false }: HeroProps): ReactElement {
   const { submit } = useMockSearch();
 
   return (
@@ -46,7 +47,7 @@ export function Hero({ isVideoFailed = false }: HeroProps): ReactElement {
           </div>
         </div>
         <div className="desktop:col-span-7">
-          <HeroVideo isForcedFailure={isVideoFailed} />
+          <HeroVideo sampleGuide={sampleGuide} isForcedFailure={isVideoFailed} />
         </div>
       </Container>
     </section>

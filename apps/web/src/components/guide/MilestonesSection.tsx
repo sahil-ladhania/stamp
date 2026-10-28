@@ -6,7 +6,7 @@
  */
 import type { ReactElement } from "react";
 import { PageSection } from "@/components/shared/PageSection";
-import type { Milestone } from "@/mocks/types";
+import type { Milestone } from "@/types/guide-model";
 import { MilestoneBar } from "./MilestoneBar";
 
 export function MilestonesSection({

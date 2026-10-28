@@ -5,7 +5,7 @@
  * Used by: Landing, App home, Not found pages (replaced by the real start-run hook later)
  */
 import { useNavigate } from 'react-router'
-import { findLibrarySlug } from '@/mocks/guides'
+import { findLibrarySlug } from '@/mocks/library'
 import { MOCK_RUN_ID } from '@/mocks/run-events'
 
 /** Routing only. There is no lookup, no network and no run. */

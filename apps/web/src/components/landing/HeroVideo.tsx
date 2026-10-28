@@ -10,17 +10,21 @@ import type { ReactElement } from "react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useTheme } from "@/hooks/useTheme";
 import { useVideoPlayer } from "@/hooks/useVideoPlayer";
+import type { Guide } from "@/types/guide-model";
 import { pickVideoSource } from "@/utils/video-source";
 import { HERO_VIDEO } from "./hero-video-config";
 import { HeroPoster } from "./HeroPoster";
 import { VideoControls } from "./VideoControls";
 
 type HeroVideoProps = {
+  /** The sample guide for the fallback poster. Null when there is none. */
+  sampleGuide: Guide | null;
   /** Forces the failed state (the `?state=video-error` scenario). */
   isForcedFailure?: boolean;
 };
 
 export function HeroVideo({
+  sampleGuide,
   isForcedFailure = false,
 }: HeroVideoProps): ReactElement {
   const { theme } = useTheme();
@@ -33,7 +37,7 @@ export function HeroVideo({
     });
 
   if (!source || isForcedFailure || hasFailed) {
-    return <HeroPoster />;
+    return <HeroPoster guide={sampleGuide} />;
   }
 
   return (

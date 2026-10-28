@@ -5,7 +5,7 @@
  * Used by: components/shared/EvidenceLabel.tsx, How we verify and Landing sections
  */
 import { Check, CircleHelp, Link as LinkIcon, type LucideIcon } from 'lucide-react'
-import type { EvidenceKind } from '@/mocks/types'
+import type { EvidenceKind } from '@/types/guide-model'
 
 type EvidenceMeta = {
   word: string

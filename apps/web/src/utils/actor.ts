@@ -5,7 +5,8 @@
  * Used by: components/guide/ActorTag.tsx, components/guide/StepsSection.tsx
  */
 import { Bot, Handshake, User, type LucideIcon } from "lucide-react";
-import type { Actor, Step } from "@/mocks/types";
+import type { Actor } from "@stamp/schema";
+import type { Step } from "@/types/guide-model";
 
 export const ACTOR_META: Record<Actor, { label: string; icon: LucideIcon }> = {
   agent: { label: "Agent", icon: Bot },

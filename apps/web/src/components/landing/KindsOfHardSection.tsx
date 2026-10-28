@@ -10,7 +10,7 @@ import { Container } from "@/components/layout/Container";
 import { AppCard } from "@/components/shared/AppCard";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { buttonVariants } from "@/components/ui/button-variants";
-import { LIBRARY_SUMMARIES } from "@/mocks/guides";
+import { LIBRARY_SUMMARIES } from "@/mocks/library";
 
 export function KindsOfHardSection(): ReactElement {
   return (

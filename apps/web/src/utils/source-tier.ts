@@ -4,7 +4,7 @@
  * Exports: TIER_LABEL
  * Used by: components/guide/ConflictCard.tsx, components/run/TraceRow.tsx
  */
-import type { SourceTier } from "@/mocks/types";
+import type { SourceTier } from "@stamp/schema";
 
 export const TIER_LABEL: Record<SourceTier, string> = {
   official: "Official source",

@@ -7,7 +7,7 @@
 import type { ReactElement, ReactNode } from 'react'
 import { Tooltip } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
-import type { EvidenceKind } from '@/mocks/types'
+import type { EvidenceKind } from '@/types/guide-model'
 import { EVIDENCE_META } from '@/utils/evidence'
 
 type EvidenceLabelProps = {

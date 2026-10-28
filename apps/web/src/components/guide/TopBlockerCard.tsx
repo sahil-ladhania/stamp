@@ -1,13 +1,12 @@
 /**
  * File: TopBlockerCard.tsx
- * Purpose: The blocker most likely to stop you, in an amber card: cause, fix and evidence. Unknown if not researched.
+ * Purpose: The blocker most likely to stop you, in an amber card: cause and fix, each with its evidence. Unknown if not researched.
  * Exports: TopBlockerCard
  * Used by: components/guide/StartHereSection.tsx
  */
 import { useId, type ReactElement } from "react";
-import type { Blocker } from "@/mocks/types";
+import type { Blocker } from "@/types/guide-model";
 import { BlockerDetails } from "./BlockerDetails";
-import { ClaimEvidence } from "./ClaimEvidence";
 import { UnknownValue } from "./UnknownValue";
 
 /** Amber is the blocker colour in docs/design-system.md; text stays ink for contrast. */
@@ -30,7 +29,6 @@ export function TopBlockerCard({
         <>
           <p className="text-card-title text-ink">{blocker.title}</p>
           <BlockerDetails blocker={blocker} fields={["cause", "fix"]} />
-          <ClaimEvidence claim={blocker.claim} />
         </>
       ) : (
         <UnknownValue />

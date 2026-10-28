@@ -5,7 +5,7 @@
  * Used by: components/guide/StepCard.tsx, NextStepCard.tsx, StepsSection.tsx
  */
 import type { ReactElement } from "react";
-import type { Actor } from "@/mocks/types";
+import type { Actor } from "@stamp/schema";
 import { ACTOR_META } from "@/utils/actor";
 
 export function ActorTag({ actor }: { actor: Actor }): ReactElement {

@@ -7,7 +7,7 @@
 import { ExternalLink } from "lucide-react";
 import type { ReactElement } from "react";
 import { cn } from "@/lib/utils";
-import type { Source } from "@/mocks/types";
+import type { Source } from "@/types/guide-model";
 
 type SourceLinkProps = {
   /** Only the address and the link text are needed, so a bare URL can be linked too. */

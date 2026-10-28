@@ -1,20 +1,28 @@
 /**
  * File: PartialNotice.tsx
- * Purpose: Banner on a partial guide: which sections are Uncertain, and a way to run again.
+ * Purpose: Banner on a partial guide: which sections are Uncertain, and a button that researches the app again.
  * Exports: PartialNotice
  * Used by: components/guide/GuideView.tsx
  */
 import type { ReactElement } from "react";
-import { Link } from "react-router";
-import { buttonVariants } from "@/components/ui/button-variants";
-import { MOCK_RUN_ID } from "@/mocks/run-events";
+import { Button } from "@/components/ui/button";
+import { useStartRun } from "@/hooks/useStartRun";
+import { getApiErrorMessage } from "@/utils/error-messages";
 import { formatList } from "@/utils/format-list";
+
+type PartialNoticeProps = {
+  sections: readonly string[];
+  /** The guide's slug. The API normalises it to itself, so it names the same app. */
+  slug: string;
+};
 
 export function PartialNotice({
   sections,
-}: {
-  sections: readonly string[];
-}): ReactElement {
+  slug,
+}: PartialNoticeProps): ReactElement {
+  const { start, isPending, error } = useStartRun();
+  const lead = "Stamp saved what it found and marked the rest Uncertain";
+
   return (
     <section
       aria-labelledby="partial-heading"
@@ -24,14 +32,20 @@ export function PartialNotice({
         This guide is partial
       </h2>
       <p className="text-body text-ink-muted">
-        {`Stamp saved what it found and marked the rest Uncertain: ${formatList(sections)}.`}
+        {sections.length > 0 ? `${lead}: ${formatList(sections)}.` : `${lead}.`}
       </p>
-      <Link
-        to={`/run/${MOCK_RUN_ID}`}
-        className={buttonVariants({ size: "lg" })}
+      <Button
+        size="lg"
+        disabled={isPending}
+        onClick={() => void start(slug, { force: true })}
       >
         Retry run
-      </Link>
+      </Button>
+      {error && (
+        <p role="alert" className="text-small text-ink">
+          {getApiErrorMessage(error)}
+        </p>
+      )}
     </section>
   );
 }

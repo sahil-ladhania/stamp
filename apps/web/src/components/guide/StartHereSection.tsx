@@ -6,7 +6,7 @@
  */
 import type { ReactElement } from "react";
 import { PageSection } from "@/components/shared/PageSection";
-import type { Blocker, Step } from "@/mocks/types";
+import type { Blocker, Step } from "@/types/guide-model";
 import { NextStepCard } from "./NextStepCard";
 import { TopBlockerCard } from "./TopBlockerCard";
 

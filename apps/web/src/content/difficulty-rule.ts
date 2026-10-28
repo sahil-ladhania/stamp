@@ -1,10 +1,9 @@
 /**
  * File: difficulty-rule.ts
- * Purpose: DISPLAY COPY of the difficulty rule in docs/solution.md section 6, for the How we verify page.
- *          The real rule lives in code (apps/api). This copy can drift from it, so import the rule
- *          from @stamp/schema once the schema exports it, and delete this file.
+ * Purpose: DISPLAY COPY of the difficulty rule in docs/solution.md section 6: the How we verify table, and the
+ *          words for each factor's points on a guide. The real rule lives in code (apps/api); this copy can drift from it.
  * Exports: POINT_COLUMNS, RuleFactor, DIFFICULTY_FACTORS, ScoreBand, SCORE_BANDS
- * Used by: components/verify/DifficultyRuleTable.tsx, components/verify/ScoreBands.tsx
+ * Used by: utils/map-difficulty.ts, components/verify/DifficultyRuleTable.tsx, components/verify/ScoreBands.tsx
  */
 
 export const POINT_COLUMNS = [0, 1, 2, 3] as const;
@@ -12,7 +11,7 @@ export const POINT_COLUMNS = [0, 1, 2, 3] as const;
 /** `cells[points]` is the text for that many points; null means the rule has no such level. */
 export type RuleFactor = { name: string; cells: readonly (string | null)[] };
 
-// Factor names match the `factors` in the mock guides, so an example can be looked up by name.
+// Factor names are the join key: a guide's factors are looked up here by name.
 export const DIFFICULTY_FACTORS: readonly RuleFactor[] = [
   {
     name: "Review gate",

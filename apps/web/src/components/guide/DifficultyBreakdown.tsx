@@ -1,6 +1,6 @@
 /**
  * File: DifficultyBreakdown.tsx
- * Purpose: The difficulty dots with a "Why this score" disclosure: each factor, its points and its reason.
+ * Purpose: The difficulty dots with a "Why this score" disclosure: each factor, its points and the rule's words for them.
  * Exports: DifficultyBreakdown
  * Used by: components/guide/GuideHeader.tsx
  */
@@ -8,8 +8,7 @@ import type { ReactElement } from "react";
 import { Link } from "react-router";
 import { ChevronDown } from "lucide-react";
 import { DifficultyDots } from "@/components/shared/DifficultyDots";
-import { EvidenceLabel } from "@/components/shared/EvidenceLabel";
-import type { Difficulty } from "@/mocks/types";
+import type { Difficulty } from "@/types/guide-model";
 
 /** A native `details`, so the keyboard and screen readers work without extra code. */
 export function DifficultyBreakdown({
@@ -46,14 +45,6 @@ export function DifficultyBreakdown({
         <p className="text-body text-ink">
           {`${difficulty.total} points, so the score is ${difficulty.score} of 5.`}
         </p>
-        <div className="flex flex-wrap items-center gap-3">
-          <EvidenceLabel kind={difficulty.label} />
-          {difficulty.label === "uncertain" && (
-            <span className="text-small text-ink-muted">
-              Some inputs are unknown, so the score is Uncertain.
-            </span>
-          )}
-        </div>
         <Link
           to="/how-we-verify#difficulty"
           className="self-start text-body text-sourced underline underline-offset-4"

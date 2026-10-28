@@ -25,9 +25,10 @@ alwaysApply: false
 3. Next step and top blocker
 4. MilestoneBar
 5. StepCards
-6. BlockerCards
-7. ConflictCards (if any)
-8. Sources and verification summary
+6. Requirements, scopes and limits (three groups of claims; an empty group shows the Uncertain note)
+7. BlockerCards
+8. ConflictCards (if any)
+9. Sources and verification summary
 
 ## Evidence
 - Render evidence only through `EvidenceLabel`.

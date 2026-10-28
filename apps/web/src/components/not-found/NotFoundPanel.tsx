@@ -14,7 +14,7 @@ import { SearchBar } from "@/components/shared/SearchBar";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { useMockSearch } from "@/hooks/useMockSearch";
-import { LIBRARY_SUMMARIES } from "@/mocks/guides";
+import { LIBRARY_SUMMARIES } from "@/mocks/library";
 import { getSearchPrefill, type NotFoundHint } from "@/utils/not-found-hint";
 import { getNotFoundCopy } from "./not-found-copy";
 
