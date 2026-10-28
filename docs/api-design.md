@@ -1,0 +1,179 @@
+# API design
+
+## TL;DR
+
+- REST over JSON, plus one SSE stream for live progress.
+- 7 endpoints: health, start a run, read a run, stream a run, list guides, read a guide, report a wrong claim.
+- Every request and response body is validated by Zod schemas from `@stamp/schema`.
+- Errors share one shape: `{ "error": { "code", "message" } }`.
+
+---
+
+## 1. Endpoints at a glance
+
+| Method | Path | Purpose | Feature |
+| --- | --- | --- | --- |
+| `GET` | `/api/health` | Liveness check for Railway | M7 |
+| `POST` | `/api/runs` | Return a cached guide, or start a live run | M2, M4 |
+| `GET` | `/api/runs/:id` | Snapshot of a run (for reconnects) | M2 |
+| `GET` | `/api/runs/:id/stream` | Live progress events (SSE) | M2 |
+| `GET` | `/api/guides` | List library guides for the home page | M6 |
+| `GET` | `/api/guides/:slug` | Read one guide | M1, M4 |
+| `POST` | `/api/guides/:slug/reports` | Flag a wrong claim | S4 |
+
+Markdown export (C2) runs in the browser. It needs no endpoint.
+
+---
+
+## 2. Main call sequence
+
+```mermaid
+sequenceDiagram
+    participant B as Browser
+    participant A as API
+
+    B->>A: POST /api/runs {app}
+    alt guide is cached
+        A-->>B: 200 {status: "cached", slug}
+    else new run
+        A-->>B: 202 {status: "started", runId}
+        B->>A: GET /api/runs/:id/stream
+        A-->>B: SSE events ... run.done {slug}
+    end
+    B->>A: GET /api/guides/:slug
+    A-->>B: 200 Guide
+```
+
+---
+
+## 3. Endpoint details
+
+### `POST /api/runs`
+
+Request:
+
+```json
+{ "app": "Notion", "force": false }
+```
+
+| Field | Type | Rule |
+| --- | --- | --- |
+| `app` | string | App name or URL, 2-100 characters |
+| `force` | boolean, optional | `true` skips the cache and re-runs (the "Refresh" button) |
+
+Responses:
+
+| Status | Body | When |
+| --- | --- | --- |
+| `200` | `{ "status": "cached", "slug": "notion" }` | A fresh guide exists |
+| `202` | `{ "status": "started", "runId": "run_123" }` | A new run started |
+| `202` | `{ "status": "running", "runId": "run_122" }` | A run for this app is already in progress; join it |
+| `400` | error `VALIDATION_ERROR` | Bad input |
+| `429` | error `RATE_LIMITED` + `Retry-After` header | Too many runs from this IP |
+| `503` | error `RUN_CAP_REACHED` | Daily run cap hit; library still works |
+
+### `GET /api/runs/:id`
+
+| Status | Body |
+| --- | --- |
+| `200` | `{ "runId", "slug", "status", "stageReached", "startedAt", "finishedAt" }` |
+| `404` | error `NOT_FOUND` |
+
+`status` is one of `running`, `done`, `partial`, `failed`.
+
+### `GET /api/runs/:id/stream`
+
+- Response type: `text/event-stream`.
+- On connect, the server first sends the run snapshot, then live events.
+- The stream closes after `run.done` or `run.error`.
+
+Wire format of one event:
+
+```text
+event: claim.verified
+data: {"runId":"run_123","claimId":"steps.3","url":"https://docs.composio.dev/..."}
+```
+
+| Event | Payload |
+| --- | --- |
+| `stage.started` | `{ runId, stage, name }` |
+| `stage.done` | `{ runId, stage, durationMs }` |
+| `search.query` | `{ runId, query }` |
+| `page.fetched` | `{ runId, url, tier }` |
+| `claim.verified` | `{ runId, claimId, url }` |
+| `claim.downgraded` | `{ runId, claimId, reason }` |
+| `run.done` | `{ runId, slug, status }` (`done` or `partial`) |
+| `run.error` | `{ runId, stage, code, message, options? }` |
+
+`run.error` codes:
+
+| Code | Meaning | Extra |
+| --- | --- | --- |
+| `AMBIGUOUS_APP` | Name matches several apps | `options`: list of `{ name, domain }` |
+| `NOT_OAUTH` | App uses API keys, not OAuth | none |
+| `NO_PUBLIC_DOCS` | No usable docs found | none |
+| `INTERNAL` | Unexpected failure | none |
+
+### `GET /api/guides`
+
+| Status | Body |
+| --- | --- |
+| `200` | `[{ "slug", "appName", "archetype", "difficulty", "mode", "asOf" }]` |
+
+### `GET /api/guides/:slug`
+
+| Status | Body |
+| --- | --- |
+| `200` | The full Guide (shape defined in `@stamp/schema`) |
+| `404` | error `NOT_FOUND` |
+
+### `POST /api/guides/:slug/reports`
+
+Request:
+
+```json
+{ "claimId": "steps.5", "note": "Callback path is v3.1 now" }
+```
+
+| Status | Body |
+| --- | --- |
+| `201` | `{ "reportId": "rep_1" }` |
+| `400` | error `VALIDATION_ERROR` |
+| `404` | error `NOT_FOUND` |
+
+---
+
+## 4. Error shape
+
+```json
+{ "error": { "code": "RATE_LIMITED", "message": "Too many runs. Try again in a minute." } }
+```
+
+| Code | HTTP status |
+| --- | --- |
+| `VALIDATION_ERROR` | 400 |
+| `NOT_FOUND` | 404 |
+| `RATE_LIMITED` | 429 |
+| `RUN_CAP_REACHED` | 503 |
+| `INTERNAL` | 500 |
+
+Raw exception text never reaches the client.
+
+---
+
+## 5. Cross-cutting rules
+
+| Rule | Detail |
+| --- | --- |
+| Validation | Zod schemas from `@stamp/schema` on every body and response |
+| CORS | Only the web app's origin (`WEB_ORIGIN`) |
+| Rate limit | Applies to `POST /api/runs` and reports, per IP; limits set by env, not code |
+| Secrets | API keys stay on the server; never in responses or logs |
+| Slugs | Lowercase app name, e.g. `hubspot`; used in share links `/g/hubspot` |
+| Claim IDs | Stable path inside the guide, e.g. `steps.5`, `blockers.2` |
+
+---
+
+## Next
+
+- Read [db-schema-design.md](./db-schema-design.md) for where this data is stored.
