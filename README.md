@@ -91,9 +91,9 @@ Try the live agent with any app outside this list.
 
    | App | Variable | Purpose |
    | --- | --- | --- |
-   | api | `OPENAI_API_KEY` | AI model access |
-   | api | `OPENAI_MODEL_FAST`, `OPENAI_MODEL_STRONG` | Models for planning and extraction |
-   | api | `TAVILY_API_KEY` | Search and page fetch |
+   | api | `OPENAI_API_KEY` | AI model access. Required only when `AGENT_MODE=real` |
+   | api | `OPENAI_MODEL_FAST`, `OPENAI_MODEL_STRONG` | Models for planning (fast) and extraction (strong), for example `gpt-4.1-mini` and `gpt-4.1`. Required only when `AGENT_MODE=real` |
+   | api | `TAVILY_API_KEY` | Search and page fetch. Required only when `AGENT_MODE=real` |
    | api | `DATABASE_URL` | MySQL connection string |
    | api | `WEB_ORIGIN` | Web app URL, for CORS |
    | api | `DAILY_RUN_CAP` | Max live runs per day |
@@ -101,6 +101,9 @@ Try the live agent with any app outside this list.
    | api | `RATE_LIMIT_MAX`, `RATE_LIMIT_WINDOW_SECONDS` | Per-IP limit on starting runs and sending reports; defaults 10 per 60 seconds |
    | api | `TRUST_PROXY_HOPS` | Reverse proxies in front of the API (`1` on Railway); `0` locally |
    | api | `AGENT_MODE` | `stub` replays scripted test data, `real` runs the research agent. Defaults to `stub`; **required** when `NODE_ENV=production`, so the server refuses to boot without it. Set `real` on Railway |
+   | api | `AGENT_RUN_BUDGET_MS` | Run time limit in milliseconds; can only lower the 120000 default, for example to test the partial-guide path |
+   | api | `AGENT_EXTRACT_CONCURRENCY` | Parallel extraction calls, 1 to 8; default 4 |
+   | api | `AGENT_PROBE` | `off` skips the outbound authorize-URL probe; default `on` |
    | api | `NODE_ENV` | `development` locally; `production` on Railway |
    | web | `VITE_API_URL` | API base URL |
 
@@ -122,6 +125,14 @@ Try the live agent with any app outside this list.
    ```bash
    pnpm test
    ```
+
+7. Optional: check your OpenAI and Tavily keys with one real search and one tiny model call. Run it by hand; tests never call the live services:
+
+   ```bash
+   pnpm --filter api smoke:live
+   ```
+
+   Add `--strong` to also call the strong model.
 
 ---
 
