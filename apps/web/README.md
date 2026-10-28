@@ -39,6 +39,21 @@ Components never call Axios, `fetch` or `EventSource`. The path is always compon
 
 Every connection to `/api/runs/:id/stream` starts with a `run.snapshot` and replays the whole run, so a refresh or a dropped connection recovers by itself. The reducer in `src/utils/run-stream-state.ts` clears its events on each snapshot, so a replay never shows a row twice. The service closes the connection on `run.done` or `run.error`.
 
+## Pages
+
+Every page reads the API through hooks. Nothing is mocked: the only static content is under `src/content/`, which holds the How we verify copy and its editorial examples.
+
+| Page | Reads | When the API has nothing |
+| --- | --- | --- |
+| `/` Landing | `useGuides`, `useGuide("hubspot")` | The library preview, example links and the sample verdict are left out; the rest of the page reads on its own |
+| `/app` App home | `useGuides` | An empty state that points at the search, and an error state with a retry |
+| `/run/:id` Live run | `useRunStream`, `useStartRun` | Every `run.error` and stream failure has its own state with a next action |
+| `/g/:slug` Guide | `useGuide`, `useReportClaim` | An unknown slug shows Not found with a "Research live" button; a failed load shows a retry |
+| `*` Not found | `useGuides`, `useStartRun` | No suggestion and no example links |
+| `/how-we-verify` | none | Static |
+
+A guide from `@stamp/schema` is mapped to the UI shape in `src/types/guide-model.ts` by the `src/utils/map-*.ts` mappers, so components never read the wire shape. The mappers set no label and invent no fact.
+
 ## Tests
 
 Vitest, no network. Tests sit beside the code (`*.test.ts`). Shared helpers are in `src/test-support/`: a stub Axios adapter, a fake `EventSource`, and fixtures built from `@stamp/schema`.

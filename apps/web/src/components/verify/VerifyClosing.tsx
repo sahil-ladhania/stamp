@@ -1,6 +1,7 @@
 /**
  * File: VerifyClosing.tsx
- * Purpose: Last block of How we verify: send the visitor to a real guide to see the labels in context.
+ * Purpose: Last block of How we verify: send the visitor to look up an app and see the labels in context.
+ *          It names no guide, so it stays true whatever the library holds.
  * Exports: VerifyClosing
  * Used by: pages/HowWeVerifyPage.tsx
  */
@@ -20,17 +21,17 @@ export function VerifyClosing(): ReactElement {
         <SectionHeading
           id="verify-closing-heading"
           title="See it on a real guide"
-          description="The HubSpot guide shows Sourced and Uncertain claims side by side, with a source conflict."
+          description="Look up any app. Every claim in its guide shows its label, its source and the quote behind it."
         />
         <div className="flex flex-wrap items-center gap-3">
-          <Link to="/g/hubspot" className={buttonVariants({ size: "lg" })}>
-            Open the HubSpot guide
+          <Link to="/app" className={buttonVariants({ size: "lg" })}>
+            Look up an app
           </Link>
           <Link
-            to="/app"
+            to="/"
             className={buttonVariants({ variant: "secondary", size: "lg" })}
           >
-            Open the library
+            Go to the home page
           </Link>
         </div>
       </Container>

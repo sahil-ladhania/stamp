@@ -41,7 +41,7 @@ export const RUN_LIMITS: readonly RunLimit[] = [
   {
     name: "Runs per day",
     value: "A daily cap",
-    effect: "Live generation pauses. Library guides still open.",
+    effect: "Live generation pauses. Guides Stamp already has still open.",
   },
   {
     name: "Freshness",

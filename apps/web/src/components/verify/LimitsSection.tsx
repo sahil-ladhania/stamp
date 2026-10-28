@@ -5,7 +5,7 @@
  * Used by: pages/HowWeVerifyPage.tsx
  */
 import type { ReactElement } from "react";
-import { RUN_LIMITS, UNFINISHED_CASES } from "@/mocks/run-limits";
+import { RUN_LIMITS, UNFINISHED_CASES } from "@/content/run-limits";
 import { PageSection } from "@/components/shared/PageSection";
 
 export function LimitsSection(): ReactElement {
@@ -13,7 +13,7 @@ export function LimitsSection(): ReactElement {
     <PageSection
       id="limits"
       title="Run limits"
-      description="A live run has fixed budgets so it cannot hang or run up costs. The library keeps working when a limit is hit."
+      description="A live run has fixed budgets so it cannot hang or run up costs. Guides Stamp already has keep working when a limit is hit."
     >
       <dl className="flex flex-col divide-y divide-rule border-y border-rule">
         {RUN_LIMITS.map((limit) => (
