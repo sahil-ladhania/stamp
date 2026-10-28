@@ -19,4 +19,5 @@ export const testConfig: EnvConfig = {
   RATE_LIMIT_MAX: 10,
   RATE_LIMIT_WINDOW_SECONDS: 60,
   TRUST_PROXY_HOPS: 0,
+  AGENT_MODE: "stub",
 };

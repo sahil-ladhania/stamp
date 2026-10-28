@@ -53,3 +53,55 @@ describe("loadConfig", () => {
     expect(() => loadConfig(rest)).toThrow();
   });
 });
+
+describe("loadConfig AGENT_MODE", () => {
+  it("defaults to stub when NODE_ENV is not set", () => {
+    expect(loadConfig(validEnv).AGENT_MODE).toBe("stub");
+  });
+
+  it.each(["development", "test", "staging"])(
+    "defaults to stub when NODE_ENV is %s",
+    (nodeEnv) => {
+      expect(loadConfig({ ...validEnv, NODE_ENV: nodeEnv }).AGENT_MODE).toBe(
+        "stub",
+      );
+    },
+  );
+
+  it("accepts real and stub explicitly outside production", () => {
+    expect(loadConfig({ ...validEnv, AGENT_MODE: "real" }).AGENT_MODE).toBe(
+      "real",
+    );
+    expect(loadConfig({ ...validEnv, AGENT_MODE: "stub" }).AGENT_MODE).toBe(
+      "stub",
+    );
+  });
+
+  it("fails at boot in production when AGENT_MODE is missing", () => {
+    expect(() => loadConfig({ ...validEnv, NODE_ENV: "production" })).toThrow(
+      /AGENT_MODE is required/,
+    );
+  });
+
+  it("fails in production when AGENT_MODE is empty", () => {
+    expect(() =>
+      loadConfig({ ...validEnv, NODE_ENV: "production", AGENT_MODE: "" }),
+    ).toThrow();
+  });
+
+  it("accepts an explicit AGENT_MODE in production", () => {
+    for (const mode of ["real", "stub"] as const) {
+      const config = loadConfig({
+        ...validEnv,
+        NODE_ENV: "production",
+        AGENT_MODE: mode,
+      });
+      expect(config.AGENT_MODE).toBe(mode);
+    }
+  });
+
+  it("rejects an unknown AGENT_MODE everywhere", () => {
+    expect(() => loadConfig({ ...validEnv, AGENT_MODE: "mock" })).toThrow();
+    expect(() => loadConfig({ ...validEnv, AGENT_MODE: "" })).toThrow();
+  });
+});

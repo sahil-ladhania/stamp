@@ -100,6 +100,8 @@ Try the live agent with any app outside this list.
    | api | `ENABLE_BROWSER_AGENT` | `false` by default |
    | api | `RATE_LIMIT_MAX`, `RATE_LIMIT_WINDOW_SECONDS` | Per-IP limit on starting runs and sending reports; defaults 10 per 60 seconds |
    | api | `TRUST_PROXY_HOPS` | Reverse proxies in front of the API (`1` on Railway); `0` locally |
+   | api | `AGENT_MODE` | `stub` replays scripted test data, `real` runs the research agent. Defaults to `stub`; **required** when `NODE_ENV=production`, so the server refuses to boot without it. Set `real` on Railway |
+   | api | `NODE_ENV` | `development` locally; `production` on Railway |
    | web | `VITE_API_URL` | API base URL |
 
 4. Set up the database and load the library guides:
