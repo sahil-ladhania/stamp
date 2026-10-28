@@ -120,12 +120,17 @@ data: {"runId":"run_123","claimId":"steps.3","url":"https://docs.composio.dev/..
 | --- | --- |
 | `200` | `[{ "slug", "appName", "archetype", "difficulty", "mode", "asOf" }]` |
 
+- Lists library guides only, easiest first (`difficulty` ascending, then `appName`).
+- Live guides are never listed; they are reached by share link.
+
 ### `GET /api/guides/:slug`
 
 | Status | Body |
 | --- | --- |
 | `200` | The full Guide (shape defined in `@stamp/schema`) |
 | `404` | error `NOT_FOUND` |
+
+- A live guide past its 7-day cache window is still returned, so share links keep working. Only `POST /api/runs` treats it as stale.
 
 ### `POST /api/guides/:slug/reports`
 
@@ -166,7 +171,8 @@ Raw exception text never reaches the client.
 | Rule | Detail |
 | --- | --- |
 | Validation | Zod schemas from `@stamp/schema` on every body and response |
-| CORS | Only the web app's origin (`WEB_ORIGIN`) |
+| CORS | Only the web app's origin (`WEB_ORIGIN`); `Retry-After` is exposed to the browser |
+| Body size | JSON bodies over 16 KB are rejected with `400 VALIDATION_ERROR` |
 | Rate limit | Applies to `POST /api/runs` and reports, per IP; limits set by env, not code |
 | Secrets | API keys stay on the server; never in responses or logs |
 | Slugs | Lowercase app name, e.g. `hubspot`; used in share links `/g/hubspot` |
