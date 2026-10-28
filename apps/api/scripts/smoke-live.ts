@@ -6,8 +6,6 @@
  */
 import "dotenv/config";
 import { z } from "zod";
-import { getConfig, requireRealAgentConfig } from "../src/config.js";
-import { ModelCallError } from "../src/lib/openai-client.js";
 import { structured } from "../src/lib/openai.js";
 import { searchWeb } from "../src/lib/tavily.js";
 import {
@@ -16,6 +14,7 @@ import {
   type ModelTier,
   type RunUsage,
 } from "../src/lib/usage.js";
+import { checkSettings, describe, say } from "./script-io.js";
 
 // Uses the constraints the real claim schemas use (min length, min items, url, enum, nullable),
 // so a pass also proves OpenAI strict mode accepts the schema after sanitising.
@@ -35,19 +34,6 @@ const MESSAGES = [
       "What does OAuth stand for? Answer in at most five words, with 1 to 3 tags, and homepage https://oauth.net or null.",
   },
 ];
-
-function say(line: string): void {
-  process.stdout.write(`${line}\n`);
-}
-
-/** Error text for the terminal; a 400 also shows OpenAI's reason, because that is how a schema rejection reads. */
-function describe(err: unknown): string {
-  if (err instanceof ModelCallError && err.status === 400) {
-    const reason = err.cause instanceof Error ? err.cause.message : "unknown";
-    return `${err.message}: ${reason}`;
-  }
-  return err instanceof Error ? `${err.name}: ${err.message}` : "unknown error";
-}
 
 async function check(
   name: string,
@@ -88,23 +74,6 @@ async function modelCheck(tier: ModelTier, usage: RunUsage): Promise<string> {
   }
   const { inputTokens, outputTokens } = result.usage;
   return `${result.model}, ${inputTokens} in / ${outputTokens} out, ${result.durationMs} ms, answer "${result.data.answer}"`;
-}
-
-/** Names the missing settings (never their values); returns false when any are absent. */
-function checkSettings(): boolean {
-  try {
-    requireRealAgentConfig(getConfig());
-    return true;
-  } catch (err) {
-    const detail =
-      err instanceof z.ZodError
-        ? `invalid settings in apps/api/.env: ${err.issues.map((issue) => issue.path.join(".")).join(", ")}`
-        : err instanceof Error
-          ? `${err.message} (set them in apps/api/.env)`
-          : "unknown error";
-    say(`Cannot run: ${detail}`);
-    return false;
-  }
 }
 
 async function main(): Promise<void> {

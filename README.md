@@ -134,6 +134,15 @@ Try the live agent with any app outside this list.
 
    Add `--strong` to also call the strong model.
 
+8. Optional: save real Tavily results as test fixtures for the agent's search and fetch stages. This spends about 35 Tavily credits; run it by hand, never in tests or CI:
+
+   ```bash
+   pnpm --filter api capture:fixtures --plan
+   pnpm --filter api capture:fixtures
+   ```
+
+   `--plan` lists the calls without making any. Files go to `apps/api/tests/fixtures/`; commit them, and re-run when you want fresher snapshots.
+
 ---
 
 ## Deploy
