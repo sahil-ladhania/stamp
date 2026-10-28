@@ -12,7 +12,7 @@ import { paramString } from "../utils/param-string.js";
 /** Starts or joins a run, or returns a cached guide slug. */
 export async function createRun(req: Request, _res: Response): Promise<void> {
   await runsService.startRun(req.body);
-};
+}
 
 /** Returns a run snapshot for reconnects. */
 export async function getRun(req: Request, _res: Response): Promise<void> {
@@ -21,7 +21,7 @@ export async function getRun(req: Request, _res: Response): Promise<void> {
     throw new ValidationError("Run id is required.");
   }
   await runsService.getRunById(runId);
-};
+}
 
 /** Opens an SSE stream for live run progress. */
 export async function streamRun(req: Request, _res: Response): Promise<void> {
@@ -30,4 +30,4 @@ export async function streamRun(req: Request, _res: Response): Promise<void> {
     throw new ValidationError("Run id is required.");
   }
   void runsService.openRunStream(runId);
-};
+}

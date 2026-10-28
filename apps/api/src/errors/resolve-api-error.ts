@@ -6,11 +6,7 @@
  */
 import type { ApiErrorBody } from "@stamp/schema";
 import { ZodError } from "zod";
-import {
-  AppError,
-  InternalError,
-  ValidationError,
-} from "./app-error.js";
+import { AppError, InternalError, ValidationError } from "./app-error.js";
 
 export type ResolvedApiError = {
   statusCode: number;
@@ -40,7 +36,7 @@ export function resolveApiError(err: unknown): ResolvedApiError {
     const message =
       path && detail
         ? `${path}: ${detail}`
-        : detail ?? "Check the request and try again.";
+        : (detail ?? "Check the request and try again.");
     return resolveApiError(new ValidationError(message));
   }
 
@@ -49,4 +45,4 @@ export function resolveApiError(err: unknown): ResolvedApiError {
   }
 
   return resolveApiError(new InternalError());
-};
+}

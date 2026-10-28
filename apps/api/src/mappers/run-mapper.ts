@@ -4,7 +4,11 @@
  * Exports: toRunSnapshot
  * Used by: services/runs.ts
  */
-import { RunErrorCodeSchema, RunSnapshotSchema, type RunSnapshot } from "@stamp/schema";
+import {
+  RunErrorCodeSchema,
+  RunSnapshotSchema,
+  type RunSnapshot,
+} from "@stamp/schema";
 import type { Run as PrismaRun } from "../../generated/prisma/client.js";
 import { toWireRunStatus } from "./enum-wire.js";
 

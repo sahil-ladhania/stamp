@@ -5,11 +5,7 @@
  * Used by: lib/server.ts
  */
 import { Router } from "express";
-import {
-  createReport,
-  getGuide,
-  listGuides,
-} from "../controllers/guides.js";
+import { createReport, getGuide, listGuides } from "../controllers/guides.js";
 import { asyncHandler } from "../middleware/async-handler.js";
 
 export const guidesRouter: Router = Router();

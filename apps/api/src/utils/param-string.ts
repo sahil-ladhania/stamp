@@ -13,4 +13,4 @@ export function paramString(
     return undefined;
   }
   return Array.isArray(value) ? value[0] : value;
-};
+}

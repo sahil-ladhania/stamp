@@ -8,8 +8,7 @@ import type { ApiErrorCode } from "@stamp/schema";
 
 const DEFAULT_VALIDATION_MESSAGE = "Check the request and try again.";
 const DEFAULT_NOT_FOUND_MESSAGE = "We could not find that resource.";
-const DEFAULT_RATE_LIMITED_MESSAGE =
-  "Too many runs. Try again in a minute.";
+const DEFAULT_RATE_LIMITED_MESSAGE = "Too many runs. Try again in a minute.";
 const DEFAULT_RUN_CAP_MESSAGE =
   "Live generation is paused. Try a library guide.";
 const DEFAULT_INTERNAL_MESSAGE = "Something went wrong.";
@@ -32,7 +31,7 @@ export class AppError extends Error {
     this.statusCode = statusCode;
     this.retryAfterSeconds = options?.retryAfterSeconds;
   }
-};
+}
 
 /** 400 — invalid request body, params, or query. */
 export class ValidationError extends AppError {
@@ -40,7 +39,7 @@ export class ValidationError extends AppError {
     super("VALIDATION_ERROR", message, 400);
     this.name = "ValidationError";
   }
-};    
+}
 
 /** 404 — resource does not exist. */
 export class NotFoundError extends AppError {
@@ -48,7 +47,7 @@ export class NotFoundError extends AppError {
     super("NOT_FOUND", message, 404);
     this.name = "NotFoundError";
   }
-};
+}
 
 /** 429 — too many requests from this client. */
 export class RateLimitedError extends AppError {
@@ -59,7 +58,7 @@ export class RateLimitedError extends AppError {
     super("RATE_LIMITED", message, 429, { retryAfterSeconds });
     this.name = "RateLimitedError";
   }
-};
+}
 
 /** 503 — daily live-run cap reached. */
 export class RunCapReachedError extends AppError {
@@ -67,7 +66,7 @@ export class RunCapReachedError extends AppError {
     super("RUN_CAP_REACHED", message, 503);
     this.name = "RunCapReachedError";
   }
-};
+}
 
 /** 500 — unexpected server failure. */
 export class InternalError extends AppError {
@@ -75,4 +74,4 @@ export class InternalError extends AppError {
     super("INTERNAL", message, 500);
     this.name = "InternalError";
   }
-};
+}
