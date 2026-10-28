@@ -23,7 +23,7 @@ export function ClaimGroup({
   children,
 }: ClaimGroupProps): ReactElement {
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex min-w-0 flex-col gap-3">
       <h3 className="text-card-title text-ink">{title}</h3>
       {count === 0 ? (
         <UncertainNote>{`Uncertain: ${emptyText}`}</UncertainNote>

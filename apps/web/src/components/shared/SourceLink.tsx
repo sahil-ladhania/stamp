@@ -25,11 +25,11 @@ export function SourceLink({
       target="_blank"
       rel="noreferrer"
       className={cn(
-        "inline-flex items-center gap-1 text-small text-sourced underline underline-offset-4",
+        "inline-flex max-w-full min-w-0 items-start gap-1 text-small text-sourced underline underline-offset-4",
         className,
       )}
     >
-      {source.title}
+      <span className="min-w-0 break-all">{source.title}</span>
       <ExternalLink aria-hidden className="size-3.5 shrink-0" />
       <span className="sr-only"> (opens in a new tab)</span>
     </a>

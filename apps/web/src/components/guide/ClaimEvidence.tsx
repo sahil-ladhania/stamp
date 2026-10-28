@@ -19,14 +19,17 @@ import { SourceQuotes } from "./SourceQuotes";
  */
 export function ClaimEvidence({ claim }: { claim: Claim }): ReactElement {
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+    <div className="flex min-w-0 flex-col gap-2">
+      <div className="flex min-w-0 max-w-full flex-wrap items-center gap-x-3 gap-y-2">
         <EvidenceLabel
           kind={claim.label}
           detail={claim.sources[0]?.title ?? claim.reason}
         />
         {claim.sources.map((source) => (
-          <span key={source.url} className="flex flex-wrap items-center gap-2">
+          <span
+            key={source.url}
+            className="flex min-w-0 max-w-full flex-wrap items-center gap-2"
+          >
             <SourceLink source={source} />
             <span className="text-data text-ink-muted">
               {TIER_LABEL[source.tier]}

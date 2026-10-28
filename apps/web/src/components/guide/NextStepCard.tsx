@@ -22,7 +22,7 @@ export function NextStepCard({
   return (
     <article
       aria-labelledby={headingId}
-      className="flex flex-col gap-3 rounded-md border border-ink bg-card p-card"
+      className="flex h-full flex-col gap-3 rounded-md border border-ink bg-card p-card"
     >
       <h3 id={headingId} className="text-small text-ink-muted">
         Next step

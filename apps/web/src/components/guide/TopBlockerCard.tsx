@@ -20,7 +20,7 @@ export function TopBlockerCard({
   return (
     <article
       aria-labelledby={headingId}
-      className="flex flex-col gap-3 rounded-md border border-uncertain bg-uncertain-bg p-card"
+      className="flex h-full flex-col gap-3 rounded-md border border-uncertain bg-uncertain-bg p-card"
     >
       <h3 id={headingId} className="text-small text-ink-muted">
         Top blocker
@@ -28,7 +28,11 @@ export function TopBlockerCard({
       {blocker ? (
         <>
           <p className="text-card-title text-ink">{blocker.title}</p>
-          <BlockerDetails blocker={blocker} fields={["cause", "fix"]} />
+          <BlockerDetails
+            blocker={blocker}
+            fields={["cause", "fix"]}
+            layout="stack"
+          />
         </>
       ) : (
         <UnknownValue />

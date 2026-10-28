@@ -25,24 +25,31 @@ const ALL_FIELDS: readonly BlockerField[] = [
   "contact",
 ];
 
+type BlockerDetailsLayout = "columns" | "stack";
+
 export function BlockerDetails({
   blocker,
   fields = ALL_FIELDS,
+  layout = "columns",
 }: {
   blocker: Blocker;
   fields?: readonly BlockerField[];
+  /** Stack labels above values in narrow cards; columns for full-width blocker lists. */
+  layout?: BlockerDetailsLayout;
 }): ReactElement {
   return (
     <dl className="flex flex-col gap-3">
       {fields.map((field) => {
         const claim = blocker[field];
+        const rowClass =
+          layout === "stack"
+            ? "flex flex-col gap-1"
+            : "grid gap-1 tablet:grid-cols-[6rem_1fr] tablet:gap-3";
+
         return (
-          <div
-            key={field}
-            className="grid gap-1 tablet:grid-cols-[6rem_1fr] tablet:gap-3"
-          >
+          <div key={field} className={rowClass}>
             <dt className="text-small text-ink-muted">{LABEL[field]}</dt>
-            <dd className="flex flex-col gap-2">
+            <dd className="flex min-w-0 flex-col gap-2">
               <span className="text-body text-ink">
                 {claim?.text ?? "Unknown"}
               </span>
