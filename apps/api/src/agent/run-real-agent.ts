@@ -25,6 +25,8 @@ export type RealAgentOptions = {
   now?: () => number;
   /** Lowers the 120 s budget; defaults to AGENT_RUN_BUDGET_MS. */
   budgetMs?: number;
+  /** Parallel extraction calls; defaults to AGENT_EXTRACT_CONCURRENCY. */
+  extractConcurrency?: number;
 };
 
 function internal(stage: number): AgentOutcome {
@@ -75,6 +77,8 @@ export async function runRealAgent(
     ),
     now,
     usage,
+    extractConcurrency:
+      options.extractConcurrency ?? getConfig().AGENT_EXTRACT_CONCURRENCY,
   };
 
   let outcome: AgentOutcome;

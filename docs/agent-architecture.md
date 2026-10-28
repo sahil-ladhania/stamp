@@ -74,8 +74,8 @@ The state passes from stage to stage (`apps/api/src/agent/state.ts`).
 | `queries` | Planned searches | Stage 1 |
 | `searchResults` | URLs with tier, no duplicates | Stage 2 |
 | `pages` | URL, tier, text, hash; no duplicates | Stage 3 |
-| `drafts` | Per section: drafted, unknown or failed | Stage 4 |
-| `gates` | Auth method and the facts behind the score | Stage 4 |
+| `drafts` | Per section: drafted claims, unknown, or failed with a reason | Stage 4 |
+| `gates` | Auth method, review gate, approval wait and the prerequisites and limits behind the score, each with the claim that backs it | Stage 4 |
 | `claims`, `conflicts` | Labelled claims with stable ids; resolved conflicts | Stages 5-6 |
 | `missingSections` | Sections with no matched quote | Stage 5 |
 | `retryCount` | 0 or 1: retry passes started | The graph, when stage 2 starts a retry |
@@ -125,9 +125,26 @@ flowchart TD
 | Retries | 1 |
 | Schema-repair attempts per section | 1 |
 
+Time caps per stage (seconds). A stage also gets less when the run is running late, so verify, score and save always fit.
+
+| Stage | First pass | Retry pass |
+| --- | --- | --- |
+| 0 Resolve | 6 | |
+| 1 Plan | 6 | |
+| 2 Search | 8 | 6 |
+| 3 Fetch | 12 | 8 |
+| 4 Extract | 40 | 18 |
+| 5 Verify | 2 | 2 |
+| 6 Probe | 4 | |
+| 7 Score | 1 | |
+| 8 Save | 5 | |
+| **Total** | **84** | **+ 34 = 118** |
+
+- Extract needs 20 seconds left to start, and a retry needs 45 seconds left (the 34-second retry pass plus the 10 seconds of probe, score and save).
+
 - **Checked before each stage.** Every edge goes through one routing rule (`routes.ts`). A stage starts only if its minimum time remains (`NODE_MIN_REMAINING_MS` in `budget.ts`).
 - **When time runs out,** the run skips ahead to `score`, then `save`, and the guide is partial. The stages in between never start, so they emit no events. `verify` and `score` are code only and need no minimum time, so `score` always runs. After a budget stop it may find no gates or claims, so it must treat missing facts as unknown.
-- **Retry edge:** verify goes back to search only when a section has no matched quote, `retryCount` is 0 and at least 40 seconds remain. An edge cannot write state, so the search stage counts the retry when it starts one.
+- **Retry edge:** verify goes back to search only when a section has no matched quote, `retryCount` is 0 and at least 45 seconds remain. An edge cannot write state, so the search stage counts the retry when it starts one.
 - **A failure ends the run** with no save: the failing stage emits `stage.started` but not `stage.done`, and the executor sends `run.error`.
 - **An abort ends the run** at once. The run returns an `INTERNAL` failure at the stage that was running, and no more events are sent.
 
@@ -183,7 +200,7 @@ flowchart TD
 
 ---
 
-## 10. Stages 0 to 3 in detail
+## 10. Stages 0 to 4 in detail
 
 **0 Resolve** (`nodes/resolve.ts`, code only)
 - A typed domain or URL gives the official domain directly (`developers.notion.com` becomes `notion.com`). There is no search and no "did you mean".
@@ -207,6 +224,19 @@ flowchart TD
 - A fresh cached page is reused (7 days). The rest go to one Tavily extract call. A page with under 300 characters of text is dropped. Each page is announced with `page.fetched`.
 - A page's tier is always decided against this app's domain, even when the page came from the cache.
 - No official page: `NO_PUBLIC_DOCS`. If the extract call itself failed and nothing is held, it is `INTERNAL` instead.
+
+**4 Extract** (`nodes/extract.ts`, `extract/`, strong model, prompts in `prompts/extract*.ts`)
+- One structured-output call per guide section: steps, scopes, requirements, blockers, milestones, gates, limits and conflicts, five at a time (`AGENT_EXTRACT_CONCURRENCY`, default 5). The verdict runs last, because it picks steps and blockers by position.
+- Each call gets only the passages that matter: blocks of the fetched pages that match the section's keywords (about 14,000 characters, 8,000 for the verdict), official pages first, as exact slices of the original text so quotes stay word for word. A section with no matching passage is unknown and makes no call.
+- A claim is `text`, `quote` and `url`; `null` or an empty list means unknown. There is no label or score field.
+- Page text sits inside delimiters that carry a per-call token, so text in a page cannot close the block or fake a source. The prompt says the text is data, to ignore any instruction in it, that unknown is allowed, and never to invent facts.
+- A reply that fails the schema is sent back once with the validation error. If that fails too, the section is marked failed and becomes Uncertain.
+- On a 429 the call is retried once after a backoff (the server's hint if any, 0.5 to 8 seconds), unless there is no time left for it.
+- Every claim whose URL was not fetched in this run is dropped; the URLs of the rest are rewritten to the fetched page's own. A gates fact whose evidence is dropped becomes unknown.
+- One call may take 25 seconds, and none starts with under 5 seconds left in the stage's window; skipped sections make the run partial.
+- `NOT_OAUTH` needs all of: the gates call says API keys only, its quote is found word for word on an official page, and neither the steps nor the scopes section found anything. `NO_PUBLIC_DOCS` when every section answered unknown; `INTERNAL` when every section failed.
+- A retry pass redoes only the sections verify reported, and the verdict if steps or blockers were redone.
+- Each model call logs its tier, model, section, tokens and duration; the stage logs one `extract summary` line with a row per section.
 
 ---
 

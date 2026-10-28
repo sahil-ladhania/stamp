@@ -11,7 +11,10 @@ import { trace } from "../test-support/graph-harness.js";
 import { stageNode } from "./stage-node.js";
 import type { AgentEvent, RunAgentInput } from "./run-agent.js";
 
-const config = vi.hoisted(() => ({ AGENT_RUN_BUDGET_MS: 120_000 }));
+const config = vi.hoisted(() => ({
+  AGENT_RUN_BUDGET_MS: 120_000,
+  AGENT_EXTRACT_CONCURRENCY: 5,
+}));
 vi.mock("../config.js", () => ({ getConfig: () => config }));
 // The real stages are tested on their own; here the runner runs the graph with no-op stages.
 vi.mock("./nodes/index.js", async () => ({

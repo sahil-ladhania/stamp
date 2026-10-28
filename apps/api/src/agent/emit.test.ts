@@ -21,6 +21,7 @@ describe("getDeps", () => {
     now: (): number => 0,
     clock: {},
     usage: {},
+    extractConcurrency: 5,
   };
 
   it.each([

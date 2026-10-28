@@ -77,6 +77,7 @@ export function createHarness(options: { budgetMs?: number } = {}) {
     clock,
     now: () => time.now,
     usage: createRunUsage(),
+    extractConcurrency: 5,
   };
   const config: RunnableConfig = {
     configurable: { deps },
