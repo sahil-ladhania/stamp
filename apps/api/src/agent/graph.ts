@@ -31,7 +31,7 @@ function countRetry(search: NodeFn): NodeFn {
 
 /**
  * Stages 0 to 8 in order. Every edge goes through `routeTo`, which ends a failed run and sends an
- * exhausted budget to save; the one extra edge is verify -> search (see routes.ts).
+ * exhausted budget to score, then save; the one extra edge is verify -> search (see routes.ts).
  * `overrides` swaps nodes, for tests and for the steps that fill the stages in.
  */
 export function buildGraph(overrides: Partial<NodeSet> = {}) {
@@ -46,19 +46,19 @@ export function buildGraph(overrides: Partial<NodeSet> = {}) {
     .addNode("probe", nodes.probe)
     .addNode("score", nodes.score)
     .addNode("save", nodes.save)
-    .addConditionalEdges(START, routeTo("resolve"), ["resolve", "save"])
-    .addConditionalEdges("resolve", routeTo("plan"), ["plan", "save", END])
-    .addConditionalEdges("plan", routeTo("search"), ["search", "save", END])
-    .addConditionalEdges("search", routeTo("fetch"), ["fetch", "save", END])
-    .addConditionalEdges("fetch", routeTo("extract"), ["extract", "save", END])
-    .addConditionalEdges("extract", routeTo("verify"), ["verify", "save", END])
+    .addConditionalEdges(START, routeTo("resolve"), ["resolve", "score"])
+    .addConditionalEdges("resolve", routeTo("plan"), ["plan", "score", END])
+    .addConditionalEdges("plan", routeTo("search"), ["search", "score", END])
+    .addConditionalEdges("search", routeTo("fetch"), ["fetch", "score", END])
+    .addConditionalEdges("fetch", routeTo("extract"), ["extract", "score", END])
+    .addConditionalEdges("extract", routeTo("verify"), ["verify", "score", END])
     .addConditionalEdges("verify", routeAfterVerify, [
       "search",
       "probe",
-      "save",
+      "score",
       END,
     ])
-    .addConditionalEdges("probe", routeTo("score"), ["score", "save", END])
+    .addConditionalEdges("probe", routeTo("score"), ["score", END])
     .addConditionalEdges("score", routeTo("save"), ["save", END])
     .addEdge("save", END)
     .compile();

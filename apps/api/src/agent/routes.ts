@@ -14,8 +14,9 @@ import type { State } from "./state.js";
 export type Route = NodeName | typeof END;
 
 /**
- * Edge into `node`: a failed run ends, an exhausted budget skips ahead to save (the run is then
- * partial), otherwise the node runs. The budget is checked here, before each node starts.
+ * Edge into `node`: a failed run ends, an exhausted budget skips ahead to score and then save (the
+ * run is then partial), otherwise the node runs. Score is cheap code-only work, so it always runs.
+ * The budget is checked here, before each node starts.
  */
 export function routeTo(node: NodeName) {
   return (state: State, config: RunnableConfig): Route => {
@@ -23,7 +24,7 @@ export function routeTo(node: NodeName) {
       return END;
     }
     const { clock, now } = getDeps(config);
-    return checkBudget(clock, now(), node).ok ? node : "save";
+    return checkBudget(clock, now(), node).ok ? node : "score";
   };
 }
 

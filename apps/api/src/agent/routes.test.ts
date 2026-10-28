@@ -38,11 +38,11 @@ describe("routeTo", () => {
   });
 
   it.each(TIMED)(
-    "skips to save one millisecond below the minimum for %s",
+    "skips to score one millisecond below the minimum for %s",
     (node) => {
       const h = createHarness();
       h.setRemaining(NODE_MIN_REMAINING_MS[node] - 1);
-      expect(routeTo(node)(makeState(), h.config)).toBe("save");
+      expect(routeTo(node)(makeState(), h.config)).toBe("score");
     },
   );
 
@@ -67,7 +67,7 @@ describe("routeTo", () => {
     const route = routeTo("extract");
     expect(route(makeState(), h.config)).toBe("extract");
     h.advance(h.deps.clock.maxDurationMs - 14_999);
-    expect(route(makeState(), h.config)).toBe("save");
+    expect(route(makeState(), h.config)).toBe("score");
   });
 });
 
@@ -136,10 +136,10 @@ describe("routeAfterVerify", () => {
     ).toBe("probe");
   });
 
-  it("goes to save when there is no time left for the probe", () => {
+  it("goes to score when there is no time left for the probe", () => {
     const h = createHarness();
     h.setRemaining(NODE_MIN_REMAINING_MS.probe - 1);
-    expect(routeAfterVerify(makeState(), h.config)).toBe("save");
+    expect(routeAfterVerify(makeState(), h.config)).toBe("score");
   });
 
   it("ends the run on a failure", () => {

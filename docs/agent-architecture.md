@@ -126,7 +126,7 @@ flowchart TD
 | Schema-repair attempts per section | 1 |
 
 - **Checked before each stage.** Every edge goes through one routing rule (`routes.ts`). A stage starts only if its minimum time remains (`NODE_MIN_REMAINING_MS` in `budget.ts`).
-- **When time runs out,** the run skips straight to save and the guide is partial. The stages in between never start, so they emit no events. `verify` and `score` are code only and always run when reached, but a budget stop before `probe` also skips `score`, so save must work without a score.
+- **When time runs out,** the run skips ahead to `score`, then `save`, and the guide is partial. The stages in between never start, so they emit no events. `verify` and `score` are code only and need no minimum time, so `score` always runs. After a budget stop it may find no gates or claims, so it must treat missing facts as unknown.
 - **Retry edge:** verify goes back to search only when a section has no matched quote, `retryCount` is 0 and at least 40 seconds remain. An edge cannot write state, so the search stage counts the retry when it starts one.
 - **A failure ends the run** with no save: the failing stage emits `stage.started` but not `stage.done`, and the executor sends `run.error`.
 - **An abort ends the run** at once. The run returns an `INTERNAL` failure at the stage that was running, and no more events are sent.

@@ -79,7 +79,7 @@ describe("runRealAgent outcome", () => {
     });
   });
 
-  it("reports partial when the budget ran out and the run went straight to save", async () => {
+  it("reports partial when the budget ran out and the run went on to score and save", async () => {
     const { input } = makeInput();
     const clock = fakeClock();
     const outcome = await runRealAgent(input, {
@@ -142,7 +142,9 @@ describe("runRealAgent budget", () => {
       now: clock.now,
       nodes: { plan: spendTwoSeconds(clock) },
     });
-    expect(trace(events).slice(-2)).toEqual([
+    expect(trace(events).slice(-4)).toEqual([
+      "stage.started:7",
+      "stage.done:7",
       "stage.started:8",
       "stage.done:8",
     ]);

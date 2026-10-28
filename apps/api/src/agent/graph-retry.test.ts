@@ -110,7 +110,7 @@ describe("retry edge and time", () => {
     expect(final.retryCount).toBe(0);
   });
 
-  it("saves a partial run when the retry pass runs out of time before extract", async () => {
+  it("scores and saves a partial run when the retry pass runs out of time before extract", async () => {
     const run = createHarness();
     const verify = recorded("verify", missing);
     const retrySearch = recorded("search", (state) => {
@@ -126,8 +126,9 @@ describe("retry edge and time", () => {
       extract: extract.fn,
     });
     expect(extract.calls).toHaveLength(1);
-    expect(trace(run.events).slice(-6)).toEqual([
+    expect(trace(run.events).slice(-8)).toEqual([
       ...[2, 3].flatMap(stage),
+      ...stage(7),
       ...stage(8),
     ]);
     expect(final.completed).toContain(8);
