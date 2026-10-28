@@ -1,6 +1,7 @@
 /**
  * File: ClaimEvidence.tsx
- * Purpose: The evidence for one claim: its label, its source links with their tier, and the verbatim quote.
+ * Purpose: The evidence for one claim: its label, its source links with their tier, the verbatim quote, and the
+ *          control to report it as wrong.
  * Exports: ClaimEvidence
  * Used by: components/guide/* (every claim on a guide)
  */
@@ -9,6 +10,7 @@ import { EvidenceLabel } from "@/components/shared/EvidenceLabel";
 import { SourceLink } from "@/components/shared/SourceLink";
 import type { Claim } from "@/types/guide-model";
 import { TIER_LABEL } from "@/utils/source-tier";
+import { ReportClaim } from "./ReportClaim";
 import { SourceQuotes } from "./SourceQuotes";
 
 /**
@@ -33,6 +35,7 @@ export function ClaimEvidence({ claim }: { claim: Claim }): ReactElement {
         ))}
       </div>
       <SourceQuotes sources={claim.sources} />
+      <ReportClaim claim={claim} />
     </div>
   );
 }

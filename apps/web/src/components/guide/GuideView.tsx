@@ -7,6 +7,7 @@
  */
 import type { ReactElement } from "react";
 import { Container } from "@/components/layout/Container";
+import { GuideSlugContext } from "@/hooks/useGuideSlug";
 import type { Guide } from "@/types/guide-model";
 import { GUIDE_SECTION } from "@/utils/uncertain-sections";
 import { BlockersSection } from "./BlockersSection";
@@ -27,7 +28,7 @@ export function GuideView({ guide }: { guide: Guide }): ReactElement {
     guide.uncertainSections.includes(section);
 
   return (
-    <>
+    <GuideSlugContext.Provider value={guide.slug}>
       <Container className="flex flex-col gap-8 py-12">
         <GuideHeader guide={guide} />
         {isPartial && (
@@ -62,6 +63,6 @@ export function GuideView({ guide }: { guide: Guide }): ReactElement {
       />
       <SourcesSection guide={guide} />
       <ShareStrip slug={guide.slug} isPrimary={!isPartial} />
-    </>
+    </GuideSlugContext.Provider>
   );
 }
