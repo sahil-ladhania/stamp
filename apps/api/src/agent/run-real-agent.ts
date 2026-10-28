@@ -27,6 +27,8 @@ export type RealAgentOptions = {
   budgetMs?: number;
   /** Parallel extraction calls; defaults to AGENT_EXTRACT_CONCURRENCY. */
   extractConcurrency?: number;
+  /** Whether the probe may send its one request; defaults to AGENT_PROBE being "on". */
+  probeEnabled?: boolean;
 };
 
 function internal(stage: number): AgentOutcome {
@@ -42,7 +44,9 @@ function toOutcome(state: State, slug: string, runId: string): AgentOutcome {
     logger.error("agent finished without a guide", { runId });
     return internal(8);
   }
-  return { ok: true, slug, status: isPartial(state) ? "partial" : "done" };
+  // A library guide that owns the slug is shown as the result and counts as done.
+  const partial = !state.libraryProtected && isPartial(state);
+  return { ok: true, slug, status: partial ? "partial" : "done" };
 }
 
 function describeOutcome(outcome: AgentOutcome): Record<string, unknown> {
@@ -79,6 +83,7 @@ export async function runRealAgent(
     usage,
     extractConcurrency:
       options.extractConcurrency ?? getConfig().AGENT_EXTRACT_CONCURRENCY,
+    probeEnabled: options.probeEnabled ?? getConfig().AGENT_PROBE === "on",
   };
 
   let outcome: AgentOutcome;

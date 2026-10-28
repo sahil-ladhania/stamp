@@ -17,6 +17,7 @@ import type { AgentFailure } from "./agent-failure.js";
 import type { ProbeOutcome } from "./evidence/labelling.js";
 import type { PageRecord } from "./page-record.js";
 import type { PlannedQuery } from "./queries.js";
+import type { CheckRecord } from "../services/verification-log.js";
 import type { DraftSectionId, SectionOutput } from "./extract/sections.js";
 import type { SearchResult } from "./search-result.js";
 
@@ -31,7 +32,13 @@ export type SectionDraft<K extends DraftSectionId> =
 
 export type Drafts = { [K in DraftSectionId]?: SectionDraft<K> };
 
-export type ProbeResult = { url: string; outcome: ProbeOutcome };
+/** What the probe found: the endpoint tried, whether it confirmed the claims, the HTTP status and why. */
+export type ProbeResult = {
+  url: string;
+  outcome: ProbeOutcome;
+  status: number | null;
+  reason: string;
+};
 
 const replace = <T>(_current: T, next: T): T => next;
 
@@ -89,9 +96,13 @@ export const AgentState = Annotation.Root({
   /** Sections with no matched quote after verify; the retry edge fires only while this is non-empty. */
   missingSections: last<string[]>(() => []),
   probeResult: last<ProbeResult | null>(() => null),
+  /** Quote and probe checks for the verification log; verify replaces them each pass, probe adds its own. */
+  checks: last<CheckRecord[]>(() => []),
   difficulty: last<DifficultyBreakdown | null>(() => null),
   archetype: last<Archetype | null>(() => null),
   guide: last<Guide | null>(() => null),
+  /** True when a library guide owns the slug, so the live guide was not stored and the run points at the library. */
+  libraryProtected: last<boolean>(() => false),
   /** Sticky: once any node sets it, it stays set. */
   partial: Annotation<boolean>({
     reducer: (current, next) => current || next,

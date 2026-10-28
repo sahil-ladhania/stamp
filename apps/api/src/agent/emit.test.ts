@@ -22,6 +22,7 @@ describe("getDeps", () => {
     clock: {},
     usage: {},
     extractConcurrency: 5,
+    probeEnabled: true,
   };
 
   it.each([

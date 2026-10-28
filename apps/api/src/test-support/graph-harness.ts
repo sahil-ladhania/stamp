@@ -43,9 +43,11 @@ export function makeState(overrides: Partial<State> = {}): State {
     retryCount: 0,
     missingSections: [],
     probeResult: null,
+    checks: [],
     difficulty: null,
     archetype: null,
     guide: null,
+    libraryProtected: false,
     partial: false,
     failure: null,
     completed: [],
@@ -78,6 +80,7 @@ export function createHarness(options: { budgetMs?: number } = {}) {
     now: () => time.now,
     usage: createRunUsage(),
     extractConcurrency: 5,
+    probeEnabled: true,
   };
   const config: RunnableConfig = {
     configurable: { deps },
