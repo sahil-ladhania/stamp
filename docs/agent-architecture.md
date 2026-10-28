@@ -135,6 +135,33 @@ flowchart TD
 
 ---
 
+## 9. Stub agent (`AGENT_MODE`)
+
+- `AGENT_MODE=stub` replays a scripted run through the same `runAgent` contract the real agent uses. It makes no network or model calls, so the web app can be built and tested against a stable API.
+- `AGENT_MODE=real` runs the research agent. Until the pipeline lands it ends every run with `run.error INTERNAL`.
+- **Default:** `stub` when `NODE_ENV` is not `production`. In production `AGENT_MODE` is required and the server refuses to boot without it, so a deploy cannot serve stub data by accident.
+
+**Default run (any app name):** `stage.started` and `stage.done` for stages 0 to 8, 4 `search.query`, 5 `page.fetched` (official, third_party and forum), `claim.verified` for each sourced claim and one `claim.downgraded` (all in stage 5), then a saved live guide and `run.done`. Events arrive 150 to 400 ms apart, about 10 seconds in total.
+
+**Scenarios,** picked by the app name you type:
+
+| Name | Result |
+| --- | --- |
+| `stub-error` | Stages 0 to 3 finish, then `run.error INTERNAL` at stage 4 |
+| `stub-partial` | All stages run, claims are downgraded for `time_budget`, partial guide, `run.done` with status `partial` |
+| `stub-ambiguous` | `run.error AMBIGUOUS_APP` at stage 0 with two options |
+| `stub-notoauth` | `run.error NOT_OAUTH` at stage 3 |
+
+**Stub guides are marked as test data:**
+- `appName` ends with `(stub data)` and `domain` is `example.com`.
+- The verdict summary reads "Stub guide: scripted test data, not real research".
+- Every other claim text starts with `[STUB]`, and every source is on an `example.com`, `.net` or `.org` page.
+- Labels are only Sourced or Uncertain. Nothing in a stub is Tested.
+
+**Stub guides are born expired.** They are readable at `/g/<slug>`, but they never count as a cached guide, so a stub can never stand in for real research. Looking up the same app again runs the stub again. Each stub run still counts against `DAILY_RUN_CAP`.
+
+---
+
 ## Next
 
 - Read [product-architecture.md](./product-architecture.md) for how runs reach the browser.
