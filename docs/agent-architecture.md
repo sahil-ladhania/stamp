@@ -125,6 +125,8 @@ flowchart TD
 | AI output fails the schema | Retry that section once with the error; else mark it Uncertain |
 | Hostile text in a page | Page text is treated as data only; code checks every quote |
 
+- A section marked Uncertain because nothing was found becomes one Uncertain claim with no sources. Its text says what is unknown. Only Uncertain claims may have no sources; the schema rejects a Sourced or Tested claim without one.
+
 ---
 
 ## 8. Optional browser agent
