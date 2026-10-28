@@ -1,7 +1,7 @@
 /**
  * File: state.ts
  * Purpose: The graph's working memory: typed state channels, with reducers where a node adds to a list.
- * Exports: AgentState, State, StateUpdate, AppIdentity, SectionDraft, AuthMethod, Gates, ProbeResult, appendUnique
+ * Exports: AgentState, State, StateUpdate, AppIdentity, SectionDraft, Drafts, ProbeResult, appendUnique
  * Used by: agent/graph.ts, agent/stage-node.ts, agent/routes.ts, agent/run-real-agent.ts, agent/nodes/*
  */
 import { Annotation } from "@langchain/langgraph";
@@ -17,22 +17,19 @@ import type { AgentFailure } from "./agent-failure.js";
 import type { ProbeOutcome } from "./evidence/labelling.js";
 import type { PageRecord } from "./page-record.js";
 import type { PlannedQuery } from "./queries.js";
-import type { GateFacts } from "./scoring/difficulty.js";
+import type { DraftSectionId, SectionOutput } from "./extract/sections.js";
 import type { SearchResult } from "./search-result.js";
 
 /** The official app the run is about; resolve (stage 0) fills it. */
 export type AppIdentity = { appName: string; domain: string; slug: string };
 
-/** One guide section after extract: drafted, not found in the pages, or failed after its one repair. */
-export type SectionDraft =
-  | { status: "drafted"; payload: unknown }
+/** One guide section after extract: drafted, not found in the pages, or failed (the reason says why). */
+export type SectionDraft<K extends DraftSectionId> =
+  | { status: "drafted"; payload: SectionOutput<K> }
   | { status: "unknown" }
   | { status: "failed"; reason: string };
 
-export type AuthMethod = "oauth" | "both" | "api_key_only" | "unknown";
-
-/** The auth method and the difficulty facts behind the score; extract fills it, verify checks it. */
-export type Gates = { authMethod: AuthMethod; facts: GateFacts };
+export type Drafts = { [K in DraftSectionId]?: SectionDraft<K> };
 
 export type ProbeResult = { url: string; outcome: ProbeOutcome };
 
@@ -78,12 +75,13 @@ export const AgentState = Annotation.Root({
     reducer: appendUnique((page) => page.urlHash),
     default: () => [],
   }),
-  /** Keyed by section name; a retry pass adds or replaces only the sections it re-extracted. */
-  drafts: Annotation<Record<string, SectionDraft>>({
+  /** Keyed by section; a retry pass adds or replaces only the sections it re-extracted. */
+  drafts: Annotation<Drafts>({
     reducer: (current, added) => ({ ...current, ...added }),
     default: () => ({}),
   }),
-  gates: last<Gates | null>(() => null),
+  /** The gates call's facts, each with the claim that backs it; null when unknown or failed. */
+  gates: last<SectionOutput<"gates"> | null>(() => null),
   claims: last<Claim[]>(() => []),
   conflicts: last<Conflict[]>(() => []),
   /** 0 or 1: how many retry passes have started. The graph bumps it when search starts a retry. */

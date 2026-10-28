@@ -100,20 +100,20 @@ describe("state channels", () => {
       extract: stageNode("extract", () =>
         Promise.resolve({
           drafts: {
-            steps: { status: "drafted", payload: [] },
+            steps: { status: "drafted", payload: { steps: [] } },
             limits: { status: "unknown" },
           },
         }),
       ),
       verify: stageNode("verify", () =>
         Promise.resolve({
-          drafts: { limits: { status: "failed", reason: "schema" } },
+          drafts: { limits: { status: "failed", reason: "schema_failed" } },
         }),
       ),
     });
     expect(final.drafts).toEqual({
-      steps: { status: "drafted", payload: [] },
-      limits: { status: "failed", reason: "schema" },
+      steps: { status: "drafted", payload: { steps: [] } },
+      limits: { status: "failed", reason: "schema_failed" },
     });
   });
 
