@@ -6,6 +6,7 @@
  */
 import { useId, type ReactElement } from "react";
 import { Link } from "react-router";
+import { AppIcon } from "@/components/shared/AppIcon";
 import { cn } from "@/lib/utils";
 import type { GuideSummary } from "@/mocks/types";
 
@@ -33,8 +34,9 @@ export function ExampleApps({
           <li key={app.slug}>
             <Link
               to={`/g/${app.slug}`}
-              className="inline-block rounded-full border border-rule px-3 py-1 text-small text-ink transition-colors hover:border-ink-muted"
+              className="inline-flex items-center gap-1.5 rounded-full border border-rule px-3 py-1 text-small text-ink transition-colors hover:border-ink-muted"
             >
+              <AppIcon slug={app.slug} className="size-4 text-ink-muted" />
               {app.appName}
             </Link>
           </li>

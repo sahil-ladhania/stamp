@@ -5,6 +5,7 @@
  * Used by: components/guide/GuideView.tsx
  */
 import type { ReactElement } from "react";
+import { AppIcon } from "@/components/shared/AppIcon";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import type { Guide, GuideMode } from "@/mocks/types";
 import { ARCHETYPE_LABEL } from "@/utils/archetype";
@@ -22,7 +23,12 @@ export function GuideHeader({ guide }: { guide: Guide }): ReactElement {
     <header className="flex flex-col gap-4">
       <SectionHeading
         level={1}
-        title={guide.appName}
+        title={
+          <span className="inline-flex items-center gap-3">
+            <AppIcon slug={guide.slug} className="size-7 text-ink-muted" />
+            {guide.appName}
+          </span>
+        }
         description={guide.headline}
         aside={<CopyLinkButton slug={guide.slug} />}
       />

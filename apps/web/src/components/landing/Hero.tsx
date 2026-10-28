@@ -28,12 +28,10 @@ export function Hero({ isVideoFailed = false }: HeroProps): ReactElement {
             id="hero-heading"
             className="text-page-title tracking-tight text-balance text-ink tablet:text-display"
           >
-            One hour or six weeks?
+            Know what it takes to get your OAuth app stamped.
           </h1>
           <p className="text-card-title font-normal text-ink-muted">
-            Docs list the clicks and hide the wait. Stamp shows how hard it is
-            to get your provider OAuth app approved, how long it takes and what
-            blocks it. Every claim has a source.
+            See if it takes an hour or six weeks, and what will block approval.
           </p>
           <SearchBar
             size="lg"
@@ -43,7 +41,7 @@ export function Hero({ isVideoFailed = false }: HeroProps): ReactElement {
           <div className="flex flex-col gap-3">
             <ExampleApps apps={LIBRARY_SUMMARIES} />
             <p className="text-small text-ink-muted">
-              Any other app is researched live. You watch it happen.
+              Any other app is researched live. You watch each search.
             </p>
           </div>
         </div>

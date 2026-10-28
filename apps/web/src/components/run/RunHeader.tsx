@@ -6,21 +6,26 @@
  */
 import type { ReactElement } from "react";
 import { Link } from "react-router";
+import { AppIcon } from "@/components/shared/AppIcon";
 import { SectionHeading } from "@/components/shared/SectionHeading";
+import { findLibrarySlug } from "@/mocks/guides";
 import { buttonVariants } from "@/components/ui/button-variants";
 import type { RunCopy } from "./run-copy";
 
 type RunHeaderProps = {
   copy: RunCopy;
+  appName: string | null;
   currentStageName: string | null;
   isRunning: boolean;
 };
 
 export function RunHeader({
   copy,
+  appName,
   currentStageName,
   isRunning,
 }: RunHeaderProps): ReactElement {
+  const appSlug = appName ? findLibrarySlug(appName) : null;
   const status = isRunning
     ? currentStageName
       ? `Now: ${currentStageName}.`
@@ -29,7 +34,18 @@ export function RunHeader({
 
   return (
     <div className="flex flex-col gap-4">
-      <SectionHeading level={1} title={copy.heading} description={copy.lead} />
+      <SectionHeading
+        level={1}
+        title={
+          <span className="inline-flex items-center gap-3">
+            {appSlug && (
+              <AppIcon slug={appSlug} className="size-7 text-ink-muted" />
+            )}
+            {copy.heading}
+          </span>
+        }
+        description={copy.lead}
+      />
       {/* Announced politely on every stage change. Hidden once the run ends: the heading says it. */}
       <p
         role="status"

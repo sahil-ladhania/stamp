@@ -13,15 +13,15 @@ import { SectionHeading } from "@/components/shared/SectionHeading";
 const STEPS = [
   {
     title: "Search an app",
-    body: "Type a name or a website. The five library apps open at once.",
+    body: "Type a name or a website. A library guide opens straight away.",
   },
   {
-    title: "Watch the agent work",
-    body: "Any other app is researched live. You see each search, each page read and each claim kept or downgraded.",
+    title: "Watch the research",
+    body: "Any other app is researched live. You see each search, each page and each claim kept or marked Uncertain.",
   },
   {
     title: "Share the guide",
-    body: "Every guide has its own link, with the date and every source. Send it to your team.",
+    body: "Copy a link with the date and every source, and send it to your team.",
   },
 ] as const;
 
@@ -49,8 +49,8 @@ export function HowItWorksSection(): ReactElement {
         </ol>
         <div className="flex flex-col items-start gap-2">
           <p className="max-w-prose text-body text-ink-muted">
-            The agent follows nine fixed stages. Only two use an AI model. Code
-            checks every quote and sets the score.
+            The model drafts the facts. Code checks every quote and sets the
+            score.
           </p>
           <Link
             to="/how-we-verify"

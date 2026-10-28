@@ -6,6 +6,7 @@
  */
 import type { ReactElement } from "react";
 import { Link } from "react-router";
+import { AppIcon } from "@/components/shared/AppIcon";
 import { DifficultyDots } from "@/components/shared/DifficultyDots";
 import type { GuideSummary } from "@/mocks/types";
 import { ARCHETYPE_LABEL } from "@/utils/archetype";
@@ -20,7 +21,10 @@ export function LibraryRow({ guide }: { guide: GuideSummary }): ReactElement {
     >
       <DifficultyDots score={guide.difficulty} hasValue />
       <div className="flex flex-col">
-        <span className="text-card-title text-ink">{guide.appName}</span>
+        <span className="flex items-center gap-2 text-card-title text-ink">
+          <AppIcon slug={guide.slug} className="text-ink-muted" />
+          {guide.appName}
+        </span>
         <span className="text-data text-ink-muted">
           {ARCHETYPE_LABEL[guide.archetype]}
         </span>

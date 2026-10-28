@@ -8,7 +8,7 @@ import type { ReactElement, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 type SectionHeadingProps = {
-  title: string;
+  title: ReactNode;
   /** 1 = page title, 2 = section, 3 = card title. Keeps the document outline honest. */
   level?: 1 | 2 | 3;
   description?: string;

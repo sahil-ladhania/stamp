@@ -5,12 +5,13 @@
  * Used by: pages/HowWeVerifyPage.tsx
  */
 import type { ReactElement } from "react";
+import { AppIcon } from "@/components/shared/AppIcon";
 import { hubspotGuide } from "@/mocks/guides/hubspot";
 import { DifficultyRuleTable } from "./DifficultyRuleTable";
 import { ScoreBands } from "./ScoreBands";
 import { PageSection } from "@/components/shared/PageSection";
 
-const { appName, difficulty } = hubspotGuide;
+const { slug, appName, difficulty } = hubspotGuide;
 
 // Built from the mock so the sentence cannot disagree with the highlighted cells.
 const FACTOR_SUMMARY = difficulty.factors
@@ -26,7 +27,11 @@ export function DifficultySection(): ReactElement {
     >
       <DifficultyRuleTable example={difficulty} exampleName={appName} />
       <div className="flex flex-col gap-3">
-        <h3 className="text-card-title text-ink">Worked example: {appName}</h3>
+        <h3 className="flex items-center gap-2 text-card-title text-ink">
+          <span>Worked example:</span>
+          <AppIcon slug={slug} className="text-ink-muted" />
+          <span>{appName}</span>
+        </h3>
         <p className="max-w-prose text-body text-ink-muted">
           {FACTOR_SUMMARY.charAt(0).toUpperCase() + FACTOR_SUMMARY.slice(1)}.
           That is {difficulty.total} points, so the score is {difficulty.score}{" "}

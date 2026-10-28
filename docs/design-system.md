@@ -18,6 +18,7 @@
 | One accent | Stamp red is used only for the verdict and the primary button |
 | Readable at a glance | Monospace for scopes, URLs and labels; sans for sentences |
 | Accessible by default | AA contrast in both modes; colour is never the only signal |
+| Focus | The sourced focus ring appears on links and buttons. Text inputs keep the field border only; no focus outline on inputs |
 
 ---
 
@@ -35,7 +36,7 @@ Contrast is the WCAG ratio against the token's background. AA needs 4.5:1 for no
 | `--stamp` | `#B42318` | `#F4735F` | Verdict stamp, primary button | 6.2 / 6.6 |
 | `--on-stamp` | `#FFFFFF` | `#141311` | Text on a stamp-filled button | 6.6 / 6.6 |
 | `--tested` / `--tested-bg` | `#1F6B43` / `#E6F4EC` | `#7FD4A6` / `#11301F` | Tested label | 5.7 / 8.1 |
-| `--sourced` / `--sourced-bg` | `#1F4E99` / `#E8EFFA` | `#9EBEF7` / `#17294A` | Sourced label, links, focus ring | 7.0 / 7.7 |
+| `--sourced` / `--sourced-bg` | `#1F4E99` / `#E8EFFA` | `#9EBEF7` / `#17294A` | Sourced label, links, focus ring on links and buttons | 7.0 / 7.7 |
 | `--uncertain` / `--uncertain-bg` | `#8A5A00` / `#FFF4DB` | `#F3C467` / `#3A2A08` | Uncertain label, blockers | 5.4 / 8.5 |
 
 - **Dark-mode trap:** white text on the dark `--stamp` fails AA. Always use `--on-stamp`.

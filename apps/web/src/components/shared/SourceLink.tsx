@@ -4,6 +4,7 @@
  * Exports: SourceLink
  * Used by: components/landing/EvidenceSection.tsx, components/guide/ConflictCard.tsx
  */
+import { ExternalLink } from "lucide-react";
 import type { ReactElement } from "react";
 import { cn } from "@/lib/utils";
 import type { Source } from "@/mocks/types";
@@ -24,11 +25,12 @@ export function SourceLink({
       target="_blank"
       rel="noreferrer"
       className={cn(
-        "text-small text-sourced underline underline-offset-4",
+        "inline-flex items-center gap-1 text-small text-sourced underline underline-offset-4",
         className,
       )}
     >
       {source.title}
+      <ExternalLink aria-hidden className="size-3.5 shrink-0" />
       <span className="sr-only"> (opens in a new tab)</span>
     </a>
   );

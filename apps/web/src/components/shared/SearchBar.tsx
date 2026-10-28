@@ -4,6 +4,7 @@
  * Exports: SearchBar
  * Used by: Landing, App home, Not found
  */
+import { Search } from "lucide-react";
 import { useId, useState, type FormEvent, type ReactElement } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -60,18 +61,24 @@ export function SearchBar({
         App name or website
       </label>
       <div className="flex flex-col gap-2 tablet:flex-row">
-        <Input
-          id={inputId}
-          name="app"
-          value={value}
-          onChange={(event) => setValue(event.target.value)}
-          placeholder={placeholder}
-          maxLength={MAX_LENGTH}
-          autoComplete="off"
-          aria-invalid={error ? true : undefined}
-          aria-describedby={error ? errorId : undefined}
-          className={size === "lg" ? "h-12" : undefined}
-        />
+        <div className="relative min-w-0 flex-1">
+          <Search
+            aria-hidden
+            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink-muted"
+          />
+          <Input
+            id={inputId}
+            name="app"
+            value={value}
+            onChange={(event) => setValue(event.target.value)}
+            placeholder={placeholder}
+            maxLength={MAX_LENGTH}
+            autoComplete="off"
+            aria-invalid={error ? true : undefined}
+            aria-describedby={error ? errorId : undefined}
+            className={cn("pl-10", size === "lg" ? "h-12" : undefined)}
+          />
+        </div>
         <Button
           type="submit"
           variant={buttonVariant}

@@ -27,7 +27,7 @@ const QUESTIONS = [
     answer: "Blocker cards with the symptom, cause, fix and who to contact.",
   },
   {
-    question: "What can an agent do?",
+    question: "What can an agent do for me?",
     answer: "Every step is marked agent, human or agent-assist.",
   },
 ] as const;
@@ -42,7 +42,7 @@ export function VerdictSection(): ReactElement {
         <SectionHeading
           id="verdict-heading"
           title="The verdict comes before the steps"
-          description="Every guide opens with four answers. You know the difficulty, the wait and the top blocker before you read a single step."
+          description="Docs list the clicks and hide the wait. You get the difficulty, the time and the top blocker before a single step."
         />
         <div className="grid gap-8 desktop:grid-cols-12 desktop:items-start">
           <div className="desktop:col-span-7">

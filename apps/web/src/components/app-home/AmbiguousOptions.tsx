@@ -6,6 +6,7 @@
  */
 import type { ReactElement } from "react";
 import { Link } from "react-router";
+import { AppIcon } from "@/components/shared/AppIcon";
 import type { AmbiguousOption } from "@/mocks/ambiguous";
 
 type AmbiguousOptionsProps = {
@@ -36,9 +37,12 @@ export function AmbiguousOptions({
             <Link
               to={`/g/${option.slug}`}
               aria-label={`Open the ${option.name} guide`}
-              className="flex items-baseline justify-between gap-3 rounded-md border border-rule p-3 transition-colors hover:border-ink-muted"
+              className="flex items-center justify-between gap-3 rounded-md border border-rule p-3 transition-colors hover:border-ink-muted"
             >
-              <span className="text-card-title text-ink">{option.name}</span>
+              <span className="flex items-center gap-2 text-card-title text-ink">
+                <AppIcon slug={option.slug} className="text-ink-muted" />
+                {option.name}
+              </span>
               <span className="text-data text-ink-muted">{option.domain}</span>
             </Link>
           </li>

@@ -16,7 +16,7 @@ import { useMockScenario } from "@/hooks/useMockScenario";
 import { PAGE_SCENARIOS } from "@/mocks/scenarios";
 
 export function LandingPage(): ReactElement {
-  useDocumentTitle("");
+  useDocumentTitle("OAuth readiness report");
   const { scenario } = useMockScenario(PAGE_SCENARIOS.landing);
 
   return (

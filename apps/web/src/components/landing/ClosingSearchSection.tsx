@@ -24,7 +24,7 @@ export function ClosingSearchSection(): ReactElement {
       >
         <SectionHeading
           id="closing-heading"
-          title="Which app is next?"
+          title="Get a guide for any app"
           description="Search any app. If it is not in the library, the agent researches it live."
           className="desktop:col-span-5"
         />

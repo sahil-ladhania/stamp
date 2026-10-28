@@ -21,8 +21,8 @@ export function KindsOfHardSection(): ReactElement {
       <Container size="wide" className="flex flex-col gap-8">
         <SectionHeading
           id="kinds-heading"
-          title="Five apps, five kinds of hard"
-          description="Setup is not equally hard everywhere. Each library guide shows a different kind of hard."
+          title="Five ways an OAuth app gets hard"
+          description="Each library guide is a different catch, from no review on GitHub to weeks of assessment on Gmail."
           aside={
             <Link
               to="/app"

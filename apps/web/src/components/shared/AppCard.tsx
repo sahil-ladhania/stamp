@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils'
 import type { GuideSummary } from '@/mocks/types'
 import { ARCHETYPE_LABEL } from '@/utils/archetype'
 import { formatAsOf } from '@/utils/format-date'
+import { AppIcon } from './AppIcon'
 import { DifficultyDots } from './DifficultyDots'
 
 type AppCardProps = { guide: GuideSummary; className?: string }
@@ -25,7 +26,10 @@ export function AppCard({ guide, className }: AppCardProps): ReactElement {
       )}
     >
       <div className="flex items-start justify-between gap-3">
-        <h3 className="text-card-title text-ink">{guide.appName}</h3>
+        <h3 className="flex items-center gap-2 text-card-title text-ink">
+          <AppIcon slug={guide.slug} className="text-ink-muted" />
+          {guide.appName}
+        </h3>
         <DifficultyDots score={guide.difficulty} hasValue className="pt-1" />
       </div>
       <p className="text-body text-ink-muted">{guide.headline}</p>

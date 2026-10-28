@@ -34,6 +34,7 @@ export function RunScreen({
     <Container className="flex flex-col gap-8 py-12">
       <RunHeader
         copy={copy}
+        appName={snapshot.appName}
         currentStageName={view.currentStage?.name ?? null}
         isRunning={isRunning}
       />

@@ -5,6 +5,7 @@
  * Used by: components/landing/HeroPoster.tsx, components/landing/VerdictSection.tsx, Guide page (step 6)
  */
 import type { ReactElement } from "react";
+import { AppIcon } from "@/components/shared/AppIcon";
 import { DifficultyDots } from "@/components/shared/DifficultyDots";
 import { EvidenceLabel } from "@/components/shared/EvidenceLabel";
 import { cn } from "@/lib/utils";
@@ -53,7 +54,10 @@ export function VerdictStamp({
       {hasHeader && (
         <div className="flex items-start justify-between gap-3">
           <div className="flex flex-col">
-            <p className="text-card-title text-ink">{guide.appName}</p>
+            <p className="flex items-center gap-2 text-card-title text-ink">
+              <AppIcon slug={guide.slug} className="text-ink-muted" />
+              {guide.appName}
+            </p>
             <p className="text-data text-ink-muted">
               {ARCHETYPE_LABEL[guide.archetype]}
             </p>
