@@ -25,7 +25,7 @@ export function ConflictCard({ conflict, appName, hasReasonEvidence = true }: Co
   const headingId = useId();
 
   return (
-    <article aria-labelledby={headingId} className="flex flex-col gap-4 rounded-md border border-rule bg-card p-card">
+    <article aria-labelledby={headingId} className="flex min-w-0 flex-col gap-4 rounded-md border border-rule bg-card p-card">
       <h3 id={headingId} className="flex items-center gap-2 text-card-title text-ink">
         {appName && <AppIcon slug={appName.toLowerCase()} className="text-ink-muted" />}
         <span>{appName ? `${appName}: ${conflict.topic}` : conflict.topic}</span>

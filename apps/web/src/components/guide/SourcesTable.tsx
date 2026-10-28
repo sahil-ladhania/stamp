@@ -47,7 +47,7 @@ function SourcesWide({ sources }: { sources: readonly Source[] }): ReactElement 
       <TableBody>
         {sources.map((source) => (
           <TableRow key={source.url} className="align-middle">
-            <TableCell className="w-1/2 pl-0">
+            <TableCell className="w-full max-w-0 pl-0">
               <SourceChip source={source} hasTier={false} />
             </TableCell>
             <TableCell className="text-small whitespace-nowrap text-ink-muted">{TIER_LABEL[source.tier]}</TableCell>

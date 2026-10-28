@@ -13,6 +13,7 @@ import { PageContainer } from "@/components/layout/PageContainer";
 import { ExampleApps } from "@/components/shared/ExampleApps";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { StartRunSearch } from "@/components/shared/StartRunSearch";
+import { TextLink } from "@/components/shared/TextLink";
 import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { useGuides } from "@/hooks/useGuides";
@@ -83,12 +84,7 @@ export function NotFoundPanel({ path }: { path: string }): ReactElement {
           <Link to="/app" className={buttonVariants({ variant: "secondary" })}>
             Open the library
           </Link>
-          <Link
-            to="/"
-            className="text-body text-sourced underline underline-offset-4"
-          >
-            Go to the home page
-          </Link>
+          <TextLink to="/">Go to the home page</TextLink>
         </div>
       </div>
       <div className="desktop:col-span-5">
