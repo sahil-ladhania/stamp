@@ -20,6 +20,7 @@ vi.mock("../../lib/tavily.js", () => ({
   extractPages: vi.fn(),
 }));
 const tavily = vi.mocked(searchWeb);
+vi.spyOn(logger, "info").mockImplementation(() => {});
 const warn = vi.spyOn(logger, "warn");
 
 beforeEach(() => {

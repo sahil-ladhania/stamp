@@ -272,6 +272,25 @@ Time caps per stage (seconds). A stage also gets less when the run is running la
 
 ---
 
+## 11. What a run logs
+
+One JSON object per line (`lib/logger.ts`); info goes to stdout, warnings and errors to stderr. Every line carries the `runId`. No line holds page text, claim text, quotes or keys.
+
+| Message | From | Fields worth reading |
+| --- | --- | --- |
+| `resolve summary` | stage 0 | `decision` (`official`, `ambiguous`, `none`), top 5 `candidates` with `domain`, `match`, `score`, `hits`. This is the data the ambiguity thresholds are tuned against |
+| `search summary` | stage 2 | `queries`, `failedQueries`, `results`, `byTier`, `retryPass` |
+| `pages loaded` | stage 3 | pages from the network and from the cache |
+| `extract summary` | stage 4 | one row per section: status, duration, tokens |
+| `verify summary` | stage 5 | `claims`, `sourced`, `conflicts`, `missing` |
+| `probe summary` | stage 6 | `reason` (`disabled`, `no_authorize_url` or the response reason), `outcome`, `status` |
+| `guide saved` / `guide not saved` | stage 8 | `coverage`, `difficulty`, `checks`, or the reason it failed |
+| `run summary` | the runner, once per run | `ok`, `status` or `code`, `durationMs`, `stageReached`, tokens per tier (`fastCalls`, `strongCalls`, `totalTokens`), `tavilySearchCalls`, `tavilyExtractCalls`, `tavilyCredits`, `pagesFetched`, `pageCacheHits`, `pagesHeld`, `claims`, `labels` (`sourced`, `tested`, `uncertain`), `coverage`, `retried`, `probe`, `libraryProtected` |
+
+`labels` count the claims in the saved guide, so unknown claims count as Uncertain; with no guide they count the claims verify produced.
+
+---
+
 ## Next
 
 - Read [product-architecture.md](./product-architecture.md) for how runs reach the browser.

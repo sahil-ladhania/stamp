@@ -21,6 +21,7 @@ vi.mock("../../lib/tavily.js", () => ({
   extractPages: vi.fn(),
 }));
 const search = vi.mocked(searchWeb);
+vi.spyOn(logger, "info").mockImplementation(() => {});
 const error = vi.spyOn(logger, "error");
 
 const found = (...urls: string[]) =>

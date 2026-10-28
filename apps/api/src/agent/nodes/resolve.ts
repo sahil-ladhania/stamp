@@ -55,7 +55,21 @@ export const resolveNode = stageNode("resolve", async (state, config) => {
     return { failure: makeFailure(0, "INTERNAL") };
   }
 
-  const decision = decideOfficial(rankCandidates(typed.name, hits));
+  const candidates = rankCandidates(typed.name, hits);
+  const decision = decideOfficial(candidates);
+  // The scores are what the ambiguity thresholds are tuned against; no page text is logged.
+  logger.info("resolve summary", {
+    runId: deps.runId,
+    name: typed.name,
+    decision: decision.kind,
+    hits: hits.length,
+    candidates: candidates.slice(0, 5).map((c) => ({
+      domain: c.domain,
+      match: c.match,
+      score: Math.round(c.score * 100) / 100,
+      hits: c.hits,
+    })),
+  });
   switch (decision.kind) {
     case "official":
       return {

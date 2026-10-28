@@ -65,5 +65,18 @@ export const searchNode = stageNode("search", async (state, config) => {
     return { failure: makeFailure(2, "INTERNAL") };
   }
   const hits = runs.flatMap((found) => found ?? []);
-  return { searchResults: orderResults(toSearchResults(hits, app.domain)) };
+  const searchResults = orderResults(toSearchResults(hits, app.domain));
+  logger.info("search summary", {
+    runId: deps.runId,
+    retryPass: isRetryEntry(state),
+    queries: jobs.length,
+    failedQueries: runs.filter((found) => found === null).length,
+    results: searchResults.length,
+    byTier: {
+      official: searchResults.filter((r) => r.tier === "official").length,
+      third_party: searchResults.filter((r) => r.tier === "third_party").length,
+      forum: searchResults.filter((r) => r.tier === "forum").length,
+    },
+  });
+  return { searchResults };
 });

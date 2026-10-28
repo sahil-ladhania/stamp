@@ -5,6 +5,7 @@
  * Used by: vitest
  */
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { logger } from "../lib/logger.js";
 import { RUN_ERROR_MESSAGES } from "../services/run-messages.js";
 import { buildStubGuide } from "./stub/stub-guide.js";
 import { trace } from "../test-support/graph-harness.js";
@@ -21,6 +22,7 @@ vi.mock("./nodes/index.js", async () => ({
   defaultNodes: (await import("../test-support/graph-harness.js")).NOOP_NODES,
 }));
 const { runRealAgent } = await import("./run-real-agent.js");
+vi.spyOn(logger, "info").mockImplementation(() => {});
 
 const guide = buildStubGuide({
   slug: "notion",

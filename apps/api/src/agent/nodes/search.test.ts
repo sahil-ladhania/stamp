@@ -5,6 +5,7 @@
  * Used by: vitest
  */
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { logger } from "../../lib/logger.js";
 import { searchWeb } from "../../lib/tavily.js";
 import { createHarness } from "../../test-support/graph-harness.js";
 import { hit } from "../../test-support/node-fixtures.js";
@@ -19,6 +20,7 @@ vi.mock("../../lib/tavily.js", () => ({
   searchWeb: vi.fn(),
   extractPages: vi.fn(),
 }));
+vi.spyOn(logger, "info").mockImplementation(() => {});
 const tavily = vi.mocked(searchWeb);
 
 beforeEach(() => {

@@ -14,6 +14,7 @@ import type { AgentDeps } from "./deps.js";
 import { buildGraph, RECURSION_LIMIT } from "./graph.js";
 import { defaultNodes } from "./nodes/index.js";
 import { isPartial } from "./pipeline.js";
+import { summarizeState } from "./run-summary.js";
 import type { AgentOutcome, RunAgentInput } from "./run-agent.js";
 import type { NodeSet } from "./stage-node.js";
 import type { State } from "./state.js";
@@ -87,6 +88,7 @@ export async function runRealAgent(
   };
 
   let outcome: AgentOutcome;
+  let resultFields: Record<string, unknown> = {};
   try {
     const state = await buildGraph({
       ...defaultNodes,
@@ -100,6 +102,7 @@ export async function runRealAgent(
       },
     );
     outcome = toOutcome(state, input.slug, input.runId);
+    resultFields = summarizeState(state);
   } catch (err) {
     if (!input.signal.aborted) {
       logger.error("agent run failed", {
@@ -118,6 +121,7 @@ export async function runRealAgent(
     stageReached,
     durationMs: now() - startedAt,
     ...summarizeUsage(usage),
+    ...resultFields,
   });
   return outcome;
 }
