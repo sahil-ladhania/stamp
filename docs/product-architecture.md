@@ -85,11 +85,12 @@ sequenceDiagram
         A-->>B: {slug} then open /g/notion
     else not cached
         A->>D: Create run, lock the app
+        A->>G: Start run (detached, in the background)
         A-->>B: {runId}
         B->>A: GET /api/runs/:id/stream
-        A->>G: Start run
+        A-->>B: Snapshot, then every event so far
         loop each stage
-            G-->>A: Progress event
+            G-->>A: Progress event (buffered in memory)
             A-->>B: Forward event
         end
         G->>D: Save guide + verification log
@@ -99,7 +100,13 @@ sequenceDiagram
     end
 ```
 
-- **Lock:** two people asking for the same app share one run.
+- **The run starts at `POST /api/runs`**, detached from the request. The stream is only a view of it, so a dropped connection, a late joiner and a reconnect never affect the run.
+- **Lock:** two people asking for the same app share one run. The second `POST` gets `202 {status: "running", runId}` for the run already in progress.
+- **Replay buffer:** the API keeps each run's events in memory. A stream sends the run snapshot, then every buffered event from the start, then live events, and closes after `run.done` or `run.error`. Any number of clients can follow one run. The buffer is kept for 10 minutes after the run ends.
+- **No buffer (restart or expiry):** the stream sends the snapshot, then a `run.done` or `run.error` rebuilt from the `runs` row. A run still marked `running` after 3 minutes is failed with `INTERNAL`, which also frees its lock.
+- **Single instance:** the buffer lives in the API process, so run and stream requests must reach the same instance. Railway runs one.
+- **Order of checks in `POST /api/runs`:** cached guide, then join a running run, then the daily cap, then take the lock. Cached and joined requests never count against the cap, so the library keeps working when it is reached.
+- **Library guides are never re-run:** `force` on a library slug returns `cached`, and a live save never overwrites a library guide.
 
 ---
 
@@ -140,6 +147,7 @@ Full columns and the Prisma draft are in [db-schema-design.md](./db-schema-desig
 | Live guides | 7 days, then "Refresh" | Repeat lookups cost nothing |
 | Fetched pages | 7 days, with a text hash | Quote checks stay repeatable |
 | Run lock | 3 minutes | No duplicate runs for the same app |
+| Run event buffer | 10 minutes after the run ends, in memory | Reconnects and late joiners see the full run |
 
 ---
 
@@ -152,6 +160,7 @@ Full columns and the Prisma draft are in [db-schema-design.md](./db-schema-desig
 | Costs spike | Daily run cap | "Live generation paused, try a library guide" |
 | Leaked keys | Keys only on the server; `.env` never committed | Nothing |
 | Same app requested twice | Run lock | Both see the same run |
+| API restarts mid-run | Stale-run check (3 minutes), then the run is failed and the lock freed | A failed run with Retry |
 
 ---
 

@@ -65,18 +65,18 @@ Responses:
 
 | Status | Body | When |
 | --- | --- | --- |
-| `200` | `{ "status": "cached", "slug": "notion" }` | A fresh guide exists |
+| `200` | `{ "status": "cached", "slug": "notion" }` | A fresh guide exists; library guides are always fresh, even with `force` |
 | `202` | `{ "status": "started", "runId": "run_123" }` | A new run started |
 | `202` | `{ "status": "running", "runId": "run_122" }` | A run for this app is already in progress; join it |
 | `400` | error `VALIDATION_ERROR` | Bad input |
 | `429` | error `RATE_LIMITED` + `Retry-After` header | Too many runs from this IP |
-| `503` | error `RUN_CAP_REACHED` | Daily run cap hit; library still works |
+| `503` | error `RUN_CAP_REACHED` | Daily run cap hit (runs started since 00:00 UTC); cached guides and joining a running run still work |
 
 ### `GET /api/runs/:id`
 
 | Status | Body |
 | --- | --- |
-| `200` | `{ "runId", "slug", "status", "stageReached", "startedAt", "finishedAt" }` |
+| `200` | `{ "runId", "slug", "status", "stageReached", "startedAt", "finishedAt", "errorCode"? }` |
 | `404` | error `NOT_FOUND` |
 
 `status` is one of `running`, `done`, `partial`, `failed`.
@@ -84,18 +84,24 @@ Responses:
 ### `GET /api/runs/:id/stream`
 
 - Response type: `text/event-stream`.
-- On connect, the server first sends the run snapshot, then live events.
+- On connect, the server first sends a `run.snapshot` event, then every event the run has produced so far, then live events. Reconnecting replays the whole run.
 - The stream closes after `run.done` or `run.error`.
+- An unknown run id returns a normal JSON `404 NOT_FOUND`, before any stream starts.
+- A comment line (`: heartbeat`) is sent every 15 seconds while the run is quiet.
+- After an API restart, or 10 minutes after a run ends, the stream sends the snapshot and a `run.done` or `run.error` rebuilt from the database (`options` for `AMBIGUOUS_APP` is lost).
 
 Wire format of one event:
 
 ```text
 event: claim.verified
-data: {"runId":"run_123","claimId":"steps.3","url":"https://docs.composio.dev/..."}
+data: {"type":"claim.verified","runId":"run_123","claimId":"steps.3","url":"https://docs.composio.dev/..."}
 ```
+
+The `data` JSON is the full event, including `type` (it matches the `event:` line), so the browser can parse it with `RunStreamEventSchema`.
 
 | Event | Payload |
 | --- | --- |
+| `run.snapshot` | `{ runId, snapshot }`, always first; `snapshot` has the same shape as `GET /api/runs/:id` |
 | `stage.started` | `{ runId, stage, name }` |
 | `stage.done` | `{ runId, stage, durationMs }` |
 | `search.query` | `{ runId, query }` |

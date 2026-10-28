@@ -11,11 +11,12 @@ alwaysApply: false
 > **Applies to:** `apps/api/src/**`
 
 ## Middleware (`src/middleware/`)
-- One middleware per file: `validate`, `asyncHandler`, `errorHandler`, `rateLimit`, `runCap`.
+- One middleware per file: `validate`, `asyncHandler`, `errorHandler`, `rateLimit`, `cors`.
+- The daily run cap is not middleware. It is `services/run-cap.ts`, called by `startRun` after the cache and join checks, so library and cached guides still work at the cap.
 - Every route reuses them. Never re-implement validation or error handling in a route.
 
 ## Services (`src/services/`)
-- One service per domain: `runs`, `guides`, `reports`, `page-cache`.
+- One service per domain: `runs`, `guides`, `reports`, `page-cache`. A domain may span several files when the 200-line limit needs it (for example `run-lock.ts`, `run-events.ts`, `run-stream.ts`).
 - Services never touch `req` or `res`.
 - Services take plain input and return plain output.
 
