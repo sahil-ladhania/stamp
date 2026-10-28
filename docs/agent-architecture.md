@@ -294,3 +294,4 @@ One JSON object per line (`lib/logger.ts`); info goes to stdout, warnings and er
 ## Next
 
 - Read [product-architecture.md](./product-architecture.md) for how runs reach the browser.
+- Read [live-test-plan.md](./live-test-plan.md) to try the real agent by hand with live keys.
