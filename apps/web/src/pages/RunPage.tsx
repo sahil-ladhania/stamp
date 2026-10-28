@@ -1,17 +1,25 @@
 /**
  * File: RunPage.tsx
- * Purpose: Live run route `/run/:id`. Reads the `?state=` scenario and renders the run screen for it.
- *          The id is ignored in the mock phase: every run replays the same HubSpot events.
+ * Purpose: Live run route `/run/:id`. Reads the run id and the typed app name, and keys the screen so a new run
+ *          or a reconnect starts from a clean slate.
  * Exports: RunPage
  * Used by: router.tsx
  */
-import type { ReactElement } from "react";
+import { useState, type ReactElement } from "react";
+import { useParams, useSearchParams } from "react-router";
 import { RunScreen } from "@/components/run/RunScreen";
-import { useMockScenario } from "@/hooks/useMockScenario";
-import { PAGE_SCENARIOS } from "@/mocks/scenarios";
 
 export function RunPage(): ReactElement {
-  const { scenario } = useMockScenario(PAGE_SCENARIOS.run);
+  const { id = "" } = useParams();
+  const [searchParams] = useSearchParams();
+  const [attempt, setAttempt] = useState(0);
 
-  return <RunScreen key={scenario} scenario={scenario} />;
+  return (
+    <RunScreen
+      key={`${id}:${attempt}`}
+      runId={id}
+      appParam={searchParams.get("app")}
+      onReconnect={() => setAttempt((count) => count + 1)}
+    />
+  );
 }

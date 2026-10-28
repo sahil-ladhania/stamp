@@ -9,11 +9,10 @@
  * Used by: mocks/*, components/shared/*, utils/evidence.ts, utils/archetype.ts, pages/*
  */
 
-import type { Actor, Archetype, RunErrorCode, SourceTier } from '@stamp/schema'
-import type { RunViewEvent } from '@/utils/run-view'
+import type { Actor, Archetype, SourceTier } from '@stamp/schema'
 
-// The run vocabulary comes from @stamp/schema; the guide types below move over in Phase 2.
-export type { Actor, Archetype, RunErrorCode, SourceTier }
+// The shared vocabulary comes from @stamp/schema; the guide types below move over with the Guide page.
+export type { Actor, Archetype, SourceTier }
 
 export type EvidenceKind = 'tested' | 'sourced' | 'uncertain'
 export type GuideMode = 'library' | 'live'
@@ -111,9 +110,3 @@ export type GuideSummary = Pick<
   Guide,
   'slug' | 'appName' | 'archetype' | 'mode' | 'asOf' | 'headline'
 > & { difficulty: Difficulty['score'] }
-
-/** A run progress event as the Live run page reads it (the schema event without its run id). */
-export type RunEvent = RunViewEvent
-
-/** A run event with the time, in ms from run start, at which the mock playback emits it. */
-export type TimedRunEvent = { atMs: number; event: RunEvent }

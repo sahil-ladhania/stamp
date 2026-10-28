@@ -4,7 +4,7 @@
  *          stage, the trace rows, the counts and the outcome. Reads events in order, so a retry pass
  *          (the run goes back to Search once) shows as running again instead of staying "done".
  * Exports: StageStatus, StageView, TraceItem, RunOutcome, RunView, RunViewEvent, deriveRunView
- * Used by: components/run/*, hooks/useRunStream.ts, mocks/types.ts
+ * Used by: components/run/*, hooks/useRunStream.ts, hooks/useRunClock.ts
  */
 import type {
   AppCandidate,
