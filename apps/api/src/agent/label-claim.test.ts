@@ -21,5 +21,17 @@ describe("toLabelledClaim", () => {
     );
     expect(claim.label).toBe("sourced");
     expect(claim.sources[0]?.tier).toBe("official");
+    expect(claim.sources[0]).not.toHaveProperty("retrievedAt");
+  });
+
+  it("records when the page was fetched", () => {
+    const claim = toLabelledClaim(
+      { text: "Fact", quote: "Fact", url: "https://example.com/docs" },
+      "sourced",
+      "steps.0",
+      "official",
+      "2026-03-05T10:00:00.000Z",
+    );
+    expect(claim.sources[0]?.retrievedAt).toBe("2026-03-05T10:00:00.000Z");
   });
 });

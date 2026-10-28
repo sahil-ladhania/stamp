@@ -1,12 +1,13 @@
 /**
  * File: sanitize.ts
  * Purpose: Cleans a section's model output: drops every claim whose URL was not fetched in this run, and rewrites kept URLs to the page's own.
- * Exports: sanitizeSection, indexPages, PageIndex, SanitizeContext, Cleaned
+ * Exports: sanitizeSection, indexPages, pageFor, PageIndex, SanitizeContext, Cleaned
  * Used by: agent/extract/run-section.ts
  */
 import { hashUrl } from "../../utils/hash-url.js";
 import type { DraftClaim } from "../draft-claim.js";
 import type { PageRecord } from "../page-record.js";
+import { withoutUnevidencedFacts } from "./gates-normalize.js";
 import type { SectionId, SectionOutput } from "./sections.js";
 
 /** The pages fetched in this run, by URL hash: the only sources a claim may cite. */
@@ -25,7 +26,7 @@ export function indexPages(pages: readonly PageRecord[]): PageIndex {
   return new Map(pages.map((page) => [page.urlHash, page]));
 }
 
-function pageFor(url: string, pages: PageIndex): PageRecord | undefined {
+export function pageFor(url: string, pages: PageIndex): PageRecord | undefined {
   try {
     return pages.get(hashUrl(url));
   } catch {
@@ -149,28 +150,16 @@ const verdict: Cleaner<"verdict"> = (output, context) => {
 /** A fact whose evidence was dropped is unknown: it has no checked source, so it must not count. */
 const gates: Cleaner<"gates"> = (output, { pages }) => {
   const k = keeper(pages);
-  const authEvidence = k.claim(output.authEvidence);
-  const reviewGateEvidence = k.claim(output.reviewGateEvidence);
-  const approvalWaitEvidence = k.claim(output.approvalWaitEvidence);
-  const waitKnown =
-    output.approvalWait !== "unknown" && approvalWaitEvidence !== null;
-  const isRange = waitKnown && output.approvalWait === "range";
-  return {
-    output: {
-      authMethod: authEvidence ? output.authMethod : "unknown",
-      authEvidence,
-      reviewGate: reviewGateEvidence ? output.reviewGate : "unknown",
-      reviewGateEvidence,
-      approvalWait: waitKnown ? output.approvalWait : "unknown",
-      approvalWaitMinDays: isRange ? output.approvalWaitMinDays : null,
-      approvalWaitMaxDays: isRange ? output.approvalWaitMaxDays : null,
-      approvalWaitEvidence,
-      prerequisites: k.all(output.prerequisites),
-      hiddenLimits: k.all(output.hiddenLimits),
-      enterprisePlanEvidence: k.claim(output.enterprisePlanEvidence),
-    },
-    dropped: k.dropped(),
-  };
+  const cleaned = withoutUnevidencedFacts({
+    ...output,
+    authEvidence: k.claim(output.authEvidence),
+    reviewGateEvidence: k.claim(output.reviewGateEvidence),
+    approvalWaitEvidence: k.claim(output.approvalWaitEvidence),
+    prerequisites: k.all(output.prerequisites),
+    hiddenLimits: k.all(output.hiddenLimits),
+    enterprisePlanEvidence: k.claim(output.enterprisePlanEvidence),
+  });
+  return { output: cleaned, dropped: k.dropped() };
 };
 
 const CLEANERS: { [K in SectionId]: Cleaner<K> } = {
