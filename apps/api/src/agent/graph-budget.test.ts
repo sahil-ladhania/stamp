@@ -80,7 +80,9 @@ describe("budget routing to score, then save", () => {
     const h = createHarness();
     const score = recorded("score");
     await h.run({
-      plan: recorded("plan", () => Promise.resolve({ queries: ["q1"] })).fn,
+      plan: recorded("plan", () =>
+        Promise.resolve({ queries: [{ topic: "setup" as const, text: "q1" }] }),
+      ).fn,
       fetch: recorded("fetch", () => {
         h.setRemaining(0);
         return Promise.resolve({});
@@ -88,7 +90,7 @@ describe("budget routing to score, then save", () => {
       score: score.fn,
     });
     expect(score.calls[0]).toMatchObject({
-      queries: ["q1"],
+      queries: [{ topic: "setup", text: "q1" }],
       gates: null,
       claims: [],
       difficulty: null,

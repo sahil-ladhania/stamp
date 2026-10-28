@@ -16,6 +16,7 @@ import type {
 import type { AgentFailure } from "./agent-failure.js";
 import type { ProbeOutcome } from "./evidence/labelling.js";
 import type { PageRecord } from "./page-record.js";
+import type { PlannedQuery } from "./queries.js";
 import type { GateFacts } from "./scoring/difficulty.js";
 import type { SearchResult } from "./search-result.js";
 
@@ -68,7 +69,7 @@ export const AgentState = Annotation.Root({
   typed: Annotation<string>(),
   slug: Annotation<string>(),
   app: last<AppIdentity | null>(() => null),
-  queries: last<string[]>(() => []),
+  queries: last<PlannedQuery[]>(() => []),
   searchResults: Annotation<SearchResult[]>({
     reducer: appendUnique((result) => result.url),
     default: () => [],

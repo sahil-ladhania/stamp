@@ -71,13 +71,3 @@ export const ExtractConflictsOutputSchema = z.strictObject({
     }),
   ),
 });
-
-export const ExtractPlanOutputSchema = z.strictObject({
-  queries: z.array(z.string().min(1)).min(1),
-});
-
-export const ExtractAppIdentityOutputSchema = z.strictObject({
-  appName: z.string().min(1),
-  domain: z.string().min(1),
-  slug: z.string().min(1),
-});

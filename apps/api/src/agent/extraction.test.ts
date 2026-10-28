@@ -5,31 +5,13 @@
  * Used by: vitest
  */
 import { describe, expect, it } from "vitest";
-import {
-  ExtractPlanOutputSchema,
-  ExtractStepsOutputSchema,
-} from "./extraction.js";
+import { ExtractStepsOutputSchema } from "./extraction.js";
 
 const draft = {
   text: "Create an app",
   quote: "Create an app",
   url: "https://example.com/docs",
 };
-
-describe("ExtractPlanOutputSchema", () => {
-  it("accepts planned queries", () => {
-    expect(
-      ExtractPlanOutputSchema.safeParse({ queries: ["hubspot oauth scopes"] })
-        .success,
-    ).toBe(true);
-  });
-
-  it("rejects empty queries", () => {
-    expect(ExtractPlanOutputSchema.safeParse({ queries: [] }).success).toBe(
-      false,
-    );
-  });
-});
 
 describe("ExtractStepsOutputSchema", () => {
   it("accepts steps without labels", () => {

@@ -6,10 +6,8 @@
  */
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
-import {
-  ExtractPlanOutputSchema,
-  ExtractStepsOutputSchema,
-} from "../agent/extraction.js";
+import { ExtractStepsOutputSchema } from "../agent/extraction.js";
+import { PlanOutputSchema } from "../agent/plan-output.js";
 import {
   modelSupportsTemperature,
   responseFormatFor,
@@ -62,7 +60,7 @@ describe("modelSupportsTemperature", () => {
 
 describe("toOpenAiJsonSchema", () => {
   it("drops validation keywords from the existing extraction schemas but keeps the structure", () => {
-    for (const schema of [ExtractPlanOutputSchema, ExtractStepsOutputSchema]) {
+    for (const schema of [PlanOutputSchema, ExtractStepsOutputSchema]) {
       const keywords = keywordsIn(toOpenAiJsonSchema(schema));
       for (const banned of [
         "$schema",
@@ -140,7 +138,7 @@ describe("toOpenAiJsonSchema", () => {
 
 describe("responseFormatFor", () => {
   it("builds a strict json_schema response format", () => {
-    const format = responseFormatFor("plan", ExtractPlanOutputSchema);
+    const format = responseFormatFor("plan", PlanOutputSchema);
     expect(format.type).toBe("json_schema");
     expect(format.json_schema).toMatchObject({ name: "plan", strict: true });
     expect(format.json_schema.schema.type).toBe("object");
