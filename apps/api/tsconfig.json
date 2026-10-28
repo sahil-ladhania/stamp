@@ -3,6 +3,5 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": ["src"],
-  "exclude": ["src/lib/prisma.ts"]
+  "include": ["src"]
 }

@@ -27,6 +27,16 @@ describe("loadConfig", () => {
     expect(config.PORT).toBe(3000);
   });
 
+  it("defaults PORT to 3000", () => {
+    const { PORT: _port, ...rest } = validEnv;
+    expect(loadConfig(rest).PORT).toBe(3000);
+  });
+
+  it("ignores unrelated environment variables", () => {
+    const config = loadConfig({ ...validEnv, PATH: "/usr/bin", HOME: "/root" });
+    expect(config).not.toHaveProperty("PATH");
+  });
+
   it("rejects a missing DATABASE_URL", () => {
     const { DATABASE_URL: _removed, ...rest } = validEnv;
     expect(() => loadConfig(rest)).toThrow();
