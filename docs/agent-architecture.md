@@ -183,6 +183,33 @@ flowchart TD
 
 ---
 
+## 10. Stages 0 to 3 in detail
+
+**0 Resolve** (`nodes/resolve.ts`, code only)
+- A typed domain or URL gives the official domain directly (`developers.notion.com` becomes `notion.com`). There is no search and no "did you mean".
+- A name runs one search, `<name> API developer documentation`, for 8 results.
+- Hits are grouped by registrable domain. Forums, aggregators and code hosts are skipped unless the name is the site's own (`resolve/denylist.ts`). Each domain scores its search positions, a bonus for docs-looking pages, and a bonus for how well its brand label matches the name (equal, contained, or only in a page title).
+- `AMBIGUOUS_APP` when two or more candidates with different brand labels match the name and the runner-up scores at least 60% of the leader. The options are `{name, domain}`, up to 3. `NO_PUBLIC_DOCS` when nothing matches the name.
+- The weights (`SCORE_WEIGHTS`) and the thresholds (`RESOLVE_TUNING`) are defaults to tune against live searches.
+- Limits: an app has one official domain, so docs split across two domains (for example `slack.com` and `slack.dev`) count only the better-scoring one as official. A name with no Latin letters needs a typed domain.
+
+**1 Plan** (`nodes/plan.ts`, fast model, prompt in `prompts/plan.ts`)
+- The model returns one search query for each of 6 topics (setup, scopes, review, limits, auth type, approval wait), or `null` for "unknown". It is told never to state facts about the app.
+- Code checks every query: it must name the app, be 8 to 160 characters and 3 to 16 words, and contain no URL; quotes and operators are stripped. A query that fails, a `null`, or a failed or slow model call is replaced by a template (`queries.ts`). The plan stage never fails the run.
+
+**2 Search** (`nodes/search.ts`, code only)
+- First pass: every query on the official domain, then the review and approval-wait queries across the web, up to 4 at a time inside the node's time window. Each distinct query is announced with `search.query`.
+- Retry pass: at most 2 differently worded searches on the official domain, for the sections that had no matched quote.
+- Results are tiered by code against the official domain and ordered official, third party, forum, then by Tavily's score. The run fails with `INTERNAL` only if every search fails.
+
+**3 Fetch** (`nodes/fetch.ts`, `fetch/`)
+- The first pass reads at most 4 pages and the retry pass the rest of the 6; cache hits count. Official pages come first, and one slot is kept for a non-official page when there is room for 3 or more.
+- A fresh cached page is reused (7 days). The rest go to one Tavily extract call. A page with under 300 characters of text is dropped. Each page is announced with `page.fetched`.
+- A page's tier is always decided against this app's domain, even when the page came from the cache.
+- No official page: `NO_PUBLIC_DOCS`. If the extract call itself failed and nothing is held, it is `INTERNAL` instead.
+
+---
+
 ## Next
 
 - Read [product-architecture.md](./product-architecture.md) for how runs reach the browser.
