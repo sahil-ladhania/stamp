@@ -5,6 +5,7 @@
  * Used by: services/run-*.test.ts, services/runs.test.ts, app-runs.test.ts
  */
 import { vi } from "vitest";
+import { createFakePageCache } from "./fake-page-cache.js";
 import { Prisma, type Run } from "../../generated/prisma/client.js";
 
 type GuideStub = {
@@ -111,6 +112,8 @@ function createFakeDb() {
     ),
   };
 
+  const pageCache = createFakePageCache();
+
   const guide = {
     findUnique: vi.fn(
       async ({ where }: { where: { slug: string } }) =>
@@ -149,17 +152,19 @@ function createFakeDb() {
   return {
     runs,
     guides,
-    prisma: { run, guide },
+    prisma: { run, guide, pageCache: pageCache.delegate },
+    pageCache,
     addRun,
     addGuide: (stub: GuideStub): StoredGuide => {
       const row = { id: `guide_${stub.slug}`, expiresAt: null, ...stub };
       guides.set(stub.slug, row);
       return row;
     },
-    /** Empties both tables and restores every delegate's original behaviour. */
+    /** Empties all tables and restores every delegate's original behaviour. */
     reset: (): void => {
       runs.clear();
       guides.clear();
+      pageCache.reset();
       [...Object.values(run), ...Object.values(guide)].forEach((fn) =>
         fn.mockReset(),
       );
