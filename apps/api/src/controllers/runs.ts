@@ -5,9 +5,9 @@
  * Used by: routes/runs.ts
  */
 import type { Request, Response } from "express";
-import { ValidationError } from "../errors/app-error.js";
+import { getValid } from "../middleware/validate.js";
+import { RunIdParamsSchema } from "../schemas/params.js";
 import * as runsService from "../services/runs.js";
-import { paramString } from "../utils/param-string.js";
 
 /** Starts or joins a run, or returns a cached guide slug. */
 export async function createRun(req: Request, _res: Response): Promise<void> {
@@ -15,19 +15,13 @@ export async function createRun(req: Request, _res: Response): Promise<void> {
 }
 
 /** Returns a run snapshot for reconnects. */
-export async function getRun(req: Request, _res: Response): Promise<void> {
-  const runId = paramString(req.params.id);
-  if (!runId) {
-    throw new ValidationError("Run id is required.");
-  }
-  await runsService.getRunById(runId);
+export async function getRun(_req: Request, res: Response): Promise<void> {
+  const { id } = getValid(res, "params", RunIdParamsSchema);
+  await runsService.getRunById(id);
 }
 
 /** Opens an SSE stream for live run progress. */
-export async function streamRun(req: Request, _res: Response): Promise<void> {
-  const runId = paramString(req.params.id);
-  if (!runId) {
-    throw new ValidationError("Run id is required.");
-  }
-  void runsService.openRunStream(runId);
+export async function streamRun(_req: Request, res: Response): Promise<void> {
+  const { id } = getValid(res, "params", RunIdParamsSchema);
+  void runsService.openRunStream(id);
 }

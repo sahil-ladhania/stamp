@@ -5,7 +5,6 @@
  * Used by: middleware/error-handler.ts, tests
  */
 import type { ApiErrorBody } from "@stamp/schema";
-import { ZodError } from "zod";
 import { AppError, InternalError, ValidationError } from "./app-error.js";
 
 export type ResolvedApiError = {
@@ -15,6 +14,17 @@ export type ResolvedApiError = {
 };
 
 const BAD_JSON_MESSAGE = "Request body must be valid JSON.";
+const BODY_TOO_LARGE_MESSAGE = "Request body is too large.";
+
+/** body-parser tags an oversized body with type "entity.too.large". */
+function isBodyTooLarge(err: unknown): boolean {
+  return (
+    typeof err === "object" &&
+    err !== null &&
+    "type" in err &&
+    err.type === "entity.too.large"
+  );
+}
 
 /** Converts any thrown value into a client-safe API error response. */
 export function resolveApiError(err: unknown): ResolvedApiError {
@@ -29,20 +39,15 @@ export function resolveApiError(err: unknown): ResolvedApiError {
     return { statusCode: err.statusCode, body, headers };
   }
 
-  if (err instanceof ZodError) {
-    const first = err.issues[0];
-    const path = first?.path.length ? first.path.join(".") : undefined;
-    const detail = first?.message;
-    const message =
-      path && detail
-        ? `${path}: ${detail}`
-        : (detail ?? "Check the request and try again.");
-    return resolveApiError(new ValidationError(message));
+  if (isBodyTooLarge(err)) {
+    return resolveApiError(new ValidationError(BODY_TOO_LARGE_MESSAGE));
   }
 
   if (err instanceof SyntaxError) {
     return resolveApiError(new ValidationError(BAD_JSON_MESSAGE));
   }
 
+  // A ZodError is not special-cased: request input is checked by the validate
+  // middleware, so one reaching this point is a server-side parse failure (500).
   return resolveApiError(new InternalError());
 }

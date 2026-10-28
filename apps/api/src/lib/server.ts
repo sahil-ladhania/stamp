@@ -1,28 +1,16 @@
 /**
  * File: server.ts
- * Purpose: Express app entrypoint; mounts API routers and listens for HTTP.
+ * Purpose: API entrypoint; loads validated config and listens for HTTP.
  * Exports: (none — side-effect listen)
  * Used by: package.json dev/start scripts
  */
-import express from "express";
-import { errorHandler } from "../middleware/error-handler.js";
-import { notFound } from "../middleware/not-found.js";
-import { guidesRouter } from "../routes/guides.js";
-import { healthRouter } from "../routes/health.js";
-import { runsRouter } from "../routes/runs.js";
+import "dotenv/config";
+import { createApp } from "../app.js";
+import { getConfig } from "../config.js";
+import { logger } from "./logger.js";
 
-const app = express();
-const port = 3000;
+const config = getConfig();
 
-app.use(express.json());
-
-app.use("/api/health", healthRouter);
-app.use("/api/runs", runsRouter);
-app.use("/api/guides", guidesRouter);
-app.use(notFound);
-
-app.use(errorHandler);
-
-app.listen(port, () => {
-  console.log(`Stamp is running on port ${port}`);
+createApp(config).listen(config.PORT, () => {
+  logger.info("Stamp API listening", { port: config.PORT });
 });

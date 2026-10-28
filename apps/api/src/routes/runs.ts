@@ -2,14 +2,18 @@
  * File: runs.ts
  * Purpose: Binds run start, snapshot, and stream paths.
  * Exports: runsRouter
- * Used by: lib/server.ts
+ * Used by: app.ts
  */
 import { Router } from "express";
 import { createRun, getRun, streamRun } from "../controllers/runs.js";
 import { asyncHandler } from "../middleware/async-handler.js";
+import { validate } from "../middleware/validate.js";
+import { RunIdParamsSchema } from "../schemas/params.js";
 
 export const runsRouter: Router = Router();
 
+const runIdParam = validate(RunIdParamsSchema, "params");
+
 runsRouter.post("/", asyncHandler(createRun));
-runsRouter.get("/:id", asyncHandler(getRun));
-runsRouter.get("/:id/stream", asyncHandler(streamRun));
+runsRouter.get("/:id", runIdParam, asyncHandler(getRun));
+runsRouter.get("/:id/stream", runIdParam, asyncHandler(streamRun));
