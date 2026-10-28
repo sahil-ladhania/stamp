@@ -1,12 +1,12 @@
 /**
  * File: not-found-hint.ts
- * Purpose: Pure helpers that read an unknown address and guess what the visitor meant.
+ * Purpose: Pure helpers that read an unknown address and guess what the visitor meant, using the loaded library list.
  *          Name matching for routing only; there is no search here.
  * Exports: NotFoundHint, guessAppName, getNotFoundHint, getSearchPrefill
- * Used by: pages/NotFoundPage.tsx, components/not-found/NotFoundPanel.tsx, Guide page (step 6)
+ * Used by: components/not-found/NotFoundPanel.tsx, components/not-found/not-found-copy.ts
  */
 import type { GuideSummary } from "@stamp/schema";
-import { LIBRARY_SUMMARIES, findLibrarySlug } from "@/mocks/library";
+import { findGuide } from "./find-guide";
 
 export type NotFoundHint =
   | { kind: "default" }
@@ -43,13 +43,15 @@ export function guessAppName(pathname: string): string {
 }
 
 /** The first library app named by any word in the path, for example `/hubspot-setup` finds HubSpot. */
-function findSuggestion(pathname: string): GuideSummary | undefined {
+function findSuggestion(
+  pathname: string,
+  guides: readonly GuideSummary[],
+): GuideSummary | undefined {
   const words = getSegments(pathname).flatMap((segment) =>
     segment.split(SEPARATORS),
   );
   for (const word of words) {
-    const slug = findLibrarySlug(word);
-    const guide = LIBRARY_SUMMARIES.find((item) => item.slug === slug);
+    const guide = findGuide(guides, word);
     if (guide) return guide;
   }
   return undefined;
@@ -60,8 +62,11 @@ function capitalise(text: string): string {
 }
 
 /** A library app in the path wins. Otherwise a `/g/<name>` path means "no guide yet". */
-export function getNotFoundHint(pathname: string): NotFoundHint {
-  const guide = findSuggestion(pathname);
+export function getNotFoundHint(
+  pathname: string,
+  guides: readonly GuideSummary[],
+): NotFoundHint {
+  const guide = findSuggestion(pathname, guides);
   if (guide) return { kind: "suggestion", guide };
 
   const isGuidePath = /^\/g\/[^/]+\/?$/.test(pathname);
