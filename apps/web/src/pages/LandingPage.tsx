@@ -1,12 +1,12 @@
 /**
  * File: LandingPage.tsx
- * Purpose: Landing route `/`. Loads the library and the sample guide, and composes the hero and the five sections.
+ * Purpose: Landing route `/`. Loads the library and the sample guide, and composes the hero and the sections.
  *          Anything the API cannot give (an empty library, a missing sample) is left out, never shown broken.
  * Exports: LandingPage
  * Used by: router.tsx
  */
 import type { ReactElement } from "react";
-import { ClosingSearchSection } from "@/components/landing/ClosingSearchSection";
+import { ClosingBanner } from "@/components/landing/ClosingBanner";
 import { EvidenceSection } from "@/components/landing/EvidenceSection";
 import { Hero } from "@/components/landing/Hero";
 import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
@@ -48,7 +48,7 @@ export function LandingPage(): ReactElement {
       <HowItWorksSection />
       <KindsOfHardSection status={libraryStatus} guides={guides} />
       <EvidenceSection sample={sample} />
-      <ClosingSearchSection />
+      <ClosingBanner />
     </>
   );
 }

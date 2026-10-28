@@ -42,7 +42,7 @@ export function VerdictRowFrame({
       id={id}
       className={cn(
         "grid gap-1 px-4 py-3 motion-safe:transition-colors tablet:grid-cols-[8rem_1fr_auto] tablet:items-start tablet:gap-4",
-        isHighlighted && "bg-paper",
+        isHighlighted && "bg-paper outline outline-1 -outline-offset-1 outline-ink-muted",
       )}
     >
       <dt className="text-small text-ink-muted">{label}</dt>
