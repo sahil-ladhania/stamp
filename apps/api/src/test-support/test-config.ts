@@ -21,6 +21,6 @@ export const testConfig: EnvConfig = {
   TRUST_PROXY_HOPS: 0,
   AGENT_MODE: "stub",
   AGENT_RUN_BUDGET_MS: 120_000,
-  AGENT_EXTRACT_CONCURRENCY: 4,
+  AGENT_EXTRACT_CONCURRENCY: 5,
   AGENT_PROBE: "on",
 };

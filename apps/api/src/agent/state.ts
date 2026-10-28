@@ -1,7 +1,7 @@
 /**
  * File: state.ts
  * Purpose: The graph's working memory: typed state channels, with reducers where a node adds to a list.
- * Exports: AgentState, State, StateUpdate, AppIdentity, SectionDraft, AuthMethod, Gates, ProbeResult, appendUnique
+ * Exports: AgentState, State, StateUpdate, AppIdentity, SectionDraft, Drafts, ProbeResult, appendUnique
  * Used by: agent/graph.ts, agent/stage-node.ts, agent/routes.ts, agent/run-real-agent.ts, agent/nodes/*
  */
 import { Annotation } from "@langchain/langgraph";
@@ -16,24 +16,29 @@ import type {
 import type { AgentFailure } from "./agent-failure.js";
 import type { ProbeOutcome } from "./evidence/labelling.js";
 import type { PageRecord } from "./page-record.js";
-import type { GateFacts } from "./scoring/difficulty.js";
+import type { PlannedQuery } from "./queries.js";
+import type { CheckRecord } from "../services/verification-log.js";
+import type { DraftSectionId, SectionOutput } from "./extract/sections.js";
 import type { SearchResult } from "./search-result.js";
 
 /** The official app the run is about; resolve (stage 0) fills it. */
 export type AppIdentity = { appName: string; domain: string; slug: string };
 
-/** One guide section after extract: drafted, not found in the pages, or failed after its one repair. */
-export type SectionDraft =
-  | { status: "drafted"; payload: unknown }
+/** One guide section after extract: drafted, not found in the pages, or failed (the reason says why). */
+export type SectionDraft<K extends DraftSectionId> =
+  | { status: "drafted"; payload: SectionOutput<K> }
   | { status: "unknown" }
   | { status: "failed"; reason: string };
 
-export type AuthMethod = "oauth" | "both" | "api_key_only" | "unknown";
+export type Drafts = { [K in DraftSectionId]?: SectionDraft<K> };
 
-/** The auth method and the difficulty facts behind the score; extract fills it, verify checks it. */
-export type Gates = { authMethod: AuthMethod; facts: GateFacts };
-
-export type ProbeResult = { url: string; outcome: ProbeOutcome };
+/** What the probe found: the endpoint tried, whether it confirmed the claims, the HTTP status and why. */
+export type ProbeResult = {
+  url: string;
+  outcome: ProbeOutcome;
+  status: number | null;
+  reason: string;
+};
 
 const replace = <T>(_current: T, next: T): T => next;
 
@@ -68,7 +73,7 @@ export const AgentState = Annotation.Root({
   typed: Annotation<string>(),
   slug: Annotation<string>(),
   app: last<AppIdentity | null>(() => null),
-  queries: last<string[]>(() => []),
+  queries: last<PlannedQuery[]>(() => []),
   searchResults: Annotation<SearchResult[]>({
     reducer: appendUnique((result) => result.url),
     default: () => [],
@@ -77,12 +82,13 @@ export const AgentState = Annotation.Root({
     reducer: appendUnique((page) => page.urlHash),
     default: () => [],
   }),
-  /** Keyed by section name; a retry pass adds or replaces only the sections it re-extracted. */
-  drafts: Annotation<Record<string, SectionDraft>>({
+  /** Keyed by section; a retry pass adds or replaces only the sections it re-extracted. */
+  drafts: Annotation<Drafts>({
     reducer: (current, added) => ({ ...current, ...added }),
     default: () => ({}),
   }),
-  gates: last<Gates | null>(() => null),
+  /** The gates call's facts, each with the claim that backs it; null when unknown or failed. */
+  gates: last<SectionOutput<"gates"> | null>(() => null),
   claims: last<Claim[]>(() => []),
   conflicts: last<Conflict[]>(() => []),
   /** 0 or 1: how many retry passes have started. The graph bumps it when search starts a retry. */
@@ -90,9 +96,13 @@ export const AgentState = Annotation.Root({
   /** Sections with no matched quote after verify; the retry edge fires only while this is non-empty. */
   missingSections: last<string[]>(() => []),
   probeResult: last<ProbeResult | null>(() => null),
+  /** Quote and probe checks for the verification log; verify replaces them each pass, probe adds its own. */
+  checks: last<CheckRecord[]>(() => []),
   difficulty: last<DifficultyBreakdown | null>(() => null),
   archetype: last<Archetype | null>(() => null),
   guide: last<Guide | null>(() => null),
+  /** True when a library guide owns the slug, so the live guide was not stored and the run points at the library. */
+  libraryProtected: last<boolean>(() => false),
   /** Sticky: once any node sets it, it stays set. */
   partial: Annotation<boolean>({
     reducer: (current, next) => current || next,

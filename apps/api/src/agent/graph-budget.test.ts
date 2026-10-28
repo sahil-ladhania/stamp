@@ -31,7 +31,7 @@ describe("budget routing to score, then save", () => {
     expect(final.failure).toBeNull();
   });
 
-  it("skips extract, verify and probe when fetch leaves under 15 s, but runs score and save", async () => {
+  it("skips extract, verify and probe when fetch leaves under 20 s, but runs score and save", async () => {
     const h = createHarness();
     const extract = recorded("extract");
     const score = recorded("score");
@@ -80,7 +80,9 @@ describe("budget routing to score, then save", () => {
     const h = createHarness();
     const score = recorded("score");
     await h.run({
-      plan: recorded("plan", () => Promise.resolve({ queries: ["q1"] })).fn,
+      plan: recorded("plan", () =>
+        Promise.resolve({ queries: [{ topic: "setup" as const, text: "q1" }] }),
+      ).fn,
       fetch: recorded("fetch", () => {
         h.setRemaining(0);
         return Promise.resolve({});
@@ -88,14 +90,14 @@ describe("budget routing to score, then save", () => {
       score: score.fn,
     });
     expect(score.calls[0]).toMatchObject({
-      queries: ["q1"],
+      queries: [{ topic: "setup", text: "q1" }],
       gates: null,
       claims: [],
       difficulty: null,
     });
   });
 
-  it("runs extract with exactly 15 s left", async () => {
+  it("runs extract with exactly 20 s left", async () => {
     const h = createHarness();
     const extract = recorded("extract");
     await h.run({

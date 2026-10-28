@@ -44,11 +44,13 @@ describe("stageNode", () => {
 
   it("passes the state and config to the body and keeps its update", async () => {
     const h = createHarness();
-    const state = makeState({ queries: ["a"] });
-    const body = vi.fn(() => Promise.resolve({ queries: ["a", "b"] }));
+    const a = { topic: "setup" as const, text: "a" };
+    const b = { topic: "scopes" as const, text: "b" };
+    const state = makeState({ queries: [a] });
+    const body = vi.fn(() => Promise.resolve({ queries: [a, b] }));
     const update = await stageNode("plan", body)(state, h.config);
     expect(body).toHaveBeenCalledWith(state, h.config);
-    expect(update).toEqual({ queries: ["a", "b"], completed: [1] });
+    expect(update).toEqual({ queries: [a, b], completed: [1] });
   });
 
   it("marks only its own stage completed", async () => {

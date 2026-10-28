@@ -2,7 +2,7 @@
  * File: labelling.ts
  * Purpose: Decides a claim's evidence label from code-checked facts; the model never sets a label.
  * Exports: labelClaim, applyProbe, LabelInput, LabelDecision, ProbeOutcome
- * Used by: agent/nodes/verify.ts, agent/nodes/probe.ts
+ * Used by: agent/verify/verify-claims.ts, agent/nodes/probe.ts
  */
 import type { DowngradeReason, EvidenceLabel } from "@stamp/schema";
 import type { QuoteMatch } from "./quote-match.js";

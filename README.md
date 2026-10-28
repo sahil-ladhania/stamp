@@ -102,7 +102,7 @@ Try the live agent with any app outside this list.
    | api | `TRUST_PROXY_HOPS` | Reverse proxies in front of the API (`1` on Railway); `0` locally |
    | api | `AGENT_MODE` | `stub` replays scripted test data, `real` runs the research agent. Defaults to `stub`; **required** when `NODE_ENV=production`, so the server refuses to boot without it. Set `real` on Railway |
    | api | `AGENT_RUN_BUDGET_MS` | Run time limit in milliseconds; can only lower the 120000 default, for example to test the partial-guide path |
-   | api | `AGENT_EXTRACT_CONCURRENCY` | Parallel extraction calls, 1 to 8; default 4 |
+   | api | `AGENT_EXTRACT_CONCURRENCY` | Parallel extraction calls, 1 to 8; default 5 |
    | api | `AGENT_PROBE` | `off` skips the outbound authorize-URL probe; default `on` |
    | api | `NODE_ENV` | `development` locally; `production` on Railway |
    | web | `VITE_API_URL` | API base URL |

@@ -14,7 +14,14 @@ import type { AgentEvent, RunAgentInput } from "./run-agent.js";
 import { stageNode } from "./stage-node.js";
 
 vi.mock("../config.js", () => ({
-  getConfig: () => ({ AGENT_RUN_BUDGET_MS: 120_000 }),
+  getConfig: () => ({
+    AGENT_RUN_BUDGET_MS: 120_000,
+    AGENT_EXTRACT_CONCURRENCY: 5,
+  }),
+}));
+// The real stages are tested on their own; here the runner runs the graph with no-op stages.
+vi.mock("./nodes/index.js", async () => ({
+  defaultNodes: (await import("../test-support/graph-harness.js")).NOOP_NODES,
 }));
 const { runRealAgent } = await import("./run-real-agent.js");
 

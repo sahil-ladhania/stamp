@@ -2,7 +2,7 @@
  * File: conflicts.ts
  * Purpose: Confirms a model-proposed source conflict with code and picks the preferred source: official first, then newer.
  * Exports: resolveConflict, ConflictCandidate, ConflictSide, ConflictVerdict
- * Used by: agent/nodes/verify.ts
+ * Used by: agent/verify/verify-conflicts.ts
  */
 import type { SourceTier } from "@stamp/schema";
 import type { DraftClaim } from "../draft-claim.js";

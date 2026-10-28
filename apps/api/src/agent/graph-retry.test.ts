@@ -86,7 +86,7 @@ describe("retry edge", () => {
 });
 
 describe("retry edge and time", () => {
-  it("fires with exactly 40 s left", async () => {
+  it("fires with exactly 45 s left", async () => {
     const run = createHarness();
     const verify = recorded("verify", () => {
       run.setRemaining(RETRY_MIN_REMAINING_MS);

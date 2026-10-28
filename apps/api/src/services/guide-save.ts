@@ -2,7 +2,7 @@
  * File: guide-save.ts
  * Purpose: The one function that writes a live guide; validates it, syncs indexed columns, protects library guides.
  * Exports: saveLiveGuide, LIVE_GUIDE_TTL_MS, SaveGuideResult
- * Used by: agent save stage (later)
+ * Used by: agent/nodes/save.ts
  */
 import { GuideSchema, type Guide } from "@stamp/schema";
 import { InternalError } from "../errors/app-error.js";

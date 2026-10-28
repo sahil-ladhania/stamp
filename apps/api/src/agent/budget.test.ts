@@ -34,16 +34,16 @@ describe("the documented limits", () => {
     });
   });
 
-  it("keeps the first pass at 74 s and the retry path at 104 s, both within 120 s", () => {
+  it("keeps the first pass at 84 s and the retry path at 118 s, both within 120 s", () => {
     const firstPass = sum(Object.values(NODE_CAP_MS));
     const retryPass = sum(
       Object.values(RETRY_NODE_CAP_MS).filter(
         (ms): ms is number => ms !== undefined,
       ),
     );
-    expect(firstPass).toBe(74_000);
-    expect(retryPass).toBe(30_000);
-    expect(firstPass + retryPass).toBe(104_000);
+    expect(firstPass).toBe(84_000);
+    expect(retryPass).toBe(34_000);
+    expect(firstPass + retryPass).toBe(118_000);
     expect(firstPass + retryPass).toBeLessThanOrEqual(RUN_BUDGET.maxDurationMs);
   });
 
@@ -95,8 +95,8 @@ describe("startBudget, elapsedMs, remainingMs", () => {
 describe("checkBudget", () => {
   it("allows a node with enough time left and refuses one without", () => {
     expect(checkBudget(clock, at(0), "extract")).toEqual({ ok: true });
-    expect(checkBudget(clock, at(105), "extract")).toEqual({ ok: true });
-    expect(checkBudget(clock, at(105.001), "extract")).toEqual({
+    expect(checkBudget(clock, at(100), "extract")).toEqual({ ok: true });
+    expect(checkBudget(clock, at(100.001), "extract")).toEqual({
       ok: false,
       reason: "time_budget",
     });
@@ -120,7 +120,7 @@ describe("checkBudget", () => {
 
 describe("nodeTimeoutMs", () => {
   it("is the node's ceiling while plenty of time remains", () => {
-    expect(nodeTimeoutMs(clock, at(0), "extract")).toBe(30_000);
+    expect(nodeTimeoutMs(clock, at(0), "extract")).toBe(40_000);
     expect(nodeTimeoutMs(clock, at(0), "search")).toBe(8_000);
   });
 
@@ -136,7 +136,7 @@ describe("nodeTimeoutMs", () => {
 
   it("uses the tighter retry ceiling on the retry pass, and the normal one where there is none", () => {
     expect(nodeTimeoutMs(clock, at(0), "extract", { retryPass: true })).toBe(
-      14_000,
+      18_000,
     );
     expect(nodeTimeoutMs(clock, at(0), "fetch", { retryPass: true })).toBe(
       8_000,

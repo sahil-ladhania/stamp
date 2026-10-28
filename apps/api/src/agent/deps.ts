@@ -18,6 +18,10 @@ export type AgentDeps = {
   now: () => number;
   /** The run's token and call meter; pass it to every model and Tavily call. */
   usage: RunUsage;
+  /** How many extraction calls run at once (AGENT_EXTRACT_CONCURRENCY). */
+  extractConcurrency: number;
+  /** False when AGENT_PROBE is off: the probe stage then sends no request at all. */
+  probeEnabled: boolean;
 };
 
 function isDeps(value: unknown): value is AgentDeps {
@@ -29,7 +33,9 @@ function isDeps(value: unknown): value is AgentDeps {
     typeof Reflect.get(value, "emit") === "function" &&
     typeof Reflect.get(value, "now") === "function" &&
     typeof Reflect.get(value, "clock") === "object" &&
-    typeof Reflect.get(value, "usage") === "object"
+    typeof Reflect.get(value, "usage") === "object" &&
+    typeof Reflect.get(value, "extractConcurrency") === "number" &&
+    typeof Reflect.get(value, "probeEnabled") === "boolean"
   );
 }
 

@@ -2,16 +2,19 @@
  * File: run-real-agent.ts
  * Purpose: Runs the LangGraph pipeline for one run and returns the AgentOutcome the executor expects.
  * Exports: runRealAgent, RealAgentOptions
- * Used by: agent/run-agent.ts once AGENT_MODE=real is switched over (not yet; it still uses the placeholder)
+ * Used by: agent/run-agent.ts when AGENT_MODE is real
  */
 import { getConfig } from "../config.js";
 import { logger } from "../lib/logger.js";
 import { createRunUsage, summarizeUsage } from "../lib/usage.js";
-import { RUN_ERROR_MESSAGES } from "../services/run-messages.js";
+import { errorText } from "../utils/error-text.js";
+import { makeFailure } from "./agent-failure.js";
 import { startBudget } from "./budget.js";
 import type { AgentDeps } from "./deps.js";
 import { buildGraph, RECURSION_LIMIT } from "./graph.js";
+import { defaultNodes } from "./nodes/index.js";
 import { isPartial } from "./pipeline.js";
+import { summarizeState } from "./run-summary.js";
 import type { AgentOutcome, RunAgentInput } from "./run-agent.js";
 import type { NodeSet } from "./stage-node.js";
 import type { State } from "./state.js";
@@ -23,13 +26,14 @@ export type RealAgentOptions = {
   now?: () => number;
   /** Lowers the 120 s budget; defaults to AGENT_RUN_BUDGET_MS. */
   budgetMs?: number;
+  /** Parallel extraction calls; defaults to AGENT_EXTRACT_CONCURRENCY. */
+  extractConcurrency?: number;
+  /** Whether the probe may send its one request; defaults to AGENT_PROBE being "on". */
+  probeEnabled?: boolean;
 };
 
 function internal(stage: number): AgentOutcome {
-  return {
-    ok: false,
-    failure: { stage, code: "INTERNAL", message: RUN_ERROR_MESSAGES.INTERNAL },
-  };
+  return { ok: false, failure: makeFailure(stage, "INTERNAL") };
 }
 
 /** A failure ends the run; otherwise the run is done only if a guide was saved. */
@@ -41,7 +45,9 @@ function toOutcome(state: State, slug: string, runId: string): AgentOutcome {
     logger.error("agent finished without a guide", { runId });
     return internal(8);
   }
-  return { ok: true, slug, status: isPartial(state) ? "partial" : "done" };
+  // A library guide that owns the slug is shown as the result and counts as done.
+  const partial = !state.libraryProtected && isPartial(state);
+  return { ok: true, slug, status: partial ? "partial" : "done" };
 }
 
 function describeOutcome(outcome: AgentOutcome): Record<string, unknown> {
@@ -76,11 +82,18 @@ export async function runRealAgent(
     ),
     now,
     usage,
+    extractConcurrency:
+      options.extractConcurrency ?? getConfig().AGENT_EXTRACT_CONCURRENCY,
+    probeEnabled: options.probeEnabled ?? getConfig().AGENT_PROBE === "on",
   };
 
   let outcome: AgentOutcome;
+  let resultFields: Record<string, unknown> = {};
   try {
-    const state = await buildGraph(options.nodes).invoke(
+    const state = await buildGraph({
+      ...defaultNodes,
+      ...options.nodes,
+    }).invoke(
       { typed: input.app, slug: input.slug },
       {
         configurable: { deps },
@@ -89,13 +102,13 @@ export async function runRealAgent(
       },
     );
     outcome = toOutcome(state, input.slug, input.runId);
+    resultFields = summarizeState(state);
   } catch (err) {
     if (!input.signal.aborted) {
       logger.error("agent run failed", {
         runId: input.runId,
         stage: stageReached,
-        detail:
-          err instanceof Error ? `${err.name}: ${err.message}` : "unknown",
+        detail: errorText(err),
       });
     }
     outcome = internal(stageReached);
@@ -108,6 +121,7 @@ export async function runRealAgent(
     stageReached,
     durationMs: now() - startedAt,
     ...summarizeUsage(usage),
+    ...resultFields,
   });
   return outcome;
 }

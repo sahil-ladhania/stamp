@@ -6,6 +6,7 @@
  */
 import { vi } from "vitest";
 import { createFakePageCache } from "./fake-page-cache.js";
+import { createFakeVerificationLog } from "./fake-verification-log.js";
 import { Prisma, type Run } from "../../generated/prisma/client.js";
 
 type GuideStub = {
@@ -113,6 +114,7 @@ function createFakeDb() {
   };
 
   const pageCache = createFakePageCache();
+  const verificationLog = createFakeVerificationLog();
 
   const guide = {
     findUnique: vi.fn(
@@ -152,8 +154,14 @@ function createFakeDb() {
   return {
     runs,
     guides,
-    prisma: { run, guide, pageCache: pageCache.delegate },
+    prisma: {
+      run,
+      guide,
+      pageCache: pageCache.delegate,
+      verificationLog: verificationLog.delegate,
+    },
     pageCache,
+    verificationLog,
     addRun,
     addGuide: (stub: GuideStub): StoredGuide => {
       const row = { id: `guide_${stub.slug}`, expiresAt: null, ...stub };
@@ -165,6 +173,7 @@ function createFakeDb() {
       runs.clear();
       guides.clear();
       pageCache.reset();
+      verificationLog.reset();
       [...Object.values(run), ...Object.values(guide)].forEach((fn) =>
         fn.mockReset(),
       );

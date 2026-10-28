@@ -6,6 +6,7 @@
  */
 import { ApiErrorBodySchema, GuideSchema } from "@stamp/schema";
 import { describe, expect, it, vi } from "vitest";
+import { runRealAgent } from "./agent/run-real-agent.js";
 import { fakeDb } from "./test-support/fake-db.js";
 import { parseSse, type SseMessage } from "./test-support/parse-sse.js";
 import { postRun, startedRunId, useRunsApp } from "./test-support/run-app.js";
@@ -16,6 +17,8 @@ vi.mock("./lib/prisma.js", async () => ({
   prisma: (await import("./test-support/fake-db.js")).fakeDb.prisma,
 }));
 vi.mock("./utils/sleep.js", () => ({ sleep: () => Promise.resolve() }));
+// Real mode runs the LangGraph agent, which needs live keys; a stand-in checks the wiring.
+vi.mock("./agent/run-real-agent.js", () => ({ runRealAgent: vi.fn() }));
 
 const app = useRunsApp();
 
@@ -173,17 +176,24 @@ describe("failure scenarios", () => {
 });
 
 describe("real mode", () => {
-  it("keeps the placeholder failure and ignores scenario names", async () => {
+  it("hands the run to the real agent, streams its result and ignores scenario names", async () => {
     config.AGENT_MODE = "real";
+    vi.mocked(runRealAgent).mockResolvedValue({
+      ok: false,
+      failure: { stage: 0, code: "NO_PUBLIC_DOCS", message: "No docs found." },
+    });
     const id = await startedRunId(app.url(), "stub-ambiguous");
     const body = await (
       await fetch(`${app.url()}/api/runs/${id}/stream`)
     ).text();
     expect(last(parseSse(body).messages)).toMatchObject({
       type: "run.error",
-      code: "INTERNAL",
-      message: "The research agent is not available yet.",
+      code: "NO_PUBLIC_DOCS",
+      stage: 0,
     });
+    expect(runRealAgent).toHaveBeenCalledWith(
+      expect.objectContaining({ runId: id, app: "stub-ambiguous" }),
+    );
     config.AGENT_MODE = "stub";
   });
 });

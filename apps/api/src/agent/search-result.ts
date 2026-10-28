@@ -11,5 +11,7 @@ export const SearchResultSchema = z.strictObject({
   url: z.string().url(),
   tier: SourceTierSchema,
   title: z.string().optional(),
+  /** Tavily's relevance score, used to order results within a tier. */
+  score: z.number().optional(),
 });
 export type SearchResult = z.infer<typeof SearchResultSchema>;
