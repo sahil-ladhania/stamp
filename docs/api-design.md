@@ -143,8 +143,9 @@ Request:
 | Status | Body |
 | --- | --- |
 | `201` | `{ "reportId": "rep_1" }` |
-| `400` | error `VALIDATION_ERROR` |
-| `404` | error `NOT_FOUND` |
+| `400` | error `VALIDATION_ERROR` (bad body, or a `claimId` the guide does not contain) |
+| `404` | error `NOT_FOUND` (unknown guide) |
+| `429` | error `RATE_LIMITED` + `Retry-After` header |
 
 ---
 
@@ -173,7 +174,7 @@ Raw exception text never reaches the client.
 | Validation | Zod schemas from `@stamp/schema` on every body and response |
 | CORS | Only the web app's origin (`WEB_ORIGIN`); `Retry-After` is exposed to the browser |
 | Body size | JSON bodies over 16 KB are rejected with `400 VALIDATION_ERROR` |
-| Rate limit | Applies to `POST /api/runs` and reports, per IP; limits set by env, not code |
+| Rate limit | Applies to `POST /api/runs` and reports, per IP, each with its own counter; limits set by env (`RATE_LIMIT_MAX`, `RATE_LIMIT_WINDOW_SECONDS`, `TRUST_PROXY_HOPS`), not code |
 | Secrets | API keys stay on the server; never in responses or logs |
 | Slugs | Lowercase app name, e.g. `hubspot`; used in share links `/g/hubspot` |
 | Claim IDs | Stable path inside the guide, e.g. `steps.5`, `blockers.2` |

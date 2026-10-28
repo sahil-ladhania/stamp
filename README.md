@@ -98,6 +98,8 @@ Try the live agent with any app outside this list.
    | api | `WEB_ORIGIN` | Web app URL, for CORS |
    | api | `DAILY_RUN_CAP` | Max live runs per day |
    | api | `ENABLE_BROWSER_AGENT` | `false` by default |
+   | api | `RATE_LIMIT_MAX`, `RATE_LIMIT_WINDOW_SECONDS` | Per-IP limit on starting runs and sending reports; defaults 10 per 60 seconds |
+   | api | `TRUST_PROXY_HOPS` | Reverse proxies in front of the API (`1` on Railway); `0` locally |
    | web | `VITE_API_URL` | API base URL |
 
 4. Set up the database and load the library guides:
