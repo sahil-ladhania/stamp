@@ -21,8 +21,7 @@ export function errorHandler(
     return;
   }
 
-  const shouldLog =
-    !(err instanceof AppError) || err instanceof InternalError;
+  const shouldLog = !(err instanceof AppError) || err instanceof InternalError;
   if (shouldLog) {
     logServerError(err);
   }

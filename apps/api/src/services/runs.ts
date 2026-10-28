@@ -1,30 +1,67 @@
 /**
  * File: runs.ts
- * Purpose: Run lifecycle, cache lookup, and stream event source.
+ * Purpose: Run lifecycle: cache lookup, join or start a run, and snapshots.
  * Exports: startRun, getRunById, openRunStream
- * Used by: controllers/runs.ts, agent graph (later)
+ * Used by: controllers/runs.ts
  */
-import type {
-  RunSnapshot,
-  RunStreamEvent,
-  StartRunInput,
-  StartRunResult,
-} from "@stamp/schema";
-import { InternalError } from "../errors/app-error.js";
+import type { RunSnapshot, StartRunInput, StartRunResult } from "@stamp/schema";
+import { getConfig } from "../config.js";
+import { ValidationError } from "../errors/app-error.js";
+import { prisma } from "../lib/prisma.js";
+import { slugify } from "../utils/slugify.js";
+import { assertUnderRunCap } from "./run-cap.js";
+import { launchRun } from "./run-executor.js";
+import { acquireRunLock, findJoinableRun } from "./run-lock.js";
+import { loadRunView } from "./run-view.js";
 
-/** Returns cached slug or starts/joins a live run. */
-export async function startRun(_input: StartRunInput): Promise<StartRunResult> {
-  throw new InternalError();
-};  
+export { openRunStream } from "./run-stream.js";
 
-/** Loads a run snapshot by id. */
-export async function getRunById(_runId: string): Promise<RunSnapshot> {
-  throw new InternalError();
-};
+type CachedGuide = { mode: "LIBRARY" | "LIVE"; expiresAt: Date | null };
 
-/** Yields SSE events for an active or completed run. */
-export async function* openRunStream(
-  _runId: string,
-): AsyncGenerator<RunStreamEvent> {
-  throw new InternalError();
-};
+/** Library guides are curated: always a hit, even for `force`. A live guide is a hit until it expires. */
+function isCacheHit(guide: CachedGuide, force: boolean, now: Date): boolean {
+  if (guide.mode === "LIBRARY") {
+    return true;
+  }
+  if (force) {
+    return false;
+  }
+  return guide.expiresAt === null || guide.expiresAt > now;
+}
+
+/**
+ * Returns a cached guide's slug, joins the run already researching this app, or starts a new one.
+ * Order matters: cache, then join, then the daily cap, so cached and joined requests never hit the cap.
+ */
+export async function startRun(input: StartRunInput): Promise<StartRunResult> {
+  const slug = slugify(input.app);
+  if (!slug) {
+    throw new ValidationError("app: Enter an app name or URL.");
+  }
+
+  const guide = await prisma.guide.findUnique({
+    where: { slug },
+    select: { mode: true, expiresAt: true },
+  });
+  if (guide && isCacheHit(guide, input.force === true, new Date())) {
+    return { status: "cached", slug };
+  }
+
+  const active = await findJoinableRun(slug);
+  if (active) {
+    return { status: "running", runId: active.id };
+  }
+
+  await assertUnderRunCap(getConfig().DAILY_RUN_CAP);
+  const lock = await acquireRunLock(slug);
+  if (!lock.isNew) {
+    return { status: "running", runId: lock.run.id };
+  }
+  launchRun({ id: lock.run.id, slug, app: input.app });
+  return { status: "started", runId: lock.run.id };
+}
+
+/** Loads a run snapshot by id; 404 when unknown. */
+export async function getRunById(runId: string): Promise<RunSnapshot> {
+  return (await loadRunView(runId)).snapshot;
+}

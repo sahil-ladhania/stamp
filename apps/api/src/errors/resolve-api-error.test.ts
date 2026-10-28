@@ -46,16 +46,24 @@ describe("resolveApiError", () => {
     expect(resolved.body.error.code).toBe("RUN_CAP_REACHED");
   });
 
-  it("maps ZodError to 400 with path detail", () => {
-    const schema = z.object({ app: z.string().min(2) });
-    const parsed = schema.safeParse({ app: "a" });
+  it("maps a ZodError to 500 without leaking issue detail", () => {
+    const parsed = z.object({ app: z.string().min(2) }).safeParse({ app: "a" });
     if (parsed.success) {
       throw new Error("expected parse failure");
     }
     const resolved = resolveApiError(parsed.error);
+    expect(resolved.statusCode).toBe(500);
+    expect(resolved.body).toEqual({
+      error: { code: "INTERNAL", message: "Something went wrong." },
+    });
+  });
+
+  it("maps an oversized body to 400", () => {
+    const resolved = resolveApiError(
+      Object.assign(new Error("too large"), { type: "entity.too.large" }),
+    );
     expect(resolved.statusCode).toBe(400);
-    expect(resolved.body.error.code).toBe("VALIDATION_ERROR");
-    expect(resolved.body.error.message).toContain("app");
+    expect(resolved.body.error.message).toBe("Request body is too large.");
   });
 
   it("maps SyntaxError to invalid JSON message", () => {

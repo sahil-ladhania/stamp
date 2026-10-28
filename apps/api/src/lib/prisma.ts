@@ -6,16 +6,27 @@
  */
 import "dotenv/config";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+import { getConfig } from "../config.js";
 import { PrismaClient } from "../../generated/prisma/client.js";
 
-const databaseUrl = process.env.DATABASE_URL;
-if (!databaseUrl) {
-  throw new Error("DATABASE_URL is not set");
+const CONNECTION_LIMIT = 5;
+
+/** Splits DATABASE_URL into pool options so the connection limit can be set. */
+function poolConfigFrom(
+  databaseUrl: string,
+): ConstructorParameters<typeof PrismaMariaDb>[0] {
+  const url = new URL(databaseUrl);
+  return {
+    host: url.hostname,
+    port: url.port ? Number(url.port) : 3306,
+    user: decodeURIComponent(url.username),
+    password: decodeURIComponent(url.password),
+    database: url.pathname.replace(/^\//, ""),
+    connectionLimit: CONNECTION_LIMIT,
+  };
 }
 
-const adapter = new PrismaMariaDb(databaseUrl, {
-  connectionLimit: 5,
-});
+const adapter = new PrismaMariaDb(poolConfigFrom(getConfig().DATABASE_URL));
 
 /** Shared database client for Express routes and services. */
 export const prisma = new PrismaClient({ adapter });
