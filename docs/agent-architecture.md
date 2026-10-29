@@ -291,7 +291,7 @@ One JSON object per line (`lib/logger.ts`); info goes to stdout, warnings and er
 | `search summary` | stage 2 | `queries`, `failedQueries`, `results`, `byTier`, `retryPass` |
 | `pages loaded` | stage 3 | pages from the network and from the cache |
 | `extract summary` | stage 4 | one row per section: status, duration, tokens |
-| `verify summary` | stage 5 | `claims`, `sourced`, `conflicts`, `missing` |
+| `verify summary` | stage 5 | `claims`, `sourced`, `conflicts`, `downgradedByCheck` (claims the support check took a label from), `supportCheck` (`done` or `skipped`), `reviewGate` (`drafted`, `afterQuoteCheck`, `final`: where an unknown gate was lost), `missing` |
 | `probe summary` | stage 6 | `reason` (`disabled`, `no_authorize_url` or the response reason), `outcome`, `status` |
 | `guide saved` / `guide not saved` | stage 8 | `coverage`, `difficulty`, `checks`, or the reason it failed |
 | `run summary` | the runner, once per run | `ok`, `status` or `code`, `durationMs`, `stageReached`, tokens per tier (`fastCalls`, `strongCalls`, `totalTokens`), `tavilySearchCalls`, `tavilyExtractCalls`, `tavilyCredits`, `pagesFetched`, `pageCacheHits`, `pagesHeld`, `claims`, `labels` (`sourced`, `tested`, `uncertain`), `coverage`, `retried`, `probe`, `libraryProtected` |

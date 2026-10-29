@@ -93,6 +93,12 @@ export const verifyNode = stageNode("verify", async (state, config) => {
       (o, i) => o.downgrade !== null && byCode.outcomes[i]?.downgrade === null,
     ).length,
     supportCheck: verdicts === null ? "skipped" : "done",
+    // Where a review gate is lost, step by step: as drafted, after the quote and official-page checks, after the support check.
+    reviewGate: {
+      drafted: toGateFacts(state.gates).reviewGate,
+      afterQuoteCheck: toGateFacts(gatesByCode?.gates ?? null).reviewGate,
+      final: toGateFacts(gates?.gates ?? null).reviewGate,
+    },
     missing,
   });
   return {
