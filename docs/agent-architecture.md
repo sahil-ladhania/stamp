@@ -207,7 +207,7 @@ Time caps per stage (seconds). A stage also gets less when the run is running la
 
 **0 Resolve** (`nodes/resolve.ts`, code only)
 - A typed domain or URL gives the official domain directly (`developers.notion.com` becomes `notion.com`), with no product phrase. There is no search and no "did you mean".
-- A name runs one search, `<name> API OAuth developer documentation`, for 8 results.
+- A name runs one search, `<name> API developer documentation`, for 8 results.
 - Hits are grouped by registrable domain. Forums, aggregators and code hosts are skipped unless the name is the site's own (`resolve/denylist.ts`). Each domain scores its search positions, a bonus for docs-looking pages, and a bonus for how well its brand label matches the name (equal, contained, or only in a page title).
 - `AMBIGUOUS_APP` when two or more candidates with different brand labels match the name and the runner-up scores at least 60% of the leader. The options are `{name, domain}`, up to 3. `NO_PUBLIC_DOCS` when nothing matches the name.
 - The weights (`SCORE_WEIGHTS`) and the thresholds (`RESOLVE_TUNING`) are defaults to tune against live searches.

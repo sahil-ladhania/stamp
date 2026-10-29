@@ -74,7 +74,7 @@ describe("resolveNode with an app name", () => {
       {
         type: "search.query",
         runId: "run_1",
-        query: "Notion API OAuth developer documentation",
+        query: "Notion API developer documentation",
       },
     ]);
   });
@@ -104,7 +104,7 @@ describe("resolveNode with an app name", () => {
     );
     expect(update.app).toMatchObject({ appName: "Notion" });
     expect(search.mock.calls[0]?.[0]).toBe(
-      "Notion API OAuth developer documentation",
+      "Notion API developer documentation",
     );
   });
 

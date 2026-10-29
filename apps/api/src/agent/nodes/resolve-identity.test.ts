@@ -9,7 +9,7 @@ import { logger } from "../../lib/logger.js";
 import { searchWeb } from "../../lib/tavily.js";
 import { createHarness, makeState } from "../../test-support/graph-harness.js";
 import { hit } from "../../test-support/node-fixtures.js";
-import { resolveNode } from "./resolve.js";
+import { RESOLVE_QUERY, resolveNode } from "./resolve.js";
 
 vi.mock("../../lib/tavily.js", () => ({
   searchWeb: vi.fn(),
@@ -67,5 +67,12 @@ describe("resolveNode identity", () => {
       domains: ["google.com"],
       product: "Gmail API",
     });
+  });
+});
+
+describe("RESOLVE_QUERY", () => {
+  it("searches by the name and API documentation only, with no generic OAuth words that pull in another product's pages", () => {
+    expect(RESOLVE_QUERY("Gmail")).toBe("Gmail API developer documentation");
+    expect(RESOLVE_QUERY("Gmail")).not.toMatch(/oauth/i);
   });
 });

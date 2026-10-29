@@ -19,9 +19,12 @@ import { stageNode } from "../stage-node.js";
 
 export const RESOLVE_MAX_RESULTS = 8;
 
-/** The one search that finds an app's official site from its name; "OAuth" ranks the identity and auth pages of large vendors first. */
+/**
+ * The one search that finds an app's official site from its name. It carries no generic OAuth words: "OAuth"
+ * in it returned Google's own OAuth pages for Gmail (none titled "Gmail", so no domain matched the name).
+ */
 export const RESOLVE_QUERY = (name: string): string =>
-  `${name} API OAuth developer documentation`;
+  `${name} API developer documentation`;
 
 export const resolveNode = stageNode("resolve", async (state, config) => {
   const typed = parseTyped(state.typed);
