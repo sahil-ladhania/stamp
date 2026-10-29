@@ -1,7 +1,7 @@
 /**
  * File: AppIdentity.tsx
- * Purpose: An app's mark and its display name. The name is always the guide's app name, never made from the slug. The five library
- *          apps have a monochrome mark; any other app gets a neutral initial tile, so rows line up.
+ * Purpose: An app's mark and its display name. The name is always the guide's app name, never made from the slug. The apps with a
+ *          monochrome mark (GitHub, HubSpot, Gmail) show it; any other app gets a neutral initial tile, so rows line up.
  * Exports: AppIdentity
  * Used by: guide header, library table, verdict, cards, example chips
  */

@@ -77,7 +77,7 @@ describe("sorting guides that include an unrated one", () => {
     asOf: "2026-10-29T00:00:00.000Z",
   });
 
-  it("still orders by the stored lower bound and breaks ties by name", () => {
+  it("puts the unrated guide after the rated ones, in either direction", () => {
     const guides = [
       guide("b", 2, "unknown"),
       guide("a", 2, "review"),
@@ -85,8 +85,8 @@ describe("sorting guides that include an unrated one", () => {
     ];
     expect(sortByDifficulty(guides, "easiest").map((g) => g.slug)).toEqual([
       "a",
-      "b",
       "c",
+      "b",
     ]);
     expect(sortByDifficulty(guides, "hardest").map((g) => g.slug)).toEqual([
       "c",

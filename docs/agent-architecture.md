@@ -269,7 +269,7 @@ Time caps per stage (seconds). A stage also gets less when the run is running la
 
 **7 Score** (`nodes/score.ts`, `scoring/`, code only)
 - `scoreDifficulty` and `classifyArchetype` run on the verified gates. A missing fact is unknown: no review gate assumed, and an unknown wait counts 2, so the score is a lower bound.
-- When the review gate is unknown the archetype is `unknown`, whatever else is known (`classifyArchetype`), and the web app shows "Not rated" in place of the number and the dots (`utils/difficulty-rating.ts`). The stored `difficulty` stays as a lower bound, used only for sorting; the breakdown reads "N points so far".
+- When the review gate is unknown the archetype is `unknown`, whatever else is known (`classifyArchetype`), and the web app shows "Not rated" in place of the number and the dots (`utils/difficulty-rating.ts`). The stored `difficulty` stays as a lower bound and does not place the guide: the library lists a Not rated guide after every rated one, in either direction (`utils/sort-guides.ts`); the breakdown reads "N points so far".
 - Gates the code never checked (verify has not run) score as unknown as well. Routing makes this rare: a run with gates or drafts goes through verify first, even after a budget stop.
 - Score always runs, also after a budget stop.
 

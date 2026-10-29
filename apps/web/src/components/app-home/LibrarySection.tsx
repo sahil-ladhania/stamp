@@ -37,7 +37,7 @@ export function LibrarySection({ status, guides, error, onRetry }: LibrarySectio
         <SectionHeading
           id="library-heading"
           title="The library"
-          description="Guides Stamp has already researched. A fixed rule sets the difficulty score."
+          description="Guides Stamp has already researched. A fixed rule sets the difficulty score; a guide whose review gate is not verified is Not rated and comes last."
           aside={status === "ready" ? <SortToggle value={order} onChange={setOrder} /> : undefined}
         />
         {status === "ready" && (

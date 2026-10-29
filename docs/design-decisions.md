@@ -270,7 +270,7 @@ Red = the rule. Blue = product decisions. Green = technical decisions.
 
 | | |
 | --- | --- |
-| Chosen | A guide whose review gate was not verified gets the archetype `unknown`, and the web app shows "Not rated" instead of the dots, the stamp's number and the card number. The stored difficulty is kept as a lower bound for sorting, and the breakdown says "points so far" |
+| Chosen | A guide whose review gate was not verified gets the archetype `unknown`, and the web app shows "Not rated" instead of the dots, the stamp's number and the card number. The stored difficulty is kept as a lower bound, and the breakdown says "points so far". The library lists a Not rated guide after every rated one, in either sort direction, because a lower bound is not a score (D26) |
 | Why | The review gate is the biggest factor. An unknown gate scored 0 points, so apps with an unverified gate came out as an easy 2 of 5, a confident number built on nothing. A confident wrong claim is worse than an honest "Not rated" |
 | Rejected | A nullable difficulty: needs a schema change and a database migration (`guides.difficulty` is a non-null, indexed column). A new "lower bound" field in the shared schema: the clearest contract, but the same cost for a flag the archetype already carries |
 | Cost | More guides read "Not rated" until the gate is verified. The library, whose guides are reviewed, is unaffected |
