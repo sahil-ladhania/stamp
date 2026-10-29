@@ -2,7 +2,7 @@
 
 ## TL;DR
 
-- 18 decisions shape Stamp. Each one lists what we chose, why, what we rejected, and the cost.
+- 24 decisions shape Stamp. Each one lists what we chose, why, what we rejected, and the cost.
 - The deciding rule for trade-offs: **evidence > useful guidance > problem fit > agent sophistication**.
 - The biggest calls: a readiness report instead of a chat, claim-level evidence, and a fixed agent pipeline.
 
@@ -48,6 +48,12 @@ Red = the rule. Blue = product decisions. Green = technical decisions.
 | 15 | One home per fact | The verdict summarises and links; a detail section holds the full version |
 | 16 | A map for long pages | A sticky section nav that marks sections that are mostly Uncertain |
 | 17 | Motion that explains | Five small motions, all with a still final state |
+| 18 | One timeline for a run | The stage bar and the trace, grouped by stage in time order, in place of Progress and Trace |
+| 19 | The run's app name | The saved guide's name, then the typed name made readable, then the slug |
+| 20 | Same counts, same words | One sentence and one set of counts for the run result and the Guide; only Tested is confirmed |
+| 21 | One loop | A live dot that pulses while a run works, and nothing else repeats |
+| 22 | Follow the end of the trace | The page follows the newest row until the reader scrolls up |
+| 23 | Labels beside their own text | Each label sits next to its text; a quiet fact has no label until it opens |
 
 ---
 
@@ -199,6 +205,57 @@ Red = the rule. Blue = product decisions. Green = technical decisions.
 | Chosen | Five motions: the active step and progress line on Landing (wide screens only), one stamp press, the evidence popover, the steps and blockers accordion, and the section nav. CSS and one `IntersectionObserver`. With reduced motion each shows its final state |
 | Why | Motion is for order, origin and place. Nothing loops |
 | Rejected | An animation library: CSS does the job. Parallax and scroll-jacking: they cost the reader control |
+
+### D18. One timeline for a run
+
+| | |
+| --- | --- |
+| Chosen | A nine segment stage bar, then the trace grouped by stage in time order. A group header carries the stage, who runs it, its state and time, and a one-line summary, so the "started" and "done in" rows are gone. The running group is open and done groups close. Stage numbers are dropped |
+| Why | Progress and Trace repeated each other, and the trace was a newest-first debug log with raw addresses and schema paths. Grouped by stage it reads as the story of the run, and a quote reads "Blocker 1, Fix" |
+| Rejected | Keeping two columns: the lifecycle rows duplicated the progress column. An inner scroll box: it cut content off and hid new rows |
+| Cost | Only 4 of 9 stages send events (Resolve, Search, Fetch, Verify), so the other five groups are a header only |
+
+### D19. The run's app name
+
+| | |
+| --- | --- |
+| Chosen | The saved guide's `appName` once the run is done, then what the visitor typed (`?app=`) made readable (a domain or URL gives its name; all lower case is title-cased; text with a capital stays as typed), then the slug made readable |
+| Why | The stream carries no name: the snapshot has only `slug`. The Guide page shows the guide's name, so the two pages must agree |
+| Rejected | A name from the resolve stage: no such event exists, and the API is out of scope |
+
+### D20. Same counts, same words
+
+| | |
+| --- | --- |
+| Chosen | The run result and the Guide count the guide's own claims: "24 claims: 11 sourced, 13 uncertain (2 downgraded, 10 not found, 1 time estimate)". The downgraded ones come from the stream; "not found" means no source; a time estimate with a source stays Uncertain by rule. Only Tested is confirmed, so the header says "11 of 24 claims sourced" |
+| Why | The run said "kept 11 claims and downgraded 2" and the Guide said "11 of 24 claims confirmed". The events cover only claims that went through the quote check: estimates and unknown claims send none. Sourced is not confirmed |
+| Rejected | Counting events: it leaves 11 claims unaccounted for. Calling Sourced "confirmed": it softens the difference from Tested |
+| Cost | A run whose trace is gone shows the counts without the downgraded split |
+
+### D21. One loop
+
+| | |
+| --- | --- |
+| Chosen | The running segment, the status dot and a running group's dot pulse while a run is live, and stop when it ends. Under reduced motion it is a still dot with the word "Running" |
+| Why | A live run needs one signal that it is still working. This is an exception to "nothing loops" in D17, and the only one |
+| Rejected | A spinner on every row: it is noise. No signal: a 120 second wait looks stuck |
+
+### D22. Follow the end of the trace
+
+| | |
+| --- | --- |
+| Chosen | The page follows the newest row while the reader is at the end. If they scroll up it stops and shows "Jump to latest". When the run ends while it follows, it scrolls to the result |
+| Why | Oldest-first reads as a story but needs the page to keep up. Stopping when the reader scrolls up keeps their place |
+| Rejected | Newest first (the Phase 1 choice): it reads backwards. Always scrolling: it fights the reader |
+
+### D23. Labels beside their own text
+
+| | |
+| --- | --- |
+| Chosen | A step shows its detail label at the right of the title, a quiet "Human · Effort not stated" line with no label, and the effort with its label only when the step is open. A timeline node says "No duration found" once, with one label, and leaves out an unknown "Waits on". Requirements are a plain list, not a checklist |
+| Why | Two labels side by side made a step read as both Uncertain and Sourced. A checklist box looks clickable, and saving progress is on the Won't list (W1) |
+| Rejected | A checklist saved in the browser: W1. Hiding the effort label for good: it must stay reachable |
+| Cost | An unknown "Waits on" has no row, so it has no Report control. It has no text to report |
 
 ---
 

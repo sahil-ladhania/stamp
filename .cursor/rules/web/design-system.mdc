@@ -38,6 +38,12 @@ A sticky section navigation (a "Jump to" select on a phone) marks sections that 
 - Icons: check = Tested, link = Sourced, help-circle = Uncertain (Lucide).
 - Label colours only on label badges. Stamp red only on the stamp mark and the primary button.
 - An unknown value is `UnknownValue`. A source is a `SourceChip`. A navigation link is a `TextLink`.
+- Only Tested is confirmed. Say "sourced" for Sourced. Count claims with `claimSummary` and `describeClaimCounts`, so the run result and the Guide use the same numbers and words.
+- A label sits beside its own text. Never put two labels side by side in one row.
+
+## Live run page
+- One merged timeline: the stage bar, then the trace grouped by stage in time order. Rows are source chips and human claim names, never raw addresses or schema paths.
+- The page scrolls; no inner scroll box. The live dot is the only thing that loops.
 
 ## Layout
 - Spacing scale: 4, 8, 12, 16, 24, 32, 48 px.

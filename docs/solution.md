@@ -124,7 +124,7 @@ flowchart LR
 Blue = AI model. Red = external call. Green = our code.
 
 - Each stage streams a progress event to the browser, so you watch the agent work.
-- A trace panel shows every search, every page read, and every claim kept or downgraded.
+- The trace, grouped by stage, shows every search, every page read, and every claim kept or downgraded.
 
 **Why a fixed pipeline and not a free agent?**
 
