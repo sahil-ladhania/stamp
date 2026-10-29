@@ -177,7 +177,7 @@ A confident wrong claim is worse than an honest Unknown, so the guides are teste
 - **A golden set** of 10 apps, each fact with its official URL and a verbatim quote. Six apps are the tuning set; four (Asana, Calendly, Dropbox, Zoom) are a holdout run once, at the end, and never tuned on.
 - **An eval harness** (`pnpm --filter api eval`) runs the real agent on an app with no database writes and scores the guide against the golden file with code: wrong-product sources, claims that contradict the golden set, review gate, scopes, durations, top blocker, time and cost. Each batch prints its cost first and runs only with `--confirm`.
 - **Labels are set by code.** After the quote check, code downgrades claims on legacy or third-party pages and claims whose figures the quote lacks; one model call may also remove a label, never add one.
-- **What it showed** (tuning set, baseline to final): wrong-product pages 4.3 to 0, claims that contradict the golden set 40 to 1, milestone fields that are a duration or Unknown 10 of 24 to 24 of 24, no confident wrong review gate. What it did not fix: the review gate is verified for only 2 of 6 apps, and scopes for 2 of 6.
+- **What it showed** (tuning set, baseline to final): wrong-product pages 4.3 to 0, claims that contradict the golden set 40 to 1, milestone fields that are a duration or Unknown 10 of 24 to 24 of 24, no confident wrong review gate. What it did not fix: the review gate is verified for only 2 of 6 apps, and scopes for 2 of 6. **On the held-out apps (run once) it did not fully generalise:** three of four had no wrong-product pages, but Dropbox resolved to the Dropbox Sign product and every page read was another product's (3 wrong-product pages and 30 contradictions across the four apps, no gate verified).
 
 Every batch, stage by stage, and what went wrong on the way: [docs/verification-log.md](./docs/verification-log.md).
 
@@ -207,6 +207,7 @@ A sample of guidance checked against real sources or setup attempts.
 - Live generation has a daily cap to control cost; the library always works.
 - Stamp prefers Unknown to a guess. On the six tuning apps the review gate was verified for 2 and the scopes for 2; the rest read Unknown or "Not rated". A guide with an unverified review gate shows no difficulty number.
 - Scope names are kept only when the fetched page text holds them. Gmail's are not in the extracted text, so Gmail shows none.
+- The identity step can pick a sibling product of the same company: on the held-out Dropbox it chose the Dropbox Sign API, and every page read was that product's.
 - Single runs vary: in three repetitions of the same apps, 5 of 24 verdicts changed. The stage-by-stage numbers are one run each.
 - One model call checks that quotes support claims. It can only remove a label, but it can remove a good one, which costs coverage.
 - The golden set is 10 apps researched by one person; the holdout is 4 apps.

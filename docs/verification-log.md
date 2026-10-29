@@ -22,7 +22,7 @@ The contract each guide has to meet (the brief left it empty, so this default wa
 
 - **Golden set** (`apps/api/evals/golden/`): 10 apps researched by hand from official pages, each fact with its URL and a verbatim quote, and at most two accepted values per field. Six apps are the **tuning set** (GitHub, Gmail, HubSpot, Microsoft, Notion, Slack), used to build and tune. Four are the **holdout** (Asana, Calendly, Dropbox, Zoom), run **once**, at the end, never tuned on and never used to build a test fixture.
 - **Harness** (`apps/api/evals/`): runs the real agent on an app with no database writes and a fresh page fetch, captures every stage, and scores the guide against the golden file with code (no model judges the score). `--repeat N` reruns the batch and reports the mean and the lowest-to-highest range; `eval:rescore` scores saved runs again for free.
-- **Cost control:** every batch prints its estimate and the credits used so far and runs only with `--confirm`; at most 12 runs a batch, 2 in parallel. Total Tavily use for the whole programme is below.
+- **Cost control:** every batch prints its estimate and the credits used so far and runs only with `--confirm`; at most 12 runs a batch, 2 in parallel. Total Tavily use for the whole programme is below (721 credits in the ledger).
 - **Read single runs against the baseline range, not its mean.** The clean baseline (three repetitions) shows how much one run varies: contradictions 21 to 60, claims on good pages 34% to 60%, and 5 of 24 verdicts changing between repetitions. A change smaller than that range is not a result.
 
 Reproduce:
@@ -37,18 +37,18 @@ pnpm --filter api eval:rescore -- apps/api/evals/runs/<run folder>
 
 Run folders are in `apps/api/evals/runs/` (git-ignored; they hold full traces). Credits are Tavily credits from the run ledger; the Tavily dashboard read about 25 higher.
 
-| Folder (2026-10-29) | What it measured                                        | Runs   | Credits |
-| ------------------- | ------------------------------------------------------- | ------ | ------- |
-| `14-39-20Z`         | First baseline, one run per app                         | 6      | 60      |
-| `17-23-52Z`         | **Clean baseline**, `--repeat 3`, same code             | 18     | 184     |
-| `17-53-33Z`         | Stage 1, first try (with "OAuth" in the resolve query)  | 12     | 89      |
-| `17-58-08Z`         | Stage 1, after removing that word                       | 6      | 65      |
-| `18-11-45Z`         | Stage 2: selection                                      | 6      | 64      |
-| `18-29-23Z`         | Stage 3: trust checks and the support check             | 6      | 70      |
-| `18-43-33Z`         | Stage 4: shape                                          | 6      | 71      |
-| `18-54-14Z`         | Stage 5: score; the **final "after"** on the tuning set | 6      | 71      |
-| holdout             | Run once, at the end                                    | 4      | pending |
-| **Tuning total**    |                                                         | **66** | **674** |
+| Folder (2026-10-29)                                                       | What it measured                                        | Runs   | Credits |
+| ------------------------------------------------------------------------- | ------------------------------------------------------- | ------ | ------- |
+| `14-39-20Z`                                                               | First baseline, one run per app                         | 6      | 60      |
+| `17-23-52Z`                                                               | **Clean baseline**, `--repeat 3`, same code             | 18     | 184     |
+| `17-53-33Z`                                                               | Stage 1, first try (with "OAuth" in the resolve query)  | 12     | 89      |
+| `17-58-08Z`                                                               | Stage 1, after removing that word                       | 6      | 65      |
+| `18-11-45Z`                                                               | Stage 2: selection                                      | 6      | 64      |
+| `18-29-23Z`                                                               | Stage 3: trust checks and the support check             | 6      | 70      |
+| `18-43-33Z`                                                               | Stage 4: shape                                          | 6      | 71      |
+| `18-54-14Z`                                                               | Stage 5: score; the **final "after"** on the tuning set | 6      | 71      |
+| `19-09-54Z`                                                               | **Holdout**, run once, at the end                       | 4      | 47      |
+| **Total** (tuning 66 runs and 674 credits, holdout 4 runs and 47 credits) |                                                         | **70** | **721** |
 
 ## 4. The numbers, stage by stage
 
@@ -92,9 +92,30 @@ Tuning set, six apps. Baseline is the mean (lowest to highest) of the clean `--r
 
 ## 7. Holdout
 
-The holdout is Asana, Calendly, Dropbox and Zoom, run once with `--allow-holdout`, with no tuning on the result.
+The holdout is Asana, Calendly, Dropbox and Zoom, run **once** (`19-09-54Z`, 47 credits, $0.80) with the final code of all five stages and no tuning on the result. It is the honest generalisation number, and it is worse than the tuning set.
 
-_Pending: this section is filled with the result of that one run._
+| Metric                                         | Target          | Holdout (4 apps)             | Tuning final (6 apps) |
+| ---------------------------------------------- | --------------- | ---------------------------- | --------------------- |
+| Wrong-product pages cited                      | 0               | **3** (all Dropbox)          | 0                     |
+| Sourced claims that contradict the golden set  | 0               | **30** (Dropbox 27, Asana 3) | 1                     |
+| Fake or tutorial scopes                        | 0               | **10** (Dropbox 7, Asana 3)  | 1                     |
+| Review gate correct                            | at least 3 of 4 | **0 of 4**                   | 2 of 6                |
+| Approval wait correct                          | report          | 0 of 4                       | 1 of 6                |
+| Milestone fields that are durations or Unknown | 100%            | 16 of 16                     | 24 of 24              |
+| Top blocker is setup or approval               | report          | 1 of 4 (Dropbox fails)       | 4 of 6                |
+| Apps with at least 2 real scopes               | report          | 2 of 4                       | 2 of 6                |
+| Sourced claims on good pages                   | report          | 74% (61 of 82)               | 85%                   |
+| Runs within 120 s / p95                        | 100% / 100 s    | 4 of 4 / 45.7 s              | 6 of 6 / 35.8 s       |
+| Uncertain share                                | report          | 50%                          | 38%                   |
+| Cost per run                                   | report          | $0.20                        | $0.21                 |
+
+**What this says.**
+
+- **Three of the four apps behaved like the tuning set on trust:** Asana, Calendly and Zoom cited no wrong-product page, 100% of their Sourced claims stood on the right product's pages, and none had a contradiction apart from Asana's three OpenID identity scopes (`openid`, `email`, `profile`), which the golden file counts as not Asana API scopes.
+- **Dropbox failed completely, and the cause is in the first stage, not the later checks.** The resolve search ranked `hellosign.com` (the Dropbox Sign product, matched only by a page title: score 4.08) above `dropbox.com` (whose brand label is exactly "dropbox": score 3.97). The official domain became `hellosign.com`, the product phrase "Dropbox Sign API" was derived from its page titles, and every page read was another product's: 20 of 21 Sourced claims on another product's pages and the 7 scope names it listed were that product's. The later checks trust the identity they are given, so they could not catch it.
+- **The review gate and wait are unknown for all four.** No gate or wait was verified on any holdout app.
+- **Not met:** wrong-product 0, contradictions 0 and review gate at least 3 of 4. The tuning numbers overstate how well the system generalises; Dropbox is the counterexample, and it shows the same class of failure (a different product of the same company) that the tuning apps showed before Stage 1.
+- **This is the pre-6b result.** Any change made after seeing it, including a fix for the Dropbox identity, is not tested by a clean holdout. A fresh holdout of apps not yet researched would be needed to claim generalisation again.
 
 ## 8. Not done, on purpose
 
