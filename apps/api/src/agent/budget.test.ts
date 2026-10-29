@@ -28,7 +28,7 @@ describe("the documented limits", () => {
   it("keeps the fixed budget from docs/agent-architecture.md", () => {
     expect(RUN_BUDGET).toEqual({
       maxDurationMs: 120_000,
-      maxPages: 6,
+      maxPages: 8,
       maxRetries: 1,
       maxSchemaRepairsPerSection: 1,
     });

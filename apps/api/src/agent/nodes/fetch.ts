@@ -27,6 +27,8 @@ export const fetchNode = stageNode("fetch", async (state, config) => {
     allowance: pageAllowance(state.pages.length, retryPass),
     held: new Set(state.pages.map((page) => page.urlHash)),
     product: app.product,
+    appName: app.appName,
+    gateFirst: retryPass && state.missingSections.includes("reviewGate"),
   });
   const loaded = await loadPages(
     picks.map((pick) => pick.url),

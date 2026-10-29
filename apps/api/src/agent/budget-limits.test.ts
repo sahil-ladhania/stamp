@@ -19,21 +19,21 @@ const clock = startBudget(T0);
 const at = (secondsIn: number): number => T0 + secondsIn * 1000;
 
 describe("pageAllowance", () => {
-  it("allows 4 pages on the first pass and leaves 2 for the retry", () => {
+  it("allows 4 pages on the first pass and leaves 4 for the retry", () => {
     expect(FIRST_PASS_PAGE_CAP).toBe(4);
     expect(pageAllowance(0, false)).toBe(4);
-    expect(pageAllowance(0, true)).toBe(6);
+    expect(pageAllowance(0, true)).toBe(8);
   });
 
   it("gives the retry whatever the first pass left", () => {
-    expect(pageAllowance(4, true)).toBe(2);
-    expect(pageAllowance(3, true)).toBe(3);
+    expect(pageAllowance(4, true)).toBe(4);
+    expect(pageAllowance(3, true)).toBe(5);
   });
 
-  it("counts pages already fetched against the total of 6", () => {
+  it("counts pages already fetched against the total of 8", () => {
     expect(pageAllowance(2, false)).toBe(4);
-    expect(pageAllowance(5, false)).toBe(1);
-    expect(pageAllowance(6, false)).toBe(0);
+    expect(pageAllowance(7, false)).toBe(1);
+    expect(pageAllowance(8, false)).toBe(0);
     expect(pageAllowance(9, true)).toBe(0);
   });
 });

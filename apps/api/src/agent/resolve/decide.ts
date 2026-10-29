@@ -8,12 +8,19 @@ import type { AppCandidate } from "@stamp/schema";
 import type { Candidate } from "./candidates.js";
 import { displayName } from "./typed-input.js";
 
-export type ResolveTuning = { ambiguityRatio: number; maxOptions: number };
+export type ResolveTuning = {
+  ambiguityRatio: number;
+  /** A runner-up of another brand within this share of the leader, even one named only in a page title, makes the name ambiguous. */
+  closeRatio: number;
+  maxOptions: number;
+};
 
 /** Default thresholds, for tuning against live searches. */
 export const RESOLVE_TUNING: ResolveTuning = {
   /** A runner-up scoring at least this share of the leader makes the name ambiguous. */
   ambiguityRatio: 0.6,
+  /** A close call between two brands is not decided by search positions: the person is asked. */
+  closeRatio: 0.9,
   /** The most "did you mean" options shown. */
   maxOptions: 3,
 };
@@ -60,6 +67,25 @@ export function decideOfficial(
         })),
       };
     }
+  }
+  const close = candidates.filter(
+    (c) =>
+      c.label !== leader.label &&
+      c.match !== "none" &&
+      c.score >= tuning.closeRatio * leader.score,
+  );
+  if (close.length > 0) {
+    const byBrand = new Map<string, Candidate>();
+    for (const c of [leader, ...close]) {
+      if (!byBrand.has(c.label)) byBrand.set(c.label, c);
+    }
+    return {
+      kind: "ambiguous",
+      options: [...byBrand.values()].slice(0, tuning.maxOptions).map((c) => ({
+        name: displayName(c.label),
+        domain: c.domain,
+      })),
+    };
   }
   return { kind: "official", domain: leader.domain };
 }

@@ -96,7 +96,7 @@ describe("extractPages request", () => {
     fakeTavily.extract.mockResolvedValue({ results: [], failedResults: [] }),
   );
 
-  it("sends unique normalised URLs as plain text with basic depth and usage reporting", async () => {
+  it("sends unique normalised URLs as markdown with basic depth and usage reporting", async () => {
     await extractPages(
       [
         "https://example.com/a?utm_source=x",
@@ -110,11 +110,31 @@ describe("extractPages request", () => {
       ["https://example.com/a", "https://example.com/b"],
       {
         extractDepth: "basic",
-        format: "text",
+        format: "markdown",
         includeImages: false,
         includeUsage: true,
         timeout: 10,
       },
+    );
+  });
+
+  it("rewrites links in the page text so a name shown only as a link stays readable", async () => {
+    fakeTavily.extract.mockResolvedValue({
+      results: [
+        {
+          url: "https://example.com/scopes",
+          title: "Scopes",
+          rawContent:
+            "| [https://api.example.com/auth/mail.labels](https://api.example.com/auth/mail.labels) | See labels. |",
+        },
+      ],
+      failedResults: [],
+    });
+    const result = await extractPages(["https://example.com/scopes"], {
+      timeoutMs: 9500,
+    });
+    expect(result.pages[0]?.text).toBe(
+      "| https://api.example.com/auth/mail.labels | See labels. |",
     );
   });
 

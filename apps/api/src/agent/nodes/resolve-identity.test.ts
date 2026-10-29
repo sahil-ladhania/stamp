@@ -7,7 +7,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { logger } from "../../lib/logger.js";
 import { searchWeb } from "../../lib/tavily.js";
-import { createHarness, makeState } from "../../test-support/graph-harness.js";
+import { RUN_ERROR_MESSAGES } from "../../services/run-messages.js";
+import {
+  createHarness,
+  makeState,
+  trace,
+} from "../../test-support/graph-harness.js";
 import { hit } from "../../test-support/node-fixtures.js";
 import { RESOLVE_QUERY, resolveNode } from "./resolve.js";
 
@@ -74,5 +79,32 @@ describe("RESOLVE_QUERY", () => {
   it("searches by the name and API documentation only, with no generic OAuth words that pull in another product's pages", () => {
     expect(RESOLVE_QUERY("Gmail")).toBe("Gmail API developer documentation");
     expect(RESOLVE_QUERY("Gmail")).not.toMatch(/oauth/i);
+  });
+});
+
+describe("resolveNode when two brands are a close call", () => {
+  const found = (...urls: string[]) =>
+    search.mockResolvedValue({ hits: urls.map((url) => hit(url)), credits: 1 });
+
+  it("ends the run with AMBIGUOUS_APP and the options when two apps match about equally", async () => {
+    const h = createHarness();
+    // The named domain leads by the exact-label weight; a docs host with the better positions keeps the other close.
+    found(
+      "https://docs.mercuryapp.io/x",
+      "https://docs.mercuryapp.io/y",
+      "https://mercury.com/",
+    );
+    const update = await resolveNode(makeState({ typed: "Mercury" }), h.config);
+    expect(update.failure).toEqual({
+      stage: 0,
+      code: "AMBIGUOUS_APP",
+      message: RUN_ERROR_MESSAGES.AMBIGUOUS_APP,
+      options: [
+        { name: "Mercury", domain: "mercury.com" },
+        { name: "Mercuryapp", domain: "mercuryapp.io" },
+      ],
+    });
+    expect(update.app).toBeUndefined();
+    expect(trace(h.events)).toEqual(["stage.started:0", "search.query"]);
   });
 });

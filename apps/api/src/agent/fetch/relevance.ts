@@ -7,7 +7,11 @@
 import { DOCS_HOST_LABELS, DOCS_PATH_HINT } from "../resolve/denylist.js";
 import type { SearchResult } from "../search-result.js";
 
-export type RelevanceContext = { product: string | null };
+export type RelevanceContext = {
+  product: string | null;
+  /** True on a retry whose review gate is still unknown: pages that read like gate documentation come first. */
+  gateFirst?: boolean;
+};
 
 /** Words that mean a title or path answers each planned topic. Generic web terms, not vendor wording. */
 const TOPIC_WORDS: Record<string, RegExp> = {
@@ -26,6 +30,10 @@ const NOISY_PATH =
   /\/(?:blogs?|community|communities|forums?|discussions?|issues?|questions?|answers?|templates?|changelog|release-notes|news|help)(?:[/?#]|$)/i;
 const LEGACY = /legacy|deprecated|archived|sunset|retired/i;
 
+/** Words in a title or path of the pages that tell whether an app needs review: review, approval, listing, publishing, distribution. */
+const GATE_WORDS =
+  /review|approv|verif|listing|marketplace|publish|public|distribution|submit|certif/i;
+const GATE_BONUS = 4;
 const TITLE_FIT = 2;
 const PATH_FIT = 1;
 const OAUTH_BONUS = 1;
@@ -74,8 +82,11 @@ export function relevance(
   const hasProduct =
     context.product !== null &&
     title.toLowerCase().includes(context.product.toLowerCase());
+  const isGateDoc =
+    context.gateFirst === true && GATE_WORDS.test(`${title} ${path}`);
   return (
     topicFit(result) +
+    (isGateDoc ? GATE_BONUS : 0) +
     (OAUTH_TITLE.test(title) ? OAUTH_BONUS : 0) +
     (isDocs ? DOCS_BONUS : 0) +
     (hasProduct ? PRODUCT_BONUS : 0) -

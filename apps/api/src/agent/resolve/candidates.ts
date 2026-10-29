@@ -30,7 +30,8 @@ export type Candidate = {
 
 /** Default weights. Search rank adds 1/(position + 1) per hit; tune these against real searches. */
 export const SCORE_WEIGHTS = {
-  exact: 3,
+  /** A domain whose brand label is the app's name (dropbox.com for "Dropbox"): the strongest sign, worth more than a docs host and good search positions together. */
+  exact: 4.5,
   partial: 1.5,
   title: 1,
   docsHintPerHit: 0.5,

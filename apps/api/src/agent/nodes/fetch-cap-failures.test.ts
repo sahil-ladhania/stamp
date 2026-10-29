@@ -40,26 +40,26 @@ beforeEach(() => {
   resetFetchMocks({ extract, cached, store });
 });
 
-describe("fetchNode 6-page cap and retry", () => {
+describe("fetchNode 8-page cap and retry", () => {
   const held = (n: number) =>
     Array.from({ length: n }, (_, i) =>
       pageRecord(`https://docs.acme.com/held${i}`),
     );
 
-  it("fetches only 2 more when 4 pages are held, on the retry pass", async () => {
+  it("fetches only 4 more when 4 pages are held, on the retry pass", async () => {
     const h = createHarness();
     await fetchNode(
       state({ pages: held(4), retryCount: 1, searchResults: officials(8) }),
       h.config,
     );
-    expect(extract.mock.calls[0]?.[0]).toHaveLength(2);
+    expect(extract.mock.calls[0]?.[0]).toHaveLength(4);
     expect(extract.mock.calls[0]?.[1].timeoutMs).toBe(8_000);
   });
 
-  it("fetches nothing more once 6 pages are held, and does not fail", async () => {
+  it("fetches nothing more once 8 pages are held, and does not fail", async () => {
     const h = createHarness();
     const update = await fetchNode(
-      state({ pages: held(6), retryCount: 1, searchResults: officials(8) }),
+      state({ pages: held(8), retryCount: 1, searchResults: officials(10) }),
       h.config,
     );
     expect(extract).not.toHaveBeenCalled();
@@ -67,7 +67,7 @@ describe("fetchNode 6-page cap and retry", () => {
     expect(pagesOf(update)).toEqual([]);
   });
 
-  it("counts cache hits toward the 6", async () => {
+  it("counts cache hits toward the 8", async () => {
     const h = createHarness();
     cached.mockImplementation(async (url) => pageRecord(url));
     await fetchNode(state({ searchResults: officials(10) }), h.config);

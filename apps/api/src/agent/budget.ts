@@ -14,7 +14,7 @@ export type RunBudget = {
 /** Fixed limits per docs/agent-architecture.md section 6. */
 export const RUN_BUDGET: RunBudget = {
   maxDurationMs: 120_000,
-  maxPages: 6,
+  maxPages: 8,
   maxRetries: 1,
   maxSchemaRepairsPerSection: 1,
 };

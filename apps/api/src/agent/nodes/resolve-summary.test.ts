@@ -96,7 +96,11 @@ describe("the resolve summary line", () => {
 
   it("logs the ambiguous decision too, with both candidates", async () => {
     search.mockResolvedValue({
-      hits: [hit("https://mercury.com/"), hit("https://docs.mercuryapp.io/x")],
+      hits: [
+        hit("https://docs.mercuryapp.io/x"),
+        hit("https://docs.mercuryapp.io/y"),
+        hit("https://mercury.com/"),
+      ],
       credits: 1,
     });
     await run("Mercury");

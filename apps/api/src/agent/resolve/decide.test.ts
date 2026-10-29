@@ -70,9 +70,9 @@ describe("decideOfficial", () => {
     ).toBe("official");
   });
 
-  it("is not ambiguous when the runner-up only matches on a page title", () => {
+  it("is not ambiguous when the runner-up only matches on a page title and is well behind", () => {
     expect(
-      decideOfficial([candidate("a.com", 5), candidate("b.com", 4.5, "title")])
+      decideOfficial([candidate("a.com", 5), candidate("b.com", 4.4, "title")])
         .kind,
     ).toBe("official");
   });
@@ -118,14 +118,26 @@ describe("decideOfficial", () => {
   it("uses the tuning passed in", () => {
     const pair = [candidate("a.com", 5), candidate("b.com", 3)];
     expect(
-      decideOfficial(pair, { ambiguityRatio: 0.9, maxOptions: 3 }).kind,
+      decideOfficial(pair, {
+        ambiguityRatio: 0.9,
+        closeRatio: 0.95,
+        maxOptions: 3,
+      }).kind,
     ).toBe("official");
     expect(
-      decideOfficial(pair, { ambiguityRatio: 0.5, maxOptions: 3 }).kind,
+      decideOfficial(pair, {
+        ambiguityRatio: 0.5,
+        closeRatio: 0.95,
+        maxOptions: 3,
+      }).kind,
     ).toBe("ambiguous");
   });
 
   it("starts with a 60% ratio and 3 options", () => {
-    expect(RESOLVE_TUNING).toEqual({ ambiguityRatio: 0.6, maxOptions: 3 });
+    expect(RESOLVE_TUNING).toEqual({
+      ambiguityRatio: 0.6,
+      closeRatio: 0.9,
+      maxOptions: 3,
+    });
   });
 });
