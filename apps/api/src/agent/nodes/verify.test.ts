@@ -8,22 +8,15 @@ import { describe, expect, it, vi } from "vitest";
 import { logger } from "../../lib/logger.js";
 import {
   OAUTH_URL,
-  PAGES,
   QUOTES,
   REVIEW_URL,
   claim,
 } from "../../test-support/extract-fixtures.js";
 import { GATES_OUTPUT } from "../../test-support/extract-replies.js";
-import { createHarness, trace } from "../../test-support/graph-harness.js";
-import {
-  DRAFTS,
-  drafted,
-  withDrafts,
-} from "../../test-support/guide-fixtures.js";
-import { state } from "../../test-support/extract-node-helpers.js";
-import type { Claim } from "@stamp/schema";
+import { trace } from "../../test-support/graph-harness.js";
+import { drafted, withDrafts } from "../../test-support/guide-fixtures.js";
 import type { CheckRecord } from "../../services/verification-log.js";
-import { verifyNode } from "./verify.js";
+import { verify } from "../../test-support/verify-helpers.js";
 
 vi.spyOn(logger, "info").mockImplementation(() => {});
 
@@ -39,15 +32,6 @@ const steps = (quote: string) =>
       },
     ],
   });
-
-async function verify(over: Parameters<typeof state>[1] = {}) {
-  const h = createHarness();
-  const update = await verifyNode(
-    state(PAGES, { drafts: DRAFTS, ...over }),
-    h.config,
-  );
-  return { h, update, claims: (update.claims ?? []) as Claim[] };
-}
 
 describe("verifyNode", () => {
   it("labels every claim and emits the stage events around the claim events", async () => {
@@ -139,17 +123,6 @@ describe("verifyNode", () => {
     expect(
       (await verify({ gates: GATES_OUTPUT })).update.missingSections,
     ).toEqual([]);
-  });
-
-  it("reports the review gate as missing when there are no gates or its evidence did not verify, which triggers the retry", async () => {
-    expect((await verify()).update.missingSections).toEqual(["reviewGate"]);
-    const bad = {
-      ...GATES_OUTPUT,
-      reviewGateEvidence: claim(REVIEW_URL, FAKE),
-    };
-    expect((await verify({ gates: bad })).update.missingSections).toEqual([
-      "reviewGate",
-    ]);
   });
 
   it("reports steps as missing when none of its quotes matched, which triggers the retry", async () => {

@@ -21,6 +21,7 @@ import {
   officials,
   pagesOf,
   resetFetchMocks,
+  reviewed,
   state,
   t,
 } from "../../test-support/fetch-helpers.js";
@@ -49,15 +50,7 @@ describe("fetchNode first pass", () => {
     const h = createHarness();
     await fetchNode(
       state({
-        searchResults: [
-          ...officials(5),
-          {
-            ...t(1),
-            title: "OAuth app review times",
-            topics: ["approvalWait"],
-          },
-          t(2),
-        ],
+        searchResults: [...officials(5), reviewed(1), t(2)],
       }),
       h.config,
     );
