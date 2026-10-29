@@ -1,6 +1,6 @@
 /**
  * File: scope-checks.ts
- * Purpose: Code rules for whether a name the model called an OAuth scope is one, using only the name, its quote and the page: the quote holds it, it is not a placeholder, a half name or a bare host, and it does not come from an admin page.
+ * Purpose: Code rules for whether a name the model called an OAuth scope is one, using only the name and the fetched page: the page text holds it, it is not a placeholder, a half name or a bare host, and it does not come from an admin page.
  * Exports: isRealScope
  * Used by: agent/extract/sanitize.ts
  */
@@ -28,13 +28,14 @@ const onAdminPage = (url: string): boolean => {
 };
 
 /**
- * True when the name looks like a scope the provider defines for an app to request. A name with spaces is
+ * True when the name looks like a scope the provider defines for an app to request, and is written on the
+ * page (the reason's quote may sit in another table cell, so the page text is checked, not the quote). A name with spaces is
  * kept only from an official page (some providers name capabilities in words). Pages about administration
  * give scopes for a different surface (an organisation's admin API), so their names are not the app's scopes.
  */
 export function isRealScope(
   name: string,
-  quote: string,
+  pageText: string,
   page: { url: string; tier: SourceTier },
 ): boolean {
   const trimmed = name.trim();
@@ -43,5 +44,5 @@ export function isRealScope(
   if (!/^https?:\/\//i.test(trimmed) && BARE_HOST.test(trimmed)) return false;
   if (/\s/.test(trimmed) && page.tier !== "official") return false;
   if (onAdminPage(page.url)) return false;
-  return normalizeText(quote).includes(normalizeText(trimmed));
+  return normalizeText(pageText).includes(normalizeText(trimmed));
 }

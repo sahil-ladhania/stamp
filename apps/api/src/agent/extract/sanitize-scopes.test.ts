@@ -40,7 +40,13 @@ describe("sanitizeSection scopes", () => {
     ]);
   });
 
-  it("drops a name its quote does not hold, a placeholder, and a half name", () => {
+  it("keeps a name that is on the page though its quote does not hold it", () => {
+    expect(clean(scope("contacts.write", OAUTH_URL, QUOTES.scope))).toEqual([
+      "contacts.write",
+    ]);
+  });
+
+  it("drops a name the page does not hold, a placeholder, and a half name", () => {
     expect(
       clean(
         scope("contacts.delete", OAUTH_URL, QUOTES.scope),

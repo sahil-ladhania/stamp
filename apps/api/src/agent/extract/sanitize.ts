@@ -73,7 +73,7 @@ const scopes: Cleaner<"scopes"> = (output, { pages }) => {
   const kept = output.scopes.flatMap((scope) => {
     const reason = k.claim(scope.reason);
     const page = reason ? pageFor(reason.url, pages) : undefined;
-    return reason && page && isRealScope(scope.name, reason.quote, page)
+    return reason && page && isRealScope(scope.name, page.text, page)
       ? [{ ...scope, reason }]
       : [];
   });

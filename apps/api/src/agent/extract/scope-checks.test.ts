@@ -1,6 +1,6 @@
 /**
  * File: scope-checks.test.ts
- * Purpose: Tests the code rules that decide whether a name the model called a scope is one: in its quote, a single token (multi-word only on an official page), no placeholder or half name, not a bare host, not from an admin page.
+ * Purpose: Tests the code rules that decide whether a name the model called a scope is one: on its page, a single token (multi-word only on an official page), no placeholder or half name, not a bare host, not from an admin page.
  * Exports: (none)
  * Used by: vitest
  */
