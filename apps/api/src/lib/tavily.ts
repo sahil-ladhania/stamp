@@ -5,7 +5,6 @@
  * Used by: agent/nodes/resolve.ts, agent/nodes/search.ts, agent/nodes/fetch.ts, scripts/smoke-live.ts
  */
 import { z } from "zod";
-import { rewriteLinks } from "../utils/markdown-links.js";
 import {
   cleanUrl,
   getTavilyClient,
@@ -128,7 +127,7 @@ export async function extractPages(
     (timeout) =>
       getTavilyClient().extract(unique, {
         extractDepth: "basic",
-        format: "markdown",
+        format: "text",
         includeImages: false,
         includeUsage: true,
         timeout,
@@ -139,7 +138,7 @@ export async function extractPages(
       const failed = [...(parsed.failedResults ?? [])];
       for (const item of parsed.results) {
         const url = cleanUrl(item.url) ?? item.url;
-        const text = rewriteLinks(item.rawContent ?? "");
+        const text = item.rawContent ?? "";
         if (text.trim() === "") {
           failed.push({ url, error: "No text content" });
         } else {

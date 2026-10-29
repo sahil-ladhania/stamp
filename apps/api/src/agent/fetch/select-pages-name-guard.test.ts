@@ -1,12 +1,11 @@
 /**
  * File: select-pages-coverage.test.ts
- * Purpose: Tests the PR 6b selection rules: the reserved slot goes only to a non-official page that names the app, and a retry with an unknown review gate reads gate-vocabulary pages first.
+ * Purpose: Tests that the reserved slot goes only to a non-official page that names the app or its product.
  * Exports: (none)
  * Used by: vitest
  */
 import { describe, expect, it } from "vitest";
 import type { SearchResult } from "../search-result.js";
-import { relevance } from "./relevance.js";
 import { selectPages } from "./select-pages.js";
 
 const page = (
@@ -90,62 +89,5 @@ describe("the reserved slot and the app's name", () => {
       appName: "Microsoft",
     });
     expect(names(picked)).toContain("t");
-  });
-});
-
-describe("a retry with an unknown review gate", () => {
-  const generic = page(
-    "guides/overview",
-    "Getting started with OAuth",
-    ["setup"],
-    0.95,
-  );
-  const listing = page(
-    "guides/marketplace-listing",
-    "List your app on the marketplace",
-    ["setup"],
-    0.3,
-  );
-
-  it("adds a bonus for gate vocabulary in the title or path only when asked", () => {
-    expect(
-      relevance(listing, { product: null, gateFirst: true }),
-    ).toBeGreaterThan(relevance(listing, { product: null }) + 2);
-    expect(relevance(generic, { product: null, gateFirst: true })).toBeCloseTo(
-      relevance(generic, { product: null }),
-    );
-  });
-
-  it("reads the gate page before a better-scored generic page", () => {
-    const first = selectPages([generic, listing], {
-      allowance: 1,
-      held: new Set(),
-      product: null,
-      gateFirst: true,
-    });
-    expect(names(first)).toEqual(["marketplace-listing"]);
-    const normal = selectPages([generic, listing], {
-      allowance: 1,
-      held: new Set(),
-      product: null,
-    });
-    expect(names(normal)).toEqual(["overview"]);
-  });
-
-  it.each([
-    "review",
-    "approval",
-    "verification",
-    "listing",
-    "marketplace",
-    "publish",
-    "public-apps",
-    "distribution",
-    "submit",
-  ])("recognises %s in a path as gate vocabulary", (word) => {
-    const candidate = page(`docs/${word}`, "Overview", []);
-    expect(
-      relevance(candidate, { product: null, gateFirst: true }),
-    ).toBeGreaterThan(relevance(candidate, { product: null }) + 2);
   });
 });

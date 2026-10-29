@@ -1,6 +1,6 @@
 /**
  * File: fetch-gate-retry.test.ts
- * Purpose: Tests the fetch stage's retry pass when the review gate is unknown (gate pages first), and that a non-official page needs the app's name to be read.
+ * Purpose: Tests that a non-official page needs the app's name to be read by the fetch stage.
  * Exports: (none)
  * Used by: vitest
  */
@@ -9,7 +9,6 @@ import { logger } from "../../lib/logger.js";
 import { extractPages } from "../../lib/tavily.js";
 import { getCachedPage, storePage } from "../../services/page-cache.js";
 import { createHarness } from "../../test-support/graph-harness.js";
-import { pageRecord } from "../../test-support/node-fixtures.js";
 import {
   fetchedUrls,
   resetFetchMocks,
@@ -43,40 +42,6 @@ const doc = (path: string, title: string, score: number): SearchResult => ({
 const generic = Array.from({ length: 6 }, (_, i) =>
   doc(`guide-${i}`, `OAuth guide ${i}`, 0.9 - i / 100),
 );
-const listing = doc(
-  "marketplace-listing",
-  "List your app on the marketplace",
-  0.2,
-);
-
-describe("fetchNode on a retry with an unknown review gate", () => {
-  // Seven pages already held leave room for one more: the choice between a good generic page and gate documentation.
-  const held = Array.from({ length: 7 }, (_, i) =>
-    pageRecord(`https://docs.acme.com/held-${i}`),
-  );
-  const retry = (missingSections: string[]) =>
-    state({
-      pages: held,
-      retryCount: 1,
-      missingSections,
-      searchResults: [generic[0] as SearchResult, listing],
-    });
-
-  it("reads the gate documentation before a better-scored generic page", async () => {
-    const h = createHarness();
-    await fetchNode(retry(["reviewGate"]), h.config);
-    expect(fetchedUrls(h)).toEqual([
-      "https://docs.acme.com/marketplace-listing",
-    ]);
-  });
-
-  it("does not, when the gate is known and only steps are missing", async () => {
-    const h = createHarness();
-    await fetchNode(retry(["steps"]), h.config);
-    expect(fetchedUrls(h)).toEqual(["https://docs.acme.com/guide-0"]);
-  });
-});
-
 describe("fetchNode and the reserved non-official slot", () => {
   const forum = (title: string): SearchResult => ({
     url: "https://forum.example.org/t/1",

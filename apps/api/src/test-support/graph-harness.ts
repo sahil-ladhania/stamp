@@ -38,7 +38,6 @@ export function makeState(overrides: Partial<State> = {}): State {
     pages: [],
     drafts: {},
     gates: null,
-    supportVerdicts: {},
     claims: [],
     conflicts: [],
     retryCount: 0,

@@ -93,14 +93,9 @@ export function selectPages(
     product?: string | null;
     /** The app's name: a non-official page takes the reserved slot only if its title or address names the app or its product. */
     appName?: string;
-    /** True on a retry whose review gate is unknown. */
-    gateFirst?: boolean;
   },
 ): SearchResult[] {
-  const context: RelevanceContext = {
-    product: options.product ?? null,
-    gateFirst: options.gateFirst === true,
-  };
+  const context: RelevanceContext = { product: options.product ?? null };
   const namesApp = (result: SearchResult): boolean => {
     const keys = [options.appName, options.product ?? undefined]
       .map((name) => nameKey(name ?? ""))

@@ -21,7 +21,7 @@ alwaysApply: false
 - Use the fast model for `plan` and the strong model for `extract`. Use a low temperature.
 
 ## Budgets
-- Max 120 seconds per run, 8 pages (4 on the first pass), 1 retry.
+- Max 120 seconds per run, 6 pages, 1 retry.
 - Check the budget before each stage.
 - When time runs out, save a partial guide. Never crash the run.
 

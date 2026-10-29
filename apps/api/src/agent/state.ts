@@ -20,7 +20,6 @@ import type { PlannedQuery } from "./queries.js";
 import type { CheckRecord } from "../services/verification-log.js";
 import type { DraftSectionId, SectionOutput } from "./extract/sections.js";
 import type { SearchResult } from "./search-result.js";
-import type { JudgeMemory } from "./verify/judge-memory.js";
 
 /**
  * The official app the run is about; resolve (stage 0) fills it. `domain` is the primary domain: the guide's
@@ -101,8 +100,6 @@ export const AgentState = Annotation.Root({
   /** The gates call's facts, each with the claim that backs it; null when unknown or failed. */
   gates: last<SectionOutput<"gates"> | null>(() => null),
   claims: last<Claim[]>(() => []),
-  /** The support check's verdicts by claim and quote, kept so the retry pass does not overturn an earlier answer. */
-  supportVerdicts: last<JudgeMemory>(() => ({})),
   conflicts: last<Conflict[]>(() => []),
   /** 0 or 1: how many retry passes have started. The graph bumps it when search starts a retry. */
   retryCount: last<number>(() => 0),

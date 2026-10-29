@@ -16,12 +16,11 @@ import { claimEvents } from "../verify/claim-events.js";
 import { toGateFacts } from "../scoring/gate-facts.js";
 import { missingSections } from "../verify/missing-sections.js";
 import { applyToGates, gateItems } from "../verify/gate-judge.js";
-import { judgeWithMemory } from "../verify/judge-memory.js";
 import {
   applyToClaims,
   claimItems,
   reasonOf,
-  type Verdict,
+  runJudge,
 } from "../verify/support-judge.js";
 import { verifyClaims } from "../verify/verify-claims.js";
 import { confirmConflicts } from "../verify/verify-conflicts.js";
@@ -50,8 +49,8 @@ export const verifyNode = stageNode("verify", async (state, config) => {
   // The support check runs on what code left Sourced, so it can only take labels away. If it cannot run,
   // the labels stay as the code set them and the guide is partial.
   const deps = getDeps(config);
-  const judged = state.app
-    ? await judgeWithMemory(
+  const verdicts = state.app
+    ? await runJudge(
         state.app,
         [
           ...claimItems(byCode, titleOf),
@@ -68,10 +67,8 @@ export const verifyNode = stageNode("verify", async (state, config) => {
           usage: deps.usage,
           runId: deps.runId,
         },
-        state.supportVerdicts,
       )
-    : { verdicts: new Map<string, Verdict>(), memory: state.supportVerdicts };
-  const verdicts = judged?.verdicts ?? null;
+    : new Map();
   const verified = verdicts ? applyToClaims(byCode, verdicts) : byCode;
   const gates =
     verdicts && gatesByCode
@@ -115,8 +112,6 @@ export const verifyNode = stageNode("verify", async (state, config) => {
     missingSections: missing,
     gates: gates?.gates ?? null,
     checks: [...verified.checks, ...conflicts.checks, ...(gates?.checks ?? [])],
-    ...(judged === null
-      ? { partial: true }
-      : { supportVerdicts: judged.memory }),
+    ...(verdicts === null ? { partial: true } : {}),
   };
 });
