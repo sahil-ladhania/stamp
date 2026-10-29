@@ -6,6 +6,7 @@
  */
 import { estimateBatch, type BatchEstimate, type Pricing } from "./cost.js";
 import { MAX_RUNS_PER_BATCH, type CliArgs } from "./cli-args.js";
+import type { CreditsUsed } from "./credits-used.js";
 import { selectGolden, type Golden } from "./golden.js";
 
 export type BatchPlan = {
@@ -32,6 +33,11 @@ function runsLine(apps: number, args: CliArgs): string {
   return `Runs: ${apps} per repetition, ${args.repeat} repetitions = ${apps * args.repeat} (at most ${MAX_RUNS_PER_BATCH} per repetition), ${args.parallel} at a time`;
 }
 
+/** What the evals have used so far, this batch, and the running total, so the owner can keep credits back. */
+function creditsLine(used: CreditsUsed, estimate: BatchEstimate): string {
+  return `Credits used by evals so far: ${used.credits} in ${used.runs} runs (about ${usd(used.usd)}). This batch: ${estimate.credits} (up to ${estimate.highCredits}). Running total after it: ${used.credits + estimate.credits} (up to ${used.credits + estimate.highCredits}).`;
+}
+
 function priceSources(models: readonly string[], pricing: Pricing): string {
   const urls = models.flatMap(
     (model) => pricing.models[model]?.source.url ?? [],
@@ -48,6 +54,7 @@ export function planBatch(
   all: readonly Golden[],
   pricing: Pricing,
   models: { fast: string; strong: string },
+  used: CreditsUsed = { credits: 0, runs: 0, usd: 0 },
 ): BatchPlan {
   const goldens = selectGolden(all, args.selector);
   if (goldens.length > MAX_RUNS_PER_BATCH) {
@@ -74,6 +81,7 @@ export function planBatch(
     runsLine(goldens.length, args),
     `Models: fast ${models.fast}, strong ${models.strong}`,
     estimateLine(estimate),
+    creditsLine(used, estimate),
     `Basis: ${estimate.basis}`,
     `Prices as of ${pricing.asOf}: ${priceSources([models.fast, models.strong], pricing)}`,
     "Every run fetches its pages fresh (the page cache is not used) and no guide is saved to the database.",

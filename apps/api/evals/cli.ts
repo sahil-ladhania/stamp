@@ -11,6 +11,7 @@ import { fileURLToPath } from "node:url";
 import { checkSettings, describe, say } from "../scripts/script-io.js";
 import { parseArgs } from "./lib/cli-args.js";
 import { loadPricing } from "./lib/cost.js";
+import { creditsUsed } from "./lib/credits-used.js";
 import { loadGolden } from "./lib/golden.js";
 import { tapLogs } from "./lib/log-tap.js";
 import { planBatch } from "./lib/plan-batch.js";
@@ -31,7 +32,13 @@ async function main(): Promise<void> {
     fast: process.env.OPENAI_MODEL_FAST ?? "unset",
     strong: process.env.OPENAI_MODEL_STRONG ?? "unset",
   };
-  const plan = planBatch(args, await loadGolden(), pricing, models);
+  const plan = planBatch(
+    args,
+    await loadGolden(),
+    pricing,
+    models,
+    await creditsUsed(RUNS_DIR),
+  );
   plan.lines.forEach(say);
 
   if (!args.confirm) {

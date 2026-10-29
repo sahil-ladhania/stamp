@@ -146,3 +146,40 @@ Golden additions, **applied on your approval (2026-10-29)**: Notion hard avoid o
 - **Heuristics in my counting.** "Not provider docs" is a path pattern (Q&A, discussions, issues, repos, blogs, help, trust); a few `.default`, `user_impersonation` and `mail.google.com` strings are real in other contexts and were counted fake because they are not usable scopes here.
 - **The scorer's `thirdParty` list also holds official pages on a second host** (`devblogs.microsoft.com`, `slack.com/blog`, `notion.com/help`); read those lines by hand.
 - **Holdout was not run and not looked at.**
+
+## 9. Clean baseline: three repetitions (added 2026-10-29)
+
+The first baseline was one run per app. After the harness gained `--repeat`, the tuning set was run three more times on the same code (18 runs, $3.15, 184 credits, every run ended in 16 to 59 s). Files: `apps/api/evals/runs/2026-10-29T17-23-52Z/`.
+
+| Metric                                         | Target                 | First baseline (1 run) | Clean baseline: mean (lowest to highest) |
+| ---------------------------------------------- | ---------------------- | ---------------------- | ---------------------------------------- |
+| Wrong-product sources                          | 0                      | 5                      | 4.3 (3 to 5)                             |
+| Sourced claims that contradict the golden set  | 0                      | 103                    | 39.7 (21 to 60)                          |
+| Review gate correct                            | at least 5 of 6        | 2                      | 2.3 (2 to 3)                             |
+| Apps with at least 2 real scopes               | at least 5 of 6        | 3                      | 2.7 (2 to 3)                             |
+| Fake or tutorial scopes                        | 0                      | 8                      | 6.7 (5 to 10)                            |
+| Milestone fields that are durations or Unknown | 24 of 24               | 9                      | 10 (9 to 11)                             |
+| Top blocker is a setup or approval blocker     | at least 5 of 6        | 2                      | 3 (2 to 4)                               |
+| Runs that end within 120 s                     | 100%                   | 6 of 6                 | 6 of 6, every time                       |
+| p95 run time                                   | at most 100 s          | 37.8 s                 | 41.9 s (31.5 to 58.7)                    |
+| Uncertain share                                | report                 | 34%                    | 32% (26% to 36%)                         |
+| Cost per run                                   | report                 | $0.17                  | $0.17 ($0.17 to $0.18)                   |
+| Sourced claims on good pages                   | at least 95% (stage 3) | 20% (38 of 188)        | 43% (34% to 60%)                         |
+| Golden pages read                              | report                 | 1 of 32                | 1.7 (1 to 2)                             |
+| Golden pages found by the search               | report                 | 12 of 32               | 13 (13 to 13)                            |
+
+**What the repetitions show**
+
+- **The problem is real, but the first single run was at the bad end of the range** on two metrics: contradictions (103 against a mean of 40) and the share of claims on good pages (20% against 43%). Every target is still far from met: no repetition had fewer than 3 wrong-product pages or fewer than 5 fake scopes, none read more than 2 of 32 golden pages, and no repetition had more than 11 of 24 milestone fields that are durations or Unknown.
+- **The search is stable; the reading is not.** The same 13 golden pages were found in every repetition, while which pages were read changed from run to run. That fits the diagnosis: selection, not search, is the first thing to fix.
+- **Single runs of a stage must be read against these ranges.** A stage evaluated once (the credit rule) has to beat the lowest-to-highest range, not the mean. Effects that code makes deterministic are judged as pass or fail.
+- **5 of 24 verdicts changed between repetitions**: GitHub's gate (unknown, wrong, wrong) and top blocker, and Slack's gate, wait and top blocker.
+
+**What the new gate evidence shows** (the harness now keeps the quote and URL behind each gate and wait)
+
+- **GitHub's gate is a misreading, confirmed.** `required_to_scale` rests on "organization members and outside collaborators must request approval from an organization owner", a customer's own admin approving an app, not a review by GitHub (`approving-oauth-apps-for-your-organization`, official). This was inferred in section 4, row 6; it is now read.
+- **Gmail's gate and wait match the golden set by luck.** Both rest on `unipile.com`, a third-party blog ("Any app that requests sensitive or restricted Gmail scopes ... must pass Google's security assessment"; "4-12+ weeks"). The scorer calls them matches; the contract's item 6 (a third party never decides alone) says they should not count. Google's own figures are 10 business days and 6 weeks.
+- **Slack's one match (repetition 2) rests on a blog too**, `resumelens.org`: gate "optional", wait "two to six weeks".
+- **Notion's gate is right and official**: "You can create and use a public connection without listing it" (`developers.notion.com/guides/get-started/overview`).
+
+Credits used by evals, all runs so far: **244** (60 + 184), about $4.19.
