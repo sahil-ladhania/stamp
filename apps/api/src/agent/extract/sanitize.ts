@@ -7,7 +7,9 @@
 import { hashUrl } from "../../utils/hash-url.js";
 import type { DraftClaim } from "../draft-claim.js";
 import type { PageRecord } from "../page-record.js";
+import { durationFromQuote } from "./duration-text.js";
 import { withoutUnevidencedFacts } from "./gates-normalize.js";
+import { isRealScope } from "./scope-checks.js";
 import type { SectionId, SectionOutput } from "./sections.js";
 
 /** The pages fetched in this run, by URL hash: the only sources a claim may cite. */
@@ -65,11 +67,15 @@ const steps: Cleaner<"steps"> = (output, { pages }) => {
   return { output: { steps: kept }, dropped: k.dropped() };
 };
 
+/** A scope is kept only when code agrees it is one (`scope-checks.ts`); the model's say-so is not enough. */
 const scopes: Cleaner<"scopes"> = (output, { pages }) => {
   const k = keeper(pages);
   const kept = output.scopes.flatMap((scope) => {
     const reason = k.claim(scope.reason);
-    return reason ? [{ ...scope, reason }] : [];
+    const page = reason ? pageFor(reason.url, pages) : undefined;
+    return reason && page && isRealScope(scope.name, page.text, page)
+      ? [{ ...scope, reason }]
+      : [];
   });
   return { output: { scopes: kept }, dropped: k.dropped() };
 };
@@ -104,14 +110,24 @@ const blockers: Cleaner<"blockers"> = (output, { pages }) => {
   return { output: { blockers: kept }, dropped: k.dropped() };
 };
 
+/**
+ * A milestone says how long something takes, so its text is a duration or nothing. Code reads the time out
+ * of the quote and writes it ("5 to 7 business days"); a quote that states no time leaves the field
+ * unknown, whatever prose the model wrote.
+ */
 const milestones: Cleaner<"milestones"> = (output, { pages }) => {
   const k = keeper(pages);
+  const timed = (draft: DraftClaim | null): DraftClaim | null => {
+    const kept = k.claim(draft);
+    const text = kept === null ? null : durationFromQuote(kept.quote);
+    return kept === null || text === null ? null : { ...kept, text };
+  };
   return {
     output: {
-      firstTestEffort: k.claim(output.firstTestEffort),
-      firstTestWait: k.claim(output.firstTestWait),
-      productionEffort: k.claim(output.productionEffort),
-      productionWait: k.claim(output.productionWait),
+      firstTestEffort: timed(output.firstTestEffort),
+      firstTestWait: timed(output.firstTestWait),
+      productionEffort: timed(output.productionEffort),
+      productionWait: timed(output.productionWait),
     },
     dropped: k.dropped(),
   };

@@ -132,4 +132,19 @@ describe("verifyNode support check", () => {
       }),
     );
   });
+
+  it("logs what happened to the review gate at each step, so an unknown gate can be explained", async () => {
+    answer([v("gates.reviewGate", "unsupported")]);
+    const info = vi.mocked(logger.info);
+    info.mockClear();
+    await verify({ gates: GATES_OUTPUT });
+    const line = info.mock.calls.find(
+      ([m]) => m === "verify summary",
+    )?.[1] as Record<string, unknown>;
+    expect(line.reviewGate).toEqual({
+      drafted: "required_to_scale",
+      afterQuoteCheck: "required_to_scale",
+      final: "unknown",
+    });
+  });
 });

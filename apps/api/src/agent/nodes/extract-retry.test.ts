@@ -56,6 +56,14 @@ describe("extractNode retry pass", () => {
     expect(Object.keys(draftsOf(update)).sort()).toEqual(["steps", "verdict"]);
   });
 
+  it("redoes the gates, and not the verdict, when the review gate is unknown", async () => {
+    const h = createHarness();
+    const update = await extractNode(retry(["reviewGate"]), h.config);
+    expect(names()).toEqual(["extract_gates"]);
+    expect(update.gates).toMatchObject({ reviewGate: "required_to_scale" });
+    expect(draftsOf(update)).toEqual({});
+  });
+
   it("leaves the gates alone: the update carries no gates", async () => {
     const h = createHarness();
     const update = await extractNode(retry(["steps"]), h.config);

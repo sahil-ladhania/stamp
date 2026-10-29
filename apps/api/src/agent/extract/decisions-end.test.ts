@@ -125,6 +125,17 @@ describe("retrySections", () => {
     expect(retrySections(["limits", "requirements"]).redoVerdict).toBe(false);
   });
 
+  it("redoes the gates, last, when the review gate is unknown, and not the verdict for that alone", () => {
+    expect(retrySections(["reviewGate"])).toEqual({
+      sections: ["gates"],
+      redoVerdict: false,
+    });
+    expect(retrySections(["reviewGate", "scopes", "steps"])).toEqual({
+      sections: ["steps", "scopes", "gates"],
+      redoVerdict: true,
+    });
+  });
+
   it("redoes nothing for no known section", () => {
     expect(retrySections([])).toEqual({ sections: [], redoVerdict: false });
     expect(retrySections(["verdict"])).toEqual({

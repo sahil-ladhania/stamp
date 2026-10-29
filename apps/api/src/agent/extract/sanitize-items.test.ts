@@ -43,7 +43,13 @@ describe("items that lose their main claim", () => {
       {
         scopes: [
           { name: "contacts.read", reason: stray },
-          { name: "contacts.write", reason: ok },
+          {
+            name: "contacts.write",
+            reason: {
+              ...ok,
+              quote: "The contacts.write scope lets an app update contacts.",
+            },
+          },
         ],
       },
       ctx,

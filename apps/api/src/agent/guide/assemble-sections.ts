@@ -110,11 +110,14 @@ export function buildMilestones(
   };
 }
 
-/** The verdict points at a step and a blocker by position; a position with nothing behind it is null. */
+/**
+ * The verdict points at a step by position (a position with nothing behind it is null). The top blocker is
+ * chosen by code (`top-blocker.ts`) and passed in; the model's pick, if it gave one, is ignored.
+ */
 export function buildVerdict(
   drafts: Drafts,
   resolve: ClaimResolver,
-  counts: { steps: number; blockers: number },
+  counts: { steps: number; topBlockerId: string | null },
 ): Verdict {
   const section = drafts.verdict;
   const payload = section?.status === "drafted" ? section.payload : null;
@@ -133,10 +136,6 @@ export function buildVerdict(
       unknownWhy(section),
     ),
     nextStepId: pick(payload?.nextStepIndex, counts.steps, slotId.step),
-    topBlockerId: pick(
-      payload?.topBlockerIndex,
-      counts.blockers,
-      slotId.blocker,
-    ),
+    topBlockerId: counts.topBlockerId,
   };
 }
