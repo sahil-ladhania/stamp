@@ -71,3 +71,38 @@ describe("fetchNode and the reserved non-official slot", () => {
     expect(fetchedUrls(h)).toContain("https://forum.example.org/t/1");
   });
 });
+
+describe("fetchNode and the tier of what it reads", () => {
+  it("tiers a docs-platform page named after the app official and a community forum page a forum", async () => {
+    const h = createHarness();
+    await fetchNode(
+      state({
+        searchResults: [
+          doc("guide-0", "OAuth guide", 0.9),
+          {
+            url: "https://acme.readme.io/docs/oauth",
+            tier: "third_party",
+            title: "OAuth",
+            score: 0.8,
+            topics: ["setup"],
+          },
+          {
+            url: "https://devcommunity.acme.com/t/1",
+            tier: "official",
+            title: "OAuth review",
+            score: 0.7,
+            topics: ["review"],
+          },
+        ],
+      }),
+      h.config,
+    );
+    const tiers = new Map(
+      h.events.flatMap((e) =>
+        e.type === "page.fetched" ? [[e.url, e.tier] as const] : [],
+      ),
+    );
+    expect(tiers.get("https://acme.readme.io/docs/oauth")).toBe("official");
+    expect(tiers.get("https://devcommunity.acme.com/t/1")).toBe("forum");
+  });
+});

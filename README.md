@@ -207,12 +207,20 @@ A sample of guidance checked against real sources or setup attempts.
 - Live generation has a daily cap to control cost; the library always works.
 - Stamp prefers Unknown to a guess. On the six tuning apps the review gate was verified for 2 and the scopes for 2; the rest read Unknown or "Not rated". A guide with an unverified review gate shows no difficulty number.
 - Scope names are kept only when the fetched page text holds them. Gmail's are not in the extracted text, so Gmail shows none.
-- A user-written forum on an official domain whose host label is not exactly `community` or `forum` (Pipedrive's `devcommunity`) is treated as official, and documentation on a hosting platform's own domain (`readme.io`) is treated as third party. Both were seen on the fresh holdout and are not fixed.
+- Two page-tiering gaps seen on the fresh holdout are now fixed in code but **not measured by an eval**: a subdomain label containing "community" or "forum" (Pipedrive's `devcommunity`) is tiered a forum, and a host on `readme.io`, `gitbook.io` or `mintlify` named after the app is tiered official. The second rule trusts whoever registered that name on the platform.
 - The identity step can pick a sibling product of the same company: on the held-out Dropbox it chose the Dropbox Sign API, and every page read was that product's.
 - Single runs vary: in three repetitions of the same apps, 5 of 24 verdicts changed. The stage-by-stage numbers are one run each.
 - One model call checks that quotes support claims. It can only remove a label, but it can remove a good one, which costs coverage.
 - The golden set is 10 apps researched by one person; the holdout is 4 apps.
 - `gpt-4.1` and `gpt-4.1-mini` shut down on 2027-01-14; the migration is not done.
+
+---
+
+## Next steps
+
+- **Coverage.** The four coverage changes tried in PR 6b (markdown pages, an 8-page budget, a gate-first retry, verdict reuse in the support check) lowered trust metrics and were reverted, so they are **dropped for this submission**. The review gate, wait and scopes are still unknown for most apps. The way back is to test the four one at a time against the trust guard rails (about 260 credits); the experiment is kept at the git tag `experiment-coverage-6b` and written up in `apps/api/evals/coverage-plan.md` section 6.
+- **Model migration.** `gpt-4.1` and `gpt-4.1-mini` shut down on 2027-01-14; OpenAI recommends `gpt-6-luna`, a reasoning model. The code needs reasoning-model parameters and a pricing entry, then a comparison on the tuning set before switching.
+- **Measure the page-tiering fixes** (above) on a fresh set of apps.
 
 ---
 

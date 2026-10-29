@@ -67,7 +67,9 @@ export const searchNode = stageNode("search", async (state, config) => {
   const hits = runs.flatMap((found, index) =>
     (found ?? []).map((hit) => ({ ...hit, topic: jobs[index]?.topic })),
   );
-  const searchResults = orderResults(toSearchResults(hits, app.domains));
+  const searchResults = orderResults(
+    toSearchResults(hits, app.domains, { appName: app.appName }),
+  );
   logger.info("search summary", {
     runId: deps.runId,
     retryPass: isRetryEntry(state),

@@ -40,4 +40,21 @@ describe("toSearchResults across languages", () => {
     );
     expect(results.map((r) => r.url)).toEqual(["https://acme.com/fr/a"]);
   });
+
+  it("tiers a docs-platform host named after the app as official, and a community forum as a forum", () => {
+    const results = toSearchResults(
+      [
+        hit("https://acme.readme.io/docs/oauth"),
+        hit("https://devcommunity.acme.com/t/1"),
+        hit("https://other.readme.io/docs/oauth"),
+      ],
+      ["acme.com"],
+      { appName: "Acme" },
+    );
+    expect(results.map((r) => r.tier)).toEqual([
+      "official",
+      "forum",
+      "third_party",
+    ]);
+  });
 });
