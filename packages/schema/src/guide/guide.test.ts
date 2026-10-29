@@ -41,6 +41,18 @@ describe("GuideSchema", () => {
     expect(result.success).toBe(true);
   });
 
+  it("accepts a guide with a product phrase, with none, or with null, and rejects an empty one", () => {
+    const base = minimalGuide();
+    expect(
+      GuideSchema.safeParse({ ...base, product: "Gmail API" }).success,
+    ).toBe(true);
+    expect(GuideSchema.safeParse({ ...base, product: null }).success).toBe(
+      true,
+    );
+    expect(GuideSchema.safeParse(base).success).toBe(true);
+    expect(GuideSchema.safeParse({ ...base, product: "" }).success).toBe(false);
+  });
+
   it("accepts a guide whose unknown claims are uncertain with no sources", () => {
     const unknown = (id: string) =>
       minimalClaim({

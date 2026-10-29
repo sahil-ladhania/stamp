@@ -54,6 +54,8 @@ export type RunView = {
   claimsDowngraded: number;
   retries: number;
   outcome: RunOutcome;
+  /** What the run said it is researching (the resolve stage); null before it does. */
+  researched: { appName: string; domain: string; product: string | null } | null;
 };
 
 const RETRY_STAGE = 2; // A retry sends the run back to Search (docs/agent-architecture.md).
@@ -124,6 +126,15 @@ function buildStages(
   });
 }
 
+function findResearched(events: readonly RunViewEvent[]): RunView["researched"] {
+  for (const event of [...events].reverse()) {
+    if (event.type === "app.resolved") {
+      return { appName: event.appName, domain: event.domain, product: event.product };
+    }
+  }
+  return null;
+}
+
 export function deriveRunView(events: readonly RunViewEvent[]): RunView {
   const outcome = findOutcome(events);
   const stages = buildStages(events, outcome);
@@ -141,5 +152,6 @@ export function deriveRunView(events: readonly RunViewEvent[]): RunView {
     claimsDowngraded: count("claim.downgraded"),
     retries: Math.max(0, retryStarts - 1),
     outcome,
+    researched: findResearched(events),
   };
 }

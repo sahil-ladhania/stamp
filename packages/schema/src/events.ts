@@ -34,6 +34,14 @@ export const StageDoneEventSchema = RunStreamBaseSchema.extend({
   durationMs: z.number().nonnegative(),
 });
 
+/** What the run is researching: the app, its primary domain and the product phrase the search uses (null when there is none). */
+export const AppResolvedEventSchema = RunStreamBaseSchema.extend({
+  type: z.literal("app.resolved"),
+  appName: z.string().min(1),
+  domain: z.string().min(1),
+  product: z.string().min(1).nullable(),
+});
+
 export const SearchQueryEventSchema = RunStreamBaseSchema.extend({
   type: z.literal("search.query"),
   query: z.string().min(1),
@@ -80,6 +88,7 @@ export const RunStreamEventSchema = z.discriminatedUnion("type", [
   RunSnapshotEventSchema,
   StageStartedEventSchema,
   StageDoneEventSchema,
+  AppResolvedEventSchema,
   SearchQueryEventSchema,
   PageFetchedEventSchema,
   ClaimVerifiedEventSchema,

@@ -49,7 +49,11 @@ describe("resolveNode with a typed domain or URL", () => {
       product: null,
     });
     expect(search).not.toHaveBeenCalled();
-    expect(trace(h.events)).toEqual(["stage.started:0", "stage.done:0"]);
+    expect(trace(h.events)).toEqual([
+      "stage.started:0",
+      "app.resolved",
+      "stage.done:0",
+    ]);
   });
 });
 

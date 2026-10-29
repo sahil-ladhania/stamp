@@ -32,6 +32,8 @@ export const GuideSchema = z.strictObject({
   slug: z.string().min(1),
   appName: z.string().min(1),
   domain: z.string().min(1),
+  /** The product phrase the run searched for ("Gmail API"), when it found one; older guides have none. */
+  product: z.string().min(1).nullable().optional(),
   mode: GuideModeSchema,
   archetype: ArchetypeSchema,
   difficulty: z.number().int().min(1).max(5),

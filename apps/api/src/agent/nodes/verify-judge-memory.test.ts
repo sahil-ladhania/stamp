@@ -9,6 +9,7 @@ import { logger } from "../../lib/logger.js";
 import { structured } from "../../lib/openai.js";
 import { GATES_OUTPUT } from "../../test-support/extract-replies.js";
 import { verify } from "../../test-support/verify-helpers.js";
+import type { JudgeMemory } from "../verify/judge-memory.js";
 
 vi.mock("../../lib/openai.js", () => ({ structured: vi.fn() }));
 const model = vi.mocked(structured);
@@ -49,7 +50,7 @@ describe("verifyNode and the support check's memory", () => {
     const second = await verify({
       gates: GATES_OUTPUT,
       retryCount: 1,
-      supportVerdicts: first.update.supportVerdicts,
+      supportVerdicts: first.update.supportVerdicts as JudgeMemory,
     });
     expect(model).not.toHaveBeenCalled();
     expect(second.update.gates).toMatchObject({

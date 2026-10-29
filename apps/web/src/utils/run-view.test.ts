@@ -132,3 +132,26 @@ describe('deriveRunView counts', () => {
     expect(view.claimsDowngraded).toBe(2)
   })
 })
+
+describe('deriveRunView researched app', () => {
+  it('is null until the run says what it is researching', () => {
+    expect(deriveRunView([started(0)]).researched).toBeNull()
+  })
+
+  it('is the app, domain and product the resolve stage reported', () => {
+    const view = deriveRunView([
+      started(0),
+      runEvent('app.resolved', { appName: 'Gmail', domain: 'google.com', product: 'Gmail API' }),
+    ])
+    expect(view.researched).toEqual({ appName: 'Gmail', domain: 'google.com', product: 'Gmail API' })
+  })
+
+  it('takes the latest report when there are two', () => {
+    const view = deriveRunView([
+      runEvent('app.resolved', { appName: 'Dropbox', domain: 'a.com', product: null }),
+      runEvent('app.resolved', { appName: 'Dropbox', domain: 'dropbox.com', product: null }),
+    ])
+    expect(view.researched?.domain).toBe('dropbox.com')
+  })
+})
+

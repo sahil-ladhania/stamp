@@ -104,6 +104,7 @@ The `data` JSON is the full event, including `type` (it matches the `event:` lin
 | `run.snapshot` | `{ runId, snapshot }`, always first; `snapshot` has the same shape as `GET /api/runs/:id` |
 | `stage.started` | `{ runId, stage, name }` |
 | `stage.done` | `{ runId, stage, durationMs }` |
+| `app.resolved` | `{ runId, appName, domain, product }`: what the run will research (the primary domain and the product phrase, null when none); the web app shows it as "Researched as: <product> (<domain>)" |
 | `search.query` | `{ runId, query }` |
 | `page.fetched` | `{ runId, url, tier }` |
 | `claim.verified` | `{ runId, claimId, url }` |

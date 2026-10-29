@@ -18,10 +18,12 @@ type RunHeaderProps = {
   slug: string | null;
   phase: RunPhase;
   stageLine: string;
+  /** "Researched as: <product> (<domain>)", once the resolve stage has said what it is researching. */
+  researchedAs: string | null;
   meters: ReactNode;
 };
 
-export function RunHeader({ appName, slug, phase, stageLine, meters }: RunHeaderProps): ReactElement {
+export function RunHeader({ appName, slug, phase, stageLine, researchedAs, meters }: RunHeaderProps): ReactElement {
   return (
     <div className="sticky top-0 z-30 border-b border-rule bg-paper">
       <PageContainer className="flex flex-wrap items-center gap-x-3 gap-y-1 py-3">
@@ -34,6 +36,7 @@ export function RunHeader({ appName, slug, phase, stageLine, meters }: RunHeader
         </p>
         {/* On a phone the meters share the second line with the stage; from the tablet width they sit at the right. */}
         <div className="ml-auto">{meters}</div>
+        {researchedAs && <p className="basis-full text-small text-ink-muted">{researchedAs}</p>}
       </PageContainer>
     </div>
   );

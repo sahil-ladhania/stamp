@@ -1,6 +1,6 @@
 /**
  * File: resolve.ts
- * Purpose: Stage 0: turns the typed app name or URL into the official app (its domains and product phrase), or ends the run asking "did you mean".
+ * Purpose: Stage 0: turns the typed app name or URL into the official app (its domains and product phrase) and says what it will research, or ends the run asking "did you mean".
  * Exports: resolveNode, RESOLVE_QUERY, RESOLVE_MAX_RESULTS
  * Used by: agent/nodes/index.ts
  */
@@ -30,6 +30,12 @@ export const resolveNode = stageNode("resolve", async (state, config) => {
   const typed = parseTyped(state.typed);
   if (typed.kind === "domain") {
     // A typed domain or URL names the official site; no search and no "did you mean".
+    await emit(config, {
+      type: "app.resolved",
+      appName: typed.name,
+      domain: typed.domain,
+      product: null,
+    });
     return {
       app: {
         appName: typed.name,
@@ -89,16 +95,25 @@ export const resolveNode = stageNode("resolve", async (state, config) => {
     })),
   });
   switch (decision.kind) {
-    case "official":
+    case "official": {
+      const domains = identity?.domains ?? [decision.domain];
+      const product = identity?.product ?? null;
+      await emit(config, {
+        type: "app.resolved",
+        appName: typed.name,
+        domain: decision.domain,
+        product,
+      });
       return {
         app: {
           appName: typed.name,
           domain: decision.domain,
           slug: state.slug,
-          domains: identity?.domains ?? [decision.domain],
-          product: identity?.product ?? null,
+          domains,
+          product,
         },
       };
+    }
     case "ambiguous":
       return { failure: makeFailure(0, "AMBIGUOUS_APP", decision.options) };
     case "none":

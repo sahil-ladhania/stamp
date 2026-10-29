@@ -1,6 +1,6 @@
 /**
  * File: GuideHeader.tsx
- * Purpose: Top of a guide: the app as the title with Copy link beside it, the headline cut to a few lines with its label, and
+ * Purpose: Top of a guide: the app as the title with Copy link beside it, "Researched as: <product> (<domain>)", the headline cut to a few lines with its label, and
  *          one quiet line of facts: library or live, the as-of date and how many claims are sourced.
  * Exports: GuideHeader
  * Used by: components/guide/GuideView.tsx
@@ -13,6 +13,7 @@ import { ClampedText } from "@/components/shared/ClampedText";
 import type { Guide } from "@/types/guide-model";
 import { claimSummary } from "@/utils/claim-summary";
 import { formatAsOf } from "@/utils/format-date";
+import { researchedAs } from "@/utils/researched-as";
 import { CopyLinkButton } from "./CopyLinkButton";
 
 const MODE_LABEL: Record<GuideMode, string> = {
@@ -29,6 +30,8 @@ export function GuideHeader({ guide }: { guide: Guide }): ReactElement {
         </h1>
         <CopyLinkButton slug={guide.slug} />
       </div>
+      {/* Which product and domain the run took the app to be, so a wrong identity is visible at a glance. */}
+      <p className="-mt-2 text-small text-ink-muted">{researchedAs(guide)}</p>
       {/* The headline is a claim, so it carries its label like every other claim. */}
       <div className="flex max-w-prose flex-col items-start gap-2">
         <ClampedText text={guide.headline} max={200} className="text-card-title font-normal text-ink" />
