@@ -15,6 +15,8 @@ export const APP: AppIdentity = {
   appName: "Acme",
   domain: "acme.com",
   slug: "acme",
+  domains: ["acme.com"],
+  product: null,
 };
 
 /** Text long enough to count as a real page (300 characters or more). */

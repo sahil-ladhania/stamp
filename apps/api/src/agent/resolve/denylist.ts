@@ -1,8 +1,8 @@
 /**
  * File: denylist.ts
  * Purpose: Sites that talk about an app but are never its official site, and the hints that a page is developer documentation.
- * Exports: DENY_DOMAINS, DOCS_HOST_LABELS, DOCS_PATH_HINT
- * Used by: agent/resolve/candidates.ts
+ * Exports: DENY_DOMAINS, SHARED_HOSTING_DOMAINS, DOCS_HOST_LABELS, DOCS_PATH_HINT
+ * Used by: agent/resolve/candidates.ts, agent/resolve/official-domains.ts
  */
 
 /**
@@ -45,6 +45,27 @@ export const DENY_DOMAINS: ReadonlySet<string> = new Set([
   "crunchbase.com",
   "slideshare.net",
   "scribd.com",
+]);
+
+/**
+ * Domains that rent subdomains and paths to anyone, so their brand label belongs to whoever owns the page
+ * (someone.github.io). They are never added as a company's second official domain.
+ */
+export const SHARED_HOSTING_DOMAINS: ReadonlySet<string> = new Set([
+  "github.io",
+  "gitlab.io",
+  "netlify.app",
+  "vercel.app",
+  "pages.dev",
+  "herokuapp.com",
+  "readthedocs.io",
+  "gitbook.io",
+  "notion.site",
+  "blogspot.com",
+  "wordpress.com",
+  "web.app",
+  "firebaseapp.com",
+  "azurewebsites.net",
 ]);
 
 /** First host labels that usually mean developer docs: docs.example.com, developers.example.com. */

@@ -18,6 +18,7 @@ const candidate = (
   match,
   score,
   hits: 1,
+  docs: false,
 });
 
 describe("decideOfficial", () => {

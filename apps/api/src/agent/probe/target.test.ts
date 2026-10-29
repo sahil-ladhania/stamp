@@ -47,6 +47,13 @@ describe("checkTarget", () => {
     expect(reason("https://acme.com/a", "https://www.acme.com/")).toBe("ok");
   });
 
+  it("refuses a company's other documentation domain: only the primary domain is probed", () => {
+    expect(reason("https://slack.dev/oauth", "slack.com")).toBe(
+      "not_official_domain",
+    );
+    expect(reason("https://slack.com/oauth", "slack.com")).toBe("ok");
+  });
+
   it("refuses everything when the official domain is empty", () => {
     expect(reason("https://acme.com/a", "")).toBe("not_official_domain");
   });

@@ -1,11 +1,11 @@
 /**
  * File: order-results.ts
- * Purpose: Turns Tavily hits into tiered search results and orders them: official first, then third party, then forum, then by score.
+ * Purpose: Turns Tavily hits into tiered search results (tiered against every official domain) and orders them: official first, then third party, then forum, then by score.
  * Exports: toSearchResults, orderResults
  * Used by: agent/nodes/search.ts, agent/fetch/select-pages.ts
  */
 import type { SourceTier } from "@stamp/schema";
-import { sourceTier } from "../evidence/source-tier.js";
+import { sourceTier, type OfficialDomains } from "../evidence/source-tier.js";
 import type { SearchHit } from "../../lib/tavily.js";
 import type { SearchResult } from "../search-result.js";
 
@@ -24,7 +24,7 @@ export type TaggedHit = SearchHit & { topic?: string };
  */
 export function toSearchResults(
   hits: TaggedHit[],
-  domain: string,
+  domains: OfficialDomains,
 ): SearchResult[] {
   const byUrl = new Map<string, SearchResult>();
   for (const hit of hits) {
@@ -37,7 +37,7 @@ export function toSearchResults(
     }
     byUrl.set(hit.url, {
       url: hit.url,
-      tier: sourceTier(hit.url, domain),
+      tier: sourceTier(hit.url, domains),
       ...(hit.title === "" ? {} : { title: hit.title }),
       score: hit.score,
       ...(hit.topic === undefined ? {} : { topics: [hit.topic] }),

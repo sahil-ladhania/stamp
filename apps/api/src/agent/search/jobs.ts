@@ -1,6 +1,6 @@
 /**
  * File: jobs.ts
- * Purpose: Decides which searches the search stage runs: all topics on the official domain plus two open ones, or targeted retries.
+ * Purpose: Decides which searches the search stage runs: all topics on the official domains plus two open ones, or targeted retries.
  * Exports: buildJobs, SearchJob
  * Used by: agent/nodes/search.ts
  */
@@ -8,6 +8,7 @@ import {
   OPEN_TOPICS,
   defaultQueries,
   retryQueries,
+  searchName,
   type PlannedQuery,
 } from "../queries.js";
 import type { QueryTopic } from "../plan-output.js";
@@ -26,23 +27,24 @@ export type SearchJob = {
  * sections, official domain only.
  */
 export function buildJobs(
-  app: { appName: string; domain: string },
+  app: { appName: string; domains: string[]; product: string | null },
   queries: PlannedQuery[],
   missingSections: string[],
 ): SearchJob[] {
+  const name = searchName(app);
   if (missingSections.length > 0) {
-    return retryQueries(app.appName, missingSections).map((q) => ({
+    return retryQueries(name, missingSections).map((q) => ({
       query: q.text,
       topic: q.topic,
-      includeDomains: [app.domain],
+      includeDomains: app.domains,
     }));
   }
-  const planned = queries.length > 0 ? queries : defaultQueries(app.appName);
+  const planned = queries.length > 0 ? queries : defaultQueries(name);
   return [
     ...planned.map((q) => ({
       query: q.text,
       topic: q.topic,
-      includeDomains: [app.domain],
+      includeDomains: app.domains,
     })),
     ...planned
       .filter((q) => OPEN_TOPICS.includes(q.topic))

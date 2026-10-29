@@ -1,7 +1,7 @@
 /**
  * File: queries.ts
  * Purpose: Builds the run's search queries in code: default templates, the checked model suggestions merged in, and retry wording.
- * Exports: PlannedQuery, OPEN_TOPICS, defaultQueries, acceptQuery, mergePlan, retryQueries
+ * Exports: PlannedQuery, OPEN_TOPICS, searchName, defaultQueries, acceptQuery, mergePlan, retryQueries
  * Used by: agent/nodes/plan.ts, agent/search/jobs.ts, agent/state.ts
  */
 import { nameKey } from "../utils/name-key.js";
@@ -15,6 +15,17 @@ export type PlannedQuery = { topic: QueryTopic; text: string };
 
 /** Topics also searched across the whole web, to find third-party and forum reports. */
 export const OPEN_TOPICS: readonly QueryTopic[] = ["review", "approvalWait"];
+
+/**
+ * What every query is about: the product phrase when the run has one ("Gmail API"), else the app's name.
+ * It goes where the functions below take a name, so templates carry it and a model query must contain it.
+ */
+export function searchName(app: {
+  appName: string;
+  product: string | null;
+}): string {
+  return app.product ?? app.appName;
+}
 
 const TEMPLATES: Record<QueryTopic, (name: string) => string> = {
   setup: (name) => `${name} OAuth app setup client ID redirect URI`,

@@ -46,6 +46,8 @@ describe("resolveNode with a typed domain or URL", () => {
       appName: "Notion",
       domain: "notion.com",
       slug: "notion",
+      domains: ["notion.com"],
+      product: null,
     });
     expect(search).not.toHaveBeenCalled();
     expect(trace(h.events)).toEqual(["stage.started:0", "stage.done:0"]);
@@ -64,6 +66,8 @@ describe("resolveNode with an app name", () => {
       appName: "Notion",
       domain: "notion.com",
       slug: "notion",
+      domains: ["notion.com"],
+      product: null,
     });
     expect(search).toHaveBeenCalledTimes(1);
     expect(h.events.filter((e) => e.type === "search.query")).toEqual([
