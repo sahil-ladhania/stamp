@@ -1,38 +1,34 @@
 /**
  * File: verdict.ts
- * Purpose: Turns a guide into the rows shown on the verdict stamp. Pure; no scoring happens here. Each row keeps
- *          the label of the claim it quotes.
- * Exports: VerdictRow, getVerdictRows
- * Used by: components/guide/VerdictStamp.tsx
+ * Purpose: Turns a guide into the claim rows of the verdict: first test, production, approval wait, top blocker and next step.
+ *          Pure; no scoring happens here. Each row keeps the claim it quotes, so its label travels with it. The difficulty
+ *          and the kind of hard are not claims (code sets them), so the verdict shows them on their own.
+ * Exports: VerdictRowId, VerdictSection, VerdictRow, getVerdictRows
+ * Used by: components/verdict/Verdict.tsx, components/landing/VerdictSection.tsx
  */
-import type { Claim, EvidenceKind, Guide } from "@/types/guide-model";
+import type { Claim, Guide } from "@/types/guide-model";
+
+export type VerdictRowId =
+  | "difficulty"
+  | "kind"
+  | "firstTest"
+  | "production"
+  | "approvalWait"
+  | "topBlocker"
+  | "nextStep";
+
+/** The element id of the section that holds the full version of a row. */
+export type VerdictSection = "timeline" | "steps" | "blockers";
 
 export type VerdictRow = {
+  id: Exclude<VerdictRowId, "difficulty" | "kind">;
   label: string;
+  section: VerdictSection;
+  /** The short value, in the claim's own words. */
   value: string;
-  kind: EvidenceKind;
-  /** Shown on hover and focus of the evidence label. */
-  detail?: string;
+  /** The claim behind the value. Null when a partial run did not get to this part. */
+  claim: Claim | null;
 };
-
-function row(label: string, claim: Claim, value: string = claim.text): VerdictRow {
-  return {
-    label,
-    value,
-    kind: claim.label,
-    detail: claim.reason ?? claim.sources[0]?.title,
-  };
-}
-
-/** A section a partial run did not finish: shown as Unknown and Uncertain, never dropped. */
-function unknownRow(label: string): VerdictRow {
-  return {
-    label,
-    value: "Unknown",
-    kind: "uncertain",
-    detail: "Not researched",
-  };
-}
 
 /** Rows: first test, production, approval wait, top blocker, next step. */
 export function getVerdictRows(guide: Guide): VerdictRow[] {
@@ -40,12 +36,22 @@ export function getVerdictRows(guide: Guide): VerdictRow[] {
   const blocker = guide.blockers.find((item) => item.id === guide.topBlockerId);
   const step = guide.steps.find((item) => item.id === guide.nextStepId);
   return [
-    row("First test", firstTest.effort),
-    row("Production", production.effort),
-    row("Approval wait", production.wait),
-    blocker
-      ? row("Top blocker", blocker.symptom, blocker.title)
-      : unknownRow("Top blocker"),
-    step ? row("Next step", step.detail, step.title) : unknownRow("Next step"),
+    { id: "firstTest", label: "First test", section: "timeline", value: firstTest.effort.text, claim: firstTest.effort },
+    { id: "production", label: "Production", section: "timeline", value: production.effort.text, claim: production.effort },
+    { id: "approvalWait", label: "Approval wait", section: "timeline", value: production.wait.text, claim: production.wait },
+    {
+      id: "topBlocker",
+      label: "Top blocker",
+      section: "blockers",
+      value: blocker?.title ?? "",
+      claim: blocker?.symptom ?? null,
+    },
+    {
+      id: "nextStep",
+      label: "Next step",
+      section: "steps",
+      value: step?.title ?? "",
+      claim: step?.detail ?? null,
+    },
   ];
 }

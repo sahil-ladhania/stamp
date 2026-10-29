@@ -25,6 +25,10 @@ export type Source = {
   tier: SourceTier
   /** The verbatim quote. Absent only on editorial examples. */
   quote?: string
+  /** When the page was read, as an ISO date-time. */
+  retrievedAt?: string
+  /** How many claims cite this source. Only set on the guide's top-level source list. */
+  usedBy?: number
 }
 
 export type Claim = {

@@ -1,19 +1,19 @@
 /**
  * File: GuideHeader.tsx
- * Purpose: Top of a guide: app name, the headline with its evidence, kind of hard, as-of date, Copy link and the difficulty breakdown.
+ * Purpose: Top of a guide: the app as the title with Copy link beside it, the headline cut to a few lines with its label, and
+ *          one quiet line of facts: library or live, the as-of date and how many claims are confirmed.
  * Exports: GuideHeader
  * Used by: components/guide/GuideView.tsx
  */
 import type { GuideMode } from "@stamp/schema";
 import type { ReactElement } from "react";
-import { AppIcon } from "@/components/shared/AppIcon";
-import { SectionHeading } from "@/components/shared/SectionHeading";
+import { ClaimEvidence } from "@/components/evidence/ClaimEvidence";
+import { AppIdentity } from "@/components/shared/AppIdentity";
+import { ClampedText } from "@/components/shared/ClampedText";
 import type { Guide } from "@/types/guide-model";
-import { ARCHETYPE_LABEL } from "@/utils/archetype";
+import { confirmedSummary } from "@/utils/confirmed-summary";
 import { formatAsOf } from "@/utils/format-date";
-import { ClaimEvidence } from "./ClaimEvidence";
 import { CopyLinkButton } from "./CopyLinkButton";
-import { DifficultyBreakdown } from "./DifficultyBreakdown";
 
 const MODE_LABEL: Record<GuideMode, string> = {
   library: "Library guide",
@@ -23,29 +23,24 @@ const MODE_LABEL: Record<GuideMode, string> = {
 export function GuideHeader({ guide }: { guide: Guide }): ReactElement {
   return (
     <header className="flex flex-col gap-4">
-      <SectionHeading
-        level={1}
-        title={
-          <span className="inline-flex items-center gap-3">
-            <AppIcon slug={guide.slug} className="size-7 text-ink-muted" />
-            {guide.appName}
-          </span>
-        }
-        description={guide.headline}
-        aside={<CopyLinkButton slug={guide.slug} />}
-      />
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <h1 className="min-w-0 text-page-title text-ink">
+          <AppIdentity name={guide.appName} slug={guide.slug} size="lg" />
+        </h1>
+        <CopyLinkButton slug={guide.slug} />
+      </div>
       {/* The headline is a claim, so it carries its label like every other claim. */}
-      <ClaimEvidence claim={guide.summary} />
+      <div className="flex max-w-prose flex-col items-start gap-2">
+        <ClampedText text={guide.headline} max={200} className="text-card-title font-normal text-ink" />
+        <ClaimEvidence claim={guide.summary} />
+      </div>
       <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-small text-ink-muted">
-        <span className="text-data text-ink">
-          {ARCHETYPE_LABEL[guide.archetype]}
-        </span>
+        <span>{MODE_LABEL[guide.mode]}</span>
         <span aria-hidden>·</span>
         <span>As of {formatAsOf(guide.asOf)}</span>
         <span aria-hidden>·</span>
-        <span>{MODE_LABEL[guide.mode]}</span>
+        <span>{confirmedSummary(guide.claims).text}</span>
       </p>
-      <DifficultyBreakdown difficulty={guide.difficulty} />
     </header>
   );
 }

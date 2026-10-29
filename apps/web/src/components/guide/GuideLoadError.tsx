@@ -6,7 +6,7 @@
  */
 import type { ReactElement } from "react";
 import { Link } from "react-router";
-import { Container } from "@/components/layout/Container";
+import { PageContainer } from "@/components/layout/PageContainer";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button-variants";
@@ -21,7 +21,7 @@ export function GuideLoadError({
 }: GuideLoadErrorProps): ReactElement {
   return (
     <div role="alert">
-      <Container className="flex flex-col items-start gap-6 py-12">
+      <PageContainer className="flex flex-col items-start gap-6 py-12">
         <SectionHeading
           level={1}
           title="The guide did not load"
@@ -38,7 +38,7 @@ export function GuideLoadError({
             Open the library
           </Link>
         </div>
-      </Container>
+      </PageContainer>
     </div>
   );
 }

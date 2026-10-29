@@ -2,7 +2,7 @@
  * File: library-status.ts
  * Purpose: The four states of the library list (ready, loading, empty, error) and how a load result maps to one.
  * Exports: LibraryStatus, getLibraryStatus
- * Used by: pages/AppHomePage.tsx, components/app-home/LibrarySection.tsx, components/app-home/LibraryList.tsx
+ * Used by: pages/AppHomePage.tsx, components/app-home/LibrarySection.tsx
  */
 export type LibraryStatus = 'ready' | 'loading' | 'empty' | 'error'
 

@@ -2,7 +2,7 @@
  * File: StampFrame.tsx
  * Purpose: The rubber-stamp shell shared by every stamp: a double border in stamp red around padded content.
  * Exports: StampFrame
- * Used by: components/guide/VerdictStamp.tsx, components/guide/ResultStamp.tsx
+ * Used by: components/guide/ResultStamp.tsx
  */
 import type { ReactElement, ReactNode } from "react";
 import { cn } from "@/lib/utils";

@@ -9,10 +9,11 @@
 import type { ReactElement } from "react";
 import { Link } from "react-router";
 import { ResultStamp } from "@/components/guide/ResultStamp";
-import { Container } from "@/components/layout/Container";
+import { PageContainer } from "@/components/layout/PageContainer";
 import { ExampleApps } from "@/components/shared/ExampleApps";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { StartRunSearch } from "@/components/shared/StartRunSearch";
+import { TextLink } from "@/components/shared/TextLink";
 import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { useGuides } from "@/hooks/useGuides";
@@ -30,7 +31,7 @@ export function NotFoundPanel({ path }: { path: string }): ReactElement {
   const { start, isPending, error } = useStartRun();
 
   return (
-    <Container className="grid gap-12 py-12 desktop:grid-cols-12 desktop:items-start">
+    <PageContainer className="grid gap-12 py-12 desktop:grid-cols-12 desktop:items-start">
       <div className="flex flex-col gap-6 desktop:col-span-7">
         <SectionHeading
           level={1}
@@ -83,12 +84,7 @@ export function NotFoundPanel({ path }: { path: string }): ReactElement {
           <Link to="/app" className={buttonVariants({ variant: "secondary" })}>
             Open the library
           </Link>
-          <Link
-            to="/"
-            className="text-body text-sourced underline underline-offset-4"
-          >
-            Go to the home page
-          </Link>
+          <TextLink to="/">Go to the home page</TextLink>
         </div>
       </div>
       <div className="desktop:col-span-5">
@@ -100,6 +96,6 @@ export function NotFoundPanel({ path }: { path: string }): ReactElement {
           rows={copy.stampRows}
         />
       </div>
-    </Container>
+    </PageContainer>
   );
 }

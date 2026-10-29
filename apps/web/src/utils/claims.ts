@@ -2,7 +2,7 @@
  * File: claims.ts
  * Purpose: Counts claims by evidence label, for the verification summary.
  * Exports: countByLabel
- * Used by: components/guide/VerificationSummary.tsx
+ * Used by: components/guide/VerificationBar.tsx, utils/confirmed-summary.ts
  */
 import type { Claim, EvidenceKind } from "@/types/guide-model";
 

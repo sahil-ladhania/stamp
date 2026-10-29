@@ -1,12 +1,11 @@
 /**
  * File: VideoControls.tsx
- * Purpose: Play/pause and mute/unmute buttons laid over the bottom-left of a video.
+ * Purpose: Play/pause and mute/unmute as one small pill laid over the bottom-left of a video.
  * Exports: VideoControls
  * Used by: components/landing/HeroVideo.tsx
  */
 import type { ReactElement } from "react";
 import { Pause, Play, Volume2, VolumeX } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
 
 type VideoControlsProps = {
@@ -16,7 +15,10 @@ type VideoControlsProps = {
   onToggleMute: () => void;
 };
 
-/** Card-coloured chips with a border, so they stay readable over any frame. */
+const BUTTON_CLASS =
+  "inline-flex size-8 cursor-pointer items-center justify-center rounded-full text-ink transition-colors hover:bg-paper";
+
+/** Card-coloured with a border, so it stays readable over any frame. */
 export function VideoControls({
   isPlaying,
   isMuted,
@@ -29,26 +31,20 @@ export function VideoControls({
   const MuteIcon = isMuted ? VolumeX : Volume2;
 
   return (
-    <div className="absolute bottom-3 left-3 flex gap-2">
+    <div
+      role="group"
+      aria-label="Video controls"
+      className="absolute bottom-3 left-3 flex items-center gap-1 rounded-full border border-rule bg-card p-1"
+    >
       <Tooltip content={playLabel}>
-        <Button
-          variant="secondary"
-          size="icon"
-          aria-label={playLabel}
-          onClick={onTogglePlay}
-        >
+        <button type="button" aria-label={playLabel} onClick={onTogglePlay} className={BUTTON_CLASS}>
           <PlayIcon aria-hidden className="size-4" />
-        </Button>
+        </button>
       </Tooltip>
       <Tooltip content={muteLabel}>
-        <Button
-          variant="secondary"
-          size="icon"
-          aria-label={muteLabel}
-          onClick={onToggleMute}
-        >
+        <button type="button" aria-label={muteLabel} onClick={onToggleMute} className={BUTTON_CLASS}>
           <MuteIcon aria-hidden className="size-4" />
-        </Button>
+        </button>
       </Tooltip>
     </div>
   );

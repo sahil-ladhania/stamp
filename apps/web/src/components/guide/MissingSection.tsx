@@ -5,13 +5,13 @@
  * Used by: components/guide/StepsSection.tsx, BlockersSection.tsx, GuideConflicts.tsx
  */
 import type { ReactElement } from "react";
-import { UncertainNote } from "./UncertainNote";
+import { CircleHelp } from "lucide-react";
+import { Callout } from "@/components/shared/Callout";
 
 export function MissingSection(): ReactElement {
   return (
-    <UncertainNote>
-      Uncertain: Stamp could not confirm anything in this section. Retry the run
-      to try again.
-    </UncertainNote>
+    <Callout icon={CircleHelp}>
+      Stamp could not confirm anything in this section. Retry the run to try again.
+    </Callout>
   );
 }

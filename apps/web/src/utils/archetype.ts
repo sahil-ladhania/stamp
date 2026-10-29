@@ -3,7 +3,7 @@
  * Purpose: Display names and one-line blurbs for the kinds of hard a guide can show. The blurbs describe Stamp's
  *          own categories (the classifier in apps/api), never a provider fact, so a list row needs no headline from the API.
  * Exports: ARCHETYPE_LABEL, ARCHETYPE_BLURB
- * Used by: components/shared/AppCard.tsx, components/app-home/LibraryRow.tsx, guide and landing sections
+ * Used by: components/shared/AppCard.tsx, components/app-home/LibraryCard.tsx, components/shared/KindChip.tsx, guide and landing sections
  */
 import type { Archetype } from '@stamp/schema'
 

@@ -16,26 +16,30 @@ alwaysApply: false
 - On a stamp-filled button, text uses `--on-stamp`.
 
 ## Typography
-- Inter for reading text. JetBrains Mono for scopes, URLs, labels and the stamp.
+- Inter for every sentence. JetBrains Mono (`font-mono`, `text-data`) only for scope strings, durations, counts, the score and labels.
 - Sentence case everywhere.
 
 ## Guide page order (fixed)
-1. Header: app name, archetype, difficulty dots
-2. VerdictStamp
-3. Next step and top blocker
-4. MilestoneBar
-5. StepCards
-6. Requirements, scopes and limits (three groups of claims; an empty group shows the Uncertain note)
-7. BlockerCards
-8. ConflictCards (if any)
-9. Sources and verification summary
+1. Header and Verdict (the one summary; each row links to its section)
+2. Partial notice (partial guides only)
+3. Timeline
+4. Steps
+5. Requirements, scopes and limits (three stacked subsections)
+6. Blockers (the top blocker is open)
+7. Source conflicts (if any)
+8. Sources and verification bar
+
+A sticky section navigation (a "Jump to" select on a phone) marks sections that are mostly Uncertain.
 
 ## Evidence
-- Render evidence only through `EvidenceLabel`.
+- Show a claim's evidence only through `ClaimEvidence` (or `EvidenceChip` for a value). Never inline sources, quotes or Report.
+- Use `EvidenceLabel` only where no claim is at hand (the legend, the trace).
 - Every label shows an icon, a word and a colour. Never colour alone.
 - Icons: check = Tested, link = Sourced, help-circle = Uncertain (Lucide).
+- Label colours only on label badges. Stamp red only on the stamp mark and the primary button.
+- An unknown value is `UnknownValue`. A source is a `SourceChip`. A navigation link is a `TextLink`.
 
 ## Layout
 - Spacing scale: 4, 8, 12, 16, 24, 32, 48 px.
-- Radius 6 px. Content width 880 px max.
+- Radius 6 px. One page frame, `PageContainer` (1120 px max). Reading text near 70 characters.
 - No shadows. Hover raises the border colour only.

@@ -22,6 +22,8 @@ Run from the repo root with pnpm.
 
 Copy `.env.example` to `.env` to change it. Every `VITE_` variable is public: never put a secret in one.
 
+`VITE_REPO_URL` is optional. It is the repository link in the footer's Project group. Leave it empty to hide the group.
+
 ## Data layer
 
 Components never call Axios, `fetch` or `EventSource`. The path is always component, hook, service.

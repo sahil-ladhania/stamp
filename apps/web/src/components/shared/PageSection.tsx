@@ -1,11 +1,11 @@
 /**
  * File: PageSection.tsx
- * Purpose: Shell for one section of a long page: anchor id, hairline, heading and a padded content column.
+ * Purpose: Shell for one section of a long page: anchor id, hairline, heading and a content column. It has no container of
+ *          its own: the page puts its sections inside the one page frame, beside the section navigation.
  * Exports: PageSection
  * Used by: every section in components/verify/ and components/guide/
  */
 import type { ReactElement, ReactNode } from "react";
-import { Container } from "@/components/layout/Container";
 import { SectionHeading } from "./SectionHeading";
 
 type PageSectionProps = {
@@ -13,6 +13,8 @@ type PageSectionProps = {
   id: string;
   title: string;
   description?: string;
+  /** A right-side action, such as a link. */
+  aside?: ReactNode;
   children: ReactNode;
 };
 
@@ -21,6 +23,7 @@ export function PageSection({
   id,
   title,
   description,
+  aside,
   children,
 }: PageSectionProps): ReactElement {
   const headingId = `${id}-heading`;
@@ -29,16 +32,15 @@ export function PageSection({
     <section
       id={id}
       aria-labelledby={headingId}
-      className="scroll-mt-6 border-t border-rule py-12"
+      className="flex scroll-mt-24 flex-col gap-6 border-t border-rule py-10"
     >
-      <Container className="flex flex-col gap-8">
-        <SectionHeading
-          id={headingId}
-          title={title}
-          description={description}
-        />
-        {children}
-      </Container>
+      <SectionHeading
+        id={headingId}
+        title={title}
+        description={description}
+        aside={aside}
+      />
+      {children}
     </section>
   );
 }

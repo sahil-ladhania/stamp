@@ -5,12 +5,12 @@
  * Used by: pages/GuidePage.tsx
  */
 import type { ReactElement } from "react";
-import { Container } from "@/components/layout/Container";
+import { PageContainer } from "@/components/layout/PageContainer";
 
 export function GuideSkeleton(): ReactElement {
   return (
     <div aria-busy="true">
-      <Container className="flex flex-col gap-8 py-12">
+      <PageContainer className="flex flex-col gap-8 py-12">
         <p role="status" className="text-small text-ink-muted">
           Loading the guide
         </p>
@@ -23,7 +23,7 @@ export function GuideSkeleton(): ReactElement {
           aria-hidden
           className="h-48 rounded-md border border-rule bg-card"
         />
-      </Container>
+      </PageContainer>
     </div>
   );
 }

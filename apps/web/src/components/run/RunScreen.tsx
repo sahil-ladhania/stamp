@@ -6,7 +6,7 @@
  * Used by: pages/RunPage.tsx
  */
 import type { ReactElement } from "react";
-import { Container } from "@/components/layout/Container";
+import { PageContainer } from "@/components/layout/PageContainer";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useRunClock } from "@/hooks/useRunClock";
 import { useRunStream } from "@/hooks/useRunStream";
@@ -65,7 +65,7 @@ export function RunScreen({
   }
 
   return (
-    <Container className="flex flex-col gap-8 py-12">
+    <PageContainer className="flex flex-col gap-8 py-12">
       <RunHeader
         copy={copy}
         appSlug={snapshot?.slug ?? null}
@@ -111,6 +111,6 @@ export function RunScreen({
           </div>
         </>
       )}
-    </Container>
+    </PageContainer>
   );
 }
