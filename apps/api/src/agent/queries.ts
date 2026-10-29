@@ -95,6 +95,10 @@ const setupRetry = (name: string): PlannedQuery => ({
 
 /** Retry wording per guide section, different from the first-pass templates so the search finds new pages. */
 const RETRY_TEMPLATES: Record<string, (name: string) => PlannedQuery> = {
+  reviewGate: (name) => ({
+    topic: "review",
+    text: `${name} OAuth app review process who approves apps`,
+  }),
   steps: setupRetry,
   scopes: (name) => ({
     topic: "scopes",
@@ -114,9 +118,9 @@ const RETRY_TEMPLATES: Record<string, (name: string) => PlannedQuery> = {
   }),
 };
 
-const MAX_RETRY_QUERIES = 2;
+const MAX_RETRY_QUERIES = 3;
 
-/** Differently worded queries for the sections that had no matched quote: at most two, and never from the model. */
+/** Differently worded queries for the sections that had no matched quote: at most three, and never from the model. */
 export function retryQueries(
   name: string,
   missingSections: string[],

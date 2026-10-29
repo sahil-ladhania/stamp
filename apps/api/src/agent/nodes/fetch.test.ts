@@ -21,6 +21,7 @@ import {
   officials,
   pagesOf,
   resetFetchMocks,
+  reviewed,
   state,
   t,
 } from "../../test-support/fetch-helpers.js";
@@ -48,7 +49,9 @@ describe("fetchNode first pass", () => {
   it("fetches 4 pages in one extract call: 3 official and 1 third-party, with the fetch time cap", async () => {
     const h = createHarness();
     await fetchNode(
-      state({ searchResults: [...officials(5), t(1), t(2)] }),
+      state({
+        searchResults: [...officials(5), reviewed(1), t(2)],
+      }),
       h.config,
     );
     expect(extract).toHaveBeenCalledTimes(1);

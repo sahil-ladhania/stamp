@@ -1,7 +1,7 @@
 /**
  * File: fetch-helpers.ts
  * Purpose: Shared builders and mock defaults for the fetch node tests: search results, state, extract replies and page lists.
- * Exports: o, t, officials, state, extracted, fetchedUrls, pagesOf, resetFetchMocks
+ * Exports: o, t, reviewed, officials, state, extracted, fetchedUrls, pagesOf, resetFetchMocks
  * Used by: agent/nodes/fetch*.test.ts
  */
 import type { Mock } from "vitest";
@@ -13,6 +13,12 @@ export const o = (n: number) =>
   result(`https://docs.acme.com/o${n}`, "official", 1 - n / 100);
 export const t = (n: number) =>
   result(`https://blog.example.net/t${n}`, "third_party");
+/** A third-party result whose title answers a topic, so it can take the reserved non-official slot. */
+export const reviewed = (n: number) => ({
+  ...t(n),
+  title: "OAuth app review times",
+  topics: ["approvalWait"],
+});
 export const officials = (n: number) =>
   Array.from({ length: n }, (_, i) => o(i + 1));
 

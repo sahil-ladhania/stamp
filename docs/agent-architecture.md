@@ -77,7 +77,7 @@ The state passes from stage to stage (`apps/api/src/agent/state.ts`).
 | `drafts` | Per section: drafted claims, unknown, or failed with a reason | Stage 4 |
 | `gates` | Auth method, review gate, approval wait and the prerequisites and limits behind the score, each with the claim that backs it | Stage 4 |
 | `claims`, `conflicts` | Labelled claims with stable ids; confirmed conflicts. Stage 6 upgrades some claims to Tested | Stages 5, 6 |
-| `missingSections` | Sections with no matched quote (`steps` or `scopes` with no Sourced claim) | Stage 5 |
+| `missingSections` | What triggers the retry: `reviewGate` when the review gate is unknown, and `steps`, `scopes` or `blockers` with no Sourced claim | Stage 5 |
 | `checks` | Every quote check and probe, for the verification log. Stage 5 replaces them each pass; stage 6 adds its own | Stages 5, 6 |
 | `retryCount` | 0 or 1: retry passes started | The graph, when stage 2 starts a retry |
 | `probeResult` | The probe's outcome, or none | Stage 6 |
@@ -220,11 +220,11 @@ Time caps per stage (seconds). A stage also gets less when the run is running la
 
 **2 Search** (`nodes/search.ts`, code only)
 - First pass: every query on the official domains, then the review and approval-wait queries across the web, up to 4 at a time inside the node's time window. Each distinct query is announced with `search.query`. Queries name the product phrase when the run has one (`searchName` in `queries.ts`), else the app.
-- Retry pass: at most 2 differently worded searches on the official domains, for the sections that had no matched quote.
-- Results are tiered by code against every official domain and ordered official, third party, forum, then by Tavily's score. The run fails with `INTERNAL` only if every search fails.
+- Retry pass: at most 3 differently worded searches on the official domains, for the sections that had no matched quote and for an unknown review gate (the gate first).
+- The same page in several languages or with tracking parameters is one result, the English one, and every topic that found it is kept (`search/canonical-url.ts`). Results are tiered by code against every official domain and ordered official, third party, forum, then by Tavily's score. The run fails with `INTERNAL` only if every search fails.
 
 **3 Fetch** (`nodes/fetch.ts`, `fetch/`)
-- The first pass reads at most 4 pages and the retry pass the rest of the 6; cache hits count. Official pages come first, and one slot is kept for a non-official page when there is room for 3 or more.
+- The first pass reads at most 4 pages and the retry pass the rest of the 6; cache hits count. Official pages are chosen by relevance (`fetch/relevance.ts`), not by search score alone: the best title and path for the topic each result was found for, OAuth words in the title, a documentation host, the product phrase, a soft penalty for blog, community, answers, help and template paths, a heavier one for legacy or deprecated pages, and the search score only as a tiebreak. Each round takes the page that also covers a topic no chosen page covers yet. With room for 3 or more, one slot is kept for a non-official page, but only one whose title answers a topic and scores past a floor; otherwise official pages take every slot. Nothing is excluded on its path: Gmail's verification FAQ lives under `/answer/`.
 - A fresh cached page is reused (7 days). The rest go to one Tavily extract call. A page with under 300 characters of text is dropped. Each page is announced with `page.fetched`.
 - A page's tier is always decided against this app's domain, even when the page came from the cache.
 - No official page: `NO_PUBLIC_DOCS`. If the extract call itself failed and nothing is held, it is `INTERNAL` instead.
@@ -247,7 +247,7 @@ Time caps per stage (seconds). A stage also gets less when the run is running la
 - Time estimates (milestone effort and wait, step effort) stay Uncertain even with a real quote, with no downgrade event. Other downgrades send `claim.downgraded` with the reason (`quote_not_found` or `sources_disagree`); Sourced claims send `claim.verified`. On the retry pass only claims that are new or changed send events.
 - Conflicts: the model proposes them; code confirms one only when both quotes are found, the two sources are different pages and the two statements differ. The preferred source is the more authoritative tier (official, then third party, then forum); with equal tiers and no page dates the first listed is shown first, and the reason says so. A claim that takes part in a confirmed conflict is downgraded to Uncertain with `sources_disagree`.
 - Gates: every evidence quote behind a gates fact is checked too. A fact whose quote is not found becomes unknown, so the score never counts it.
-- Retry flag: `missingSections` lists `steps` or `scopes` when none of their claims ended up Sourced. The graph then goes back to search once, if at least 45 seconds remain.
+- Retry flag: `missingSections` lists `reviewGate` when the review gate is unknown after verify, and `steps`, `scopes` or `blockers` when none of their claims ended up Sourced. The graph then goes back to search once, if at least 45 seconds remain.
 - Every quote check (pass or fail) is recorded in `checks` with the page's content hash, so a claim can be traced to the exact page version.
 
 **6 Probe** (`nodes/probe.ts`, `probe/`)

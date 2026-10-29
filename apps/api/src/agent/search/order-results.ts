@@ -6,6 +6,7 @@
  */
 import type { SourceTier } from "@stamp/schema";
 import { sourceTier, type OfficialDomains } from "../evidence/source-tier.js";
+import { canonicalKey, isEnglishVariant } from "./canonical-url.js";
 import type { SearchHit } from "../../lib/tavily.js";
 import type { SearchResult } from "../search-result.js";
 
@@ -19,31 +20,43 @@ const TIER_RANK: Record<SourceTier, number> = {
 export type TaggedHit = SearchHit & { topic?: string };
 
 /**
- * Tier each hit against the official domain and drop repeats of the same URL, keeping the first.
+ * Tier each hit against the official domains and drop repeats of the same page, keeping the first (or the
+ * English one, when the first is another language). Language and tracking variants count as the same page.
  * A repeat still adds its query's topic to the kept result, so a result lists every topic that found it.
  */
 export function toSearchResults(
   hits: TaggedHit[],
   domains: OfficialDomains,
 ): SearchResult[] {
-  const byUrl = new Map<string, SearchResult>();
+  const byPage = new Map<string, SearchResult>();
   for (const hit of hits) {
-    const kept = byUrl.get(hit.url);
-    if (kept) {
-      if (hit.topic !== undefined && !kept.topics?.includes(hit.topic)) {
-        kept.topics = [...(kept.topics ?? []), hit.topic];
-      }
-      continue;
-    }
-    byUrl.set(hit.url, {
+    const key = canonicalKey(hit.url);
+    const kept = byPage.get(key);
+    const tiered: SearchResult = {
       url: hit.url,
       tier: sourceTier(hit.url, domains),
       ...(hit.title === "" ? {} : { title: hit.title }),
       score: hit.score,
-      ...(hit.topic === undefined ? {} : { topics: [hit.topic] }),
+    };
+    if (kept === undefined) {
+      byPage.set(key, {
+        ...tiered,
+        ...(hit.topic === undefined ? {} : { topics: [hit.topic] }),
+      });
+      continue;
+    }
+    const topics = [...(kept.topics ?? [])];
+    if (hit.topic !== undefined && !topics.includes(hit.topic)) {
+      topics.push(hit.topic);
+    }
+    const switchToEnglish =
+      !isEnglishVariant(kept.url) && isEnglishVariant(hit.url);
+    byPage.set(key, {
+      ...(switchToEnglish ? tiered : kept),
+      ...(topics.length === 0 ? {} : { topics }),
     });
   }
-  return [...byUrl.values()];
+  return [...byPage.values()];
 }
 
 /** Official before third party before forum; within a tier, higher score first. Equal results keep their order. */

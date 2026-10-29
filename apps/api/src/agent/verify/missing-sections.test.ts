@@ -1,6 +1,6 @@
 /**
  * File: missing-sections.test.ts
- * Purpose: Tests which sections trigger the retry: steps and scopes with no Sourced claim.
+ * Purpose: Tests which sections trigger the retry: an unknown review gate, and steps, scopes and blockers with no Sourced claim.
  * Exports: (none)
  * Used by: vitest
  */
@@ -24,66 +24,80 @@ const make = (id: string, label: Claim["label"]): Claim => ({
         ],
 });
 
+/** Sourced claims for every watched section. */
+const COMPLETE = [
+  make("steps.0.detail", "sourced"),
+  make("scopes.0.reason", "sourced"),
+  make("blockers.0.text", "sourced"),
+];
+const without = (section: string): Claim[] =>
+  COMPLETE.filter((claim) => !claim.id.startsWith(`${section}.`));
+const missing = (claims: Claim[], gateKnown = true) =>
+  missingSections(claims, { gateKnown });
+
 describe("missingSections", () => {
-  it("reports nothing when steps and scopes each have a Sourced claim", () => {
-    expect(
-      missingSections([
-        make("steps.0.detail", "sourced"),
-        make("scopes.0.reason", "sourced"),
-      ]),
-    ).toEqual([]);
+  it("reports nothing when the gate is known and steps, scopes and blockers each have a Sourced claim", () => {
+    expect(missing(COMPLETE)).toEqual([]);
   });
 
   it("reports a section that has no claims at all", () => {
-    expect(missingSections([make("scopes.0.reason", "sourced")])).toEqual([
+    expect(missing(without("steps"))).toEqual(["steps"]);
+    expect(missing(without("scopes"))).toEqual(["scopes"]);
+    expect(missing(without("blockers"))).toEqual(["blockers"]);
+  });
+
+  it("reports the review gate when it is unknown, first, because the difficulty rests on it", () => {
+    expect(missing(COMPLETE, false)).toEqual(["reviewGate"]);
+    expect(missing([], false)).toEqual([
+      "reviewGate",
       "steps",
+      "scopes",
+      "blockers",
     ]);
-    expect(missingSections([])).toEqual(["steps", "scopes"]);
   });
 
   it("reports a section whose claims are all Uncertain, because no quote matched", () => {
     expect(
-      missingSections([
+      missing([
         make("steps.0.detail", "uncertain"),
         make("steps.0.effort", "uncertain"),
         make("scopes.0.reason", "sourced"),
+        make("blockers.0.text", "sourced"),
       ]),
     ).toEqual(["steps"]);
   });
 
   it("counts a Tested claim as matched", () => {
     expect(
-      missingSections([
+      missing([
         make("steps.0.detail", "tested"),
         make("scopes.0.reason", "tested"),
+        make("blockers.0.text", "tested"),
       ]),
     ).toEqual([]);
   });
 
   it("counts one Sourced claim as enough, even among Uncertain ones", () => {
     expect(
-      missingSections([
+      missing([
         make("steps.0.detail", "uncertain"),
         make("steps.1.detail", "sourced"),
         make("scopes.0.reason", "sourced"),
+        make("blockers.0.text", "sourced"),
       ]),
     ).toEqual([]);
   });
 
   it("does not report sections that may honestly be empty", () => {
-    expect(
-      missingSections([
-        make("steps.0.detail", "sourced"),
-        make("scopes.0.reason", "sourced"),
-      ]),
-    ).not.toContain("limits");
+    expect(missing(COMPLETE)).not.toContain("limits");
   });
 
   it("does not let a claim in another section stand in, even when its id starts the same", () => {
     expect(
-      missingSections([
+      missing([
         make("stepsy.0", "sourced"),
         make("scopes.0.reason", "sourced"),
+        make("blockers.0.text", "sourced"),
       ]),
     ).toEqual(["steps"]);
   });

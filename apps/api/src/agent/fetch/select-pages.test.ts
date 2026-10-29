@@ -29,14 +29,6 @@ describe("selectPages", () => {
     ).toEqual(["o1", "o2"]);
   });
 
-  it("keeps one slot for the best non-official page when it has room for 3 or more", () => {
-    const picked = selectPages([o(1), o(2), o(3), o(4), o(5), t(1), t(2)], {
-      allowance: 4,
-      held: none,
-    });
-    expect(urls(picked)).toEqual(["o1", "o2", "o3", "t1"]);
-  });
-
   it("uses every slot for official pages when there is no non-official page", () => {
     expect(
       urls(

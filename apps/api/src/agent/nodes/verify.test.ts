@@ -8,22 +8,15 @@ import { describe, expect, it, vi } from "vitest";
 import { logger } from "../../lib/logger.js";
 import {
   OAUTH_URL,
-  PAGES,
   QUOTES,
   REVIEW_URL,
   claim,
 } from "../../test-support/extract-fixtures.js";
 import { GATES_OUTPUT } from "../../test-support/extract-replies.js";
-import { createHarness, trace } from "../../test-support/graph-harness.js";
-import {
-  DRAFTS,
-  drafted,
-  withDrafts,
-} from "../../test-support/guide-fixtures.js";
-import { state } from "../../test-support/extract-node-helpers.js";
-import type { Claim } from "@stamp/schema";
+import { trace } from "../../test-support/graph-harness.js";
+import { drafted, withDrafts } from "../../test-support/guide-fixtures.js";
 import type { CheckRecord } from "../../services/verification-log.js";
-import { verifyNode } from "./verify.js";
+import { verify } from "../../test-support/verify-helpers.js";
 
 vi.spyOn(logger, "info").mockImplementation(() => {});
 
@@ -39,15 +32,6 @@ const steps = (quote: string) =>
       },
     ],
   });
-
-async function verify(over: Parameters<typeof state>[1] = {}) {
-  const h = createHarness();
-  const update = await verifyNode(
-    state(PAGES, { drafts: DRAFTS, ...over }),
-    h.config,
-  );
-  return { h, update, claims: (update.claims ?? []) as Claim[] };
-}
 
 describe("verifyNode", () => {
   it("labels every claim and emits the stage events around the claim events", async () => {
@@ -135,20 +119,27 @@ describe("verifyNode", () => {
     );
   });
 
-  it("reports no missing section when steps and scopes have a Sourced claim", async () => {
-    expect((await verify()).update.missingSections).toEqual([]);
+  it("reports no missing section when the gate is known and steps, scopes and blockers have a Sourced claim", async () => {
+    expect(
+      (await verify({ gates: GATES_OUTPUT })).update.missingSections,
+    ).toEqual([]);
   });
 
   it("reports steps as missing when none of its quotes matched, which triggers the retry", async () => {
     expect(
-      (await verify({ drafts: withDrafts({ steps: steps(FAKE) }) })).update
-        .missingSections,
+      (
+        await verify({
+          drafts: withDrafts({ steps: steps(FAKE) }),
+          gates: GATES_OUTPUT,
+        })
+      ).update.missingSections,
     ).toEqual(["steps"]);
   });
 
   it("reports a section that was not found at all as missing", async () => {
     const { update } = await verify({
       drafts: withDrafts({ scopes: { status: "unknown" } }),
+      gates: GATES_OUTPUT,
     });
     expect(update.missingSections).toEqual(["scopes"]);
   });
@@ -190,7 +181,12 @@ describe("verifyNode", () => {
   it("verifies nothing and emits no claim event when nothing was drafted", async () => {
     const { h, update } = await verify({ drafts: {} });
     expect(update.claims).toEqual([]);
-    expect(update.missingSections).toEqual(["steps", "scopes"]);
+    expect(update.missingSections).toEqual([
+      "reviewGate",
+      "steps",
+      "scopes",
+      "blockers",
+    ]);
     expect(h.events.some((e) => e.type.startsWith("claim."))).toBe(false);
   });
 });
