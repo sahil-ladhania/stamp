@@ -73,6 +73,15 @@ export const GoldenSchema = z.strictObject({
   docs: z.strictObject({
     domains: z.array(z.string().min(1)).min(1),
     pathHints: z.array(z.string()),
+    /** A page the agent sees under an old URL that redirects to a golden page (checked by hand). */
+    urlAliases: z
+      .array(
+        z.strictObject({
+          seenAs: z.string().url(),
+          golden: z.string().url(),
+        }),
+      )
+      .optional(),
   }),
   oauthAppCreation: z.strictObject({
     where: z.string().min(1),

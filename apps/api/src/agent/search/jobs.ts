@@ -10,9 +10,12 @@ import {
   retryQueries,
   type PlannedQuery,
 } from "../queries.js";
+import type { QueryTopic } from "../plan-output.js";
 
 export type SearchJob = {
   query: string;
+  /** The topic the query was planned for; results returned by it are tagged with it. */
+  topic: QueryTopic;
   /** Empty means the whole web. */
   includeDomains: string[];
 };
@@ -30,14 +33,19 @@ export function buildJobs(
   if (missingSections.length > 0) {
     return retryQueries(app.appName, missingSections).map((q) => ({
       query: q.text,
+      topic: q.topic,
       includeDomains: [app.domain],
     }));
   }
   const planned = queries.length > 0 ? queries : defaultQueries(app.appName);
   return [
-    ...planned.map((q) => ({ query: q.text, includeDomains: [app.domain] })),
+    ...planned.map((q) => ({
+      query: q.text,
+      topic: q.topic,
+      includeDomains: [app.domain],
+    })),
     ...planned
       .filter((q) => OPEN_TOPICS.includes(q.topic))
-      .map((q) => ({ query: q.text, includeDomains: [] })),
+      .map((q) => ({ query: q.text, topic: q.topic, includeDomains: [] })),
   ];
 }

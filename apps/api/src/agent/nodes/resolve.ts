@@ -63,6 +63,8 @@ export const resolveNode = stageNode("resolve", async (state, config) => {
     name: typed.name,
     decision: decision.kind,
     hits: hits.length,
+    // URLs and titles only, no page text: what the resolve decision was made from, for tuning and for eval fixtures.
+    resolveHits: hits.map(({ url, title }) => ({ url, title })),
     candidates: candidates.slice(0, 5).map((c) => ({
       domain: c.domain,
       match: c.match,

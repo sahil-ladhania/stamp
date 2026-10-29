@@ -8,11 +8,14 @@ import type { Claim, Guide, SourceTier } from "@stamp/schema";
 import { build } from "../../../src/test-support/assemble-helpers.js";
 import {
   emptyUsage,
-  type PageInfo,
+  type ResolveHit,
   type RunCapture,
+  type SearchResultInfo,
   type TraceEvent,
 } from "../types.js";
 
+const RESTRICTED =
+  "https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification";
 const OFFICIAL =
   "https://developers.google.com/workspace/gmail/api/auth/scopes";
 
@@ -55,7 +58,8 @@ const base = () => ({
   startedAt: "2026-10-29T10:00:00.000Z",
   stageReached: 8,
   retried: false,
-  searchResults: [] as PageInfo[],
+  searchResults: [] as SearchResultInfo[],
+  resolveHits: [] as ResolveHit[],
   events: [] as TraceEvent[],
   logs: [] as Record<string, unknown>[],
   models: { fast: "gpt-4.1-mini", strong: "gpt-4.1" },
@@ -124,10 +128,25 @@ export function goodCapture(): RunCapture {
     gates: {
       reviewGate: "security_assessment",
       reviewGateTier: "official",
+      reviewGateEvidence: {
+        url: RESTRICTED,
+        quote: "must go through a security assessment",
+      },
       approvalWait: { minDays: 42, maxDays: 42 },
       approvalWaitTier: "official",
+      approvalWaitEvidence: { url: RESTRICTED, quote: "6 weeks" },
     },
     pages: [{ url: OFFICIAL, tier: "official" }],
+    searchResults: [
+      {
+        url: OFFICIAL,
+        tier: "official",
+        title: "Choose Gmail API scopes",
+        score: 0.9,
+        topics: ["scopes"],
+      },
+      { url: RESTRICTED, tier: "official", topics: ["review"] },
+    ],
     usage: {
       ...emptyUsage(),
       strongCalls: 10,

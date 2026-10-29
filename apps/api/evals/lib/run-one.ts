@@ -4,22 +4,22 @@
  * Exports: runOne, RunOneOptions
  * Used by: evals/lib/run-batch.ts
  */
-import type { SourceTier } from "@stamp/schema";
 import type { AgentOutcome, RunAgentInput } from "../../src/agent/run-agent.js";
 import type { RealAgentOptions } from "../../src/agent/run-real-agent.js";
-import { stageOf } from "../../src/agent/pipeline.js";
-import { toGateFacts } from "../../src/agent/scoring/gate-facts.js";
 import type { State } from "../../src/agent/state.js";
-import { hashUrl } from "../../src/utils/hash-url.js";
 import { captureSaveNode } from "./capture-save-node.js";
+import {
+  gatesOf,
+  pagesFromEvents,
+  resolveHitsOf,
+  searchResultsOf,
+} from "./capture-parts.js";
 import { freshPageCache } from "./fresh-page-cache.js";
 import type { Golden } from "./golden.js";
 import type { LogTap } from "./log-tap.js";
 import {
   emptyUsage,
   parseUsage,
-  type GateCapture,
-  type PageInfo,
   type RunCapture,
   type TraceEvent,
 } from "./types.js";
@@ -40,7 +40,6 @@ export type RunOneOptions = {
 };
 
 const ABORT_AFTER_MS = 150_000;
-const VERIFY_STAGE = stageOf("verify");
 
 /** The real agent and the configured model names, imported only when a real run starts. */
 async function realAgent(): Promise<{
@@ -57,38 +56,6 @@ async function realAgent(): Promise<{
       strong: config.OPENAI_MODEL_STRONG ?? "unknown",
     },
   };
-}
-
-/** Gates count only after verify checked their quotes, as in the score stage; each fact keeps the tier of its page. */
-function gatesOf(state: State): GateCapture {
-  const checked = state.completed.includes(VERIFY_STAGE);
-  const facts = toGateFacts(checked ? state.gates : null);
-  const tierOf = (url: string | undefined): SourceTier | null =>
-    url === undefined
-      ? null
-      : (state.pages.find((page) => page.urlHash === hashUrl(url))?.tier ??
-        null);
-  return {
-    reviewGate: facts.reviewGate,
-    reviewGateTier:
-      facts.reviewGate === "unknown"
-        ? null
-        : tierOf(state.gates?.reviewGateEvidence?.url),
-    approvalWait: facts.approvalWait,
-    approvalWaitTier:
-      facts.approvalWait === "unknown"
-        ? null
-        : tierOf(state.gates?.approvalWaitEvidence?.url),
-  };
-}
-
-/** With no final state (the run failed early) the pages are the ones the events announced. */
-function pagesFromEvents(events: readonly TraceEvent[]): PageInfo[] {
-  return events.flatMap(({ event }) =>
-    event.type === "page.fetched"
-      ? [{ url: String(event.url), tier: event.tier as SourceTier }]
-      : [],
-  );
 }
 
 /** Runs one app. Never throws for a failed run: the capture says what happened. */
@@ -163,9 +130,8 @@ export async function runOne(
     pages: state
       ? state.pages.map(({ url, tier }) => ({ url, tier }))
       : pagesFromEvents(events),
-    searchResults: state
-      ? state.searchResults.map(({ url, tier }) => ({ url, tier }))
-      : [],
+    searchResults: state ? searchResultsOf(state.searchResults) : [],
+    resolveHits: resolveHitsOf(logs),
     retried: (state?.retryCount ?? 0) > 0,
     usage: summary ? parseUsage(summary) : emptyUsage(),
     models,

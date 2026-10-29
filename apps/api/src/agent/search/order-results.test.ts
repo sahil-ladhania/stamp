@@ -123,3 +123,39 @@ describe("orderResults", () => {
     expect(input.map((r) => r.url)).toEqual(["f", "o"]);
   });
 });
+
+describe("toSearchResults topics", () => {
+  const tagged = (url: string, topic?: string) => ({ ...hit(url), topic });
+
+  it("records the topic of the query that returned each result", () => {
+    const [first] = toSearchResults(
+      [tagged("https://docs.acme.com/a", "setup")],
+      "acme.com",
+    );
+    expect(first?.topics).toEqual(["setup"]);
+  });
+
+  it("merges the topics of a repeated URL and keeps the first hit", () => {
+    const results = toSearchResults(
+      [
+        { ...tagged("https://docs.acme.com/a", "setup"), title: "First" },
+        { ...tagged("https://docs.acme.com/a", "scopes"), title: "Second" },
+        tagged("https://docs.acme.com/a", "setup"),
+      ],
+      "acme.com",
+    );
+    expect(results).toHaveLength(1);
+    expect(results[0]).toMatchObject({
+      title: "First",
+      topics: ["setup", "scopes"],
+    });
+  });
+
+  it("adds no topics field when no query topic is given", () => {
+    const [first] = toSearchResults(
+      [hit("https://docs.acme.com/a")],
+      "acme.com",
+    );
+    expect(first).not.toHaveProperty("topics");
+  });
+});

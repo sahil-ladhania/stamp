@@ -7,13 +7,17 @@
 
 export const MAX_RUNS_PER_BATCH = 12;
 export const MAX_PARALLEL = 2;
+/** A batch is one repetition of the selected apps; a command may repeat it up to this many times. */
+export const MAX_REPEAT = 3;
 
 export const USAGE =
-  "Usage: pnpm --filter api eval -- --set tuning|holdout|<slug> [--parallel 1|2] [--confirm] [--allow-holdout] [--out <dir>]";
+  "Usage: pnpm --filter api eval -- --set tuning|holdout|<slug> [--parallel 1|2] [--repeat 1|2|3] [--confirm] [--allow-holdout] [--out <dir>]";
 
 export type CliArgs = {
   selector: string;
   parallel: number;
+  /** How many times the whole selection is run, to see how much the results vary. */
+  repeat: number;
   /** Without this the command only prints the estimate and exits. */
   confirm: boolean;
   /** The holdout set is run once, at the end; this flag says that is what is happening. */
@@ -21,7 +25,7 @@ export type CliArgs = {
   out: string | null;
 };
 
-const VALUE_OPTIONS = new Set(["--set", "--parallel", "--out"]);
+const VALUE_OPTIONS = new Set(["--set", "--parallel", "--repeat", "--out"]);
 const FLAG_OPTIONS = new Set(["--confirm", "--allow-holdout"]);
 
 function parseParallel(raw: string): number {
@@ -33,6 +37,19 @@ function parseParallel(raw: string): number {
   }
   if (value > MAX_PARALLEL) {
     throw new Error(`--parallel is at most ${MAX_PARALLEL}, got ${value}`);
+  }
+  return value;
+}
+
+function parseRepeat(raw: string): number {
+  const value = Number(raw);
+  if (!Number.isInteger(value) || value < 1) {
+    throw new Error(
+      `--repeat needs a whole number from 1 to ${MAX_REPEAT}, got "${raw}"`,
+    );
+  }
+  if (value > MAX_REPEAT) {
+    throw new Error(`--repeat is at most ${MAX_REPEAT}, got ${value}`);
   }
   return value;
 }
@@ -62,6 +79,9 @@ export function parseArgs(argv: readonly string[]): CliArgs {
     parallel: values.has("--parallel")
       ? parseParallel(values.get("--parallel") ?? "")
       : MAX_PARALLEL,
+    repeat: values.has("--repeat")
+      ? parseRepeat(values.get("--repeat") ?? "")
+      : 1,
     confirm: flags.has("--confirm"),
     allowHoldout: flags.has("--allow-holdout"),
     out: values.get("--out") ?? null,

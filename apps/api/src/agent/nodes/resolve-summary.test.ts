@@ -96,3 +96,22 @@ describe("the resolve summary line", () => {
     expect(summary()).toMatchObject({ decision: "none" });
   });
 });
+
+describe("the resolve summary line resolveHits", () => {
+  it("logs the URL and title of each hit and nothing from the page", async () => {
+    search.mockResolvedValue({
+      hits: [
+        hit("https://developers.notion.com/docs"),
+        hit("https://www.notion.so/help"),
+      ],
+      credits: 1,
+    });
+    await run("Notion");
+    const hits = summary().resolveHits as Record<string, unknown>[];
+    expect(hits).toHaveLength(2);
+    expect(hits[0]).toEqual({
+      url: "https://developers.notion.com/docs",
+      title: expect.any(String),
+    });
+  });
+});

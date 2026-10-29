@@ -1,7 +1,7 @@
 /**
  * File: types.ts
  * Purpose: Shapes shared across the eval harness: what one run captures and what scoring says about it.
- * Exports: RunCapture, AppScore, UsageSummary, GateCapture, PageInfo, TraceEvent, Outcome, Verdict, ScoreStatus, emptyUsage, parseUsage
+ * Exports: RunCapture, AppScore, UsageSummary, GateCapture, GateEvidence, PageInfo, SearchResultInfo, ResolveHit, TraceEvent, Outcome, Verdict, ScoreStatus, emptyUsage, parseUsage
  * Used by: evals/scoring/*, evals/lib/*, evals/cli.ts
  */
 import type { Guide, SourceTier } from "@stamp/schema";
@@ -9,8 +9,10 @@ import type {
   ApprovalWait,
   ReviewGate,
 } from "../../src/agent/scoring/difficulty.js";
+import type { ClaimQuality } from "../scoring/claim-quality.js";
 import type { Contradiction } from "../scoring/contradictions.js";
 import type { Verdict } from "../scoring/gate.js";
+import type { GoldenRecall } from "../scoring/golden-recall.js";
 import type { ScopeScore } from "../scoring/scopes.js";
 import type { SourceScore } from "../scoring/sources.js";
 import type { BlockerVerdict } from "../scoring/top-blocker.js";
@@ -19,13 +21,28 @@ export type { Verdict };
 
 export type PageInfo = { url: string; tier: SourceTier };
 
-/** The verified gate facts and the tier of the page that backs each one. */
+/** The quote and page behind a verified gate fact. */
+export type GateEvidence = { url: string; quote: string };
+
+/** The verified gate facts, the quote and URL behind each, and the tier of the page that backs it. */
 export type GateCapture = {
   reviewGate: ReviewGate;
   reviewGateTier: SourceTier | null;
+  reviewGateEvidence: GateEvidence | null;
   approvalWait: ApprovalWait;
   approvalWaitTier: SourceTier | null;
+  approvalWaitEvidence: GateEvidence | null;
 };
+
+/** A search result as the run saw it: tier, title, Tavily's score, and the planned topics whose queries found it. */
+export type SearchResultInfo = PageInfo & {
+  title?: string;
+  score?: number;
+  topics?: string[];
+};
+
+/** One hit of the resolve search, from which the official domain was chosen. */
+export type ResolveHit = { url: string; title: string };
 
 export type Outcome =
   { ok: true; status: "done" | "partial" } | { ok: false; code: string };
@@ -86,7 +103,9 @@ export type RunCapture = {
   gates: GateCapture | null;
   /** Pages the run held (read), and every search result it saw. */
   pages: PageInfo[];
-  searchResults: PageInfo[];
+  searchResults: SearchResultInfo[];
+  /** The resolve search's hits; empty for a run that was saved before they were captured. */
+  resolveHits: ResolveHit[];
   retried: boolean;
   usage: UsageSummary;
   models: { fast: string; strong: string };
@@ -126,4 +145,8 @@ export type AppScore = {
     uncertainShare: number;
   };
   coverage: { answered: string[]; missing: string[] };
+  /** Which Sourced and Tested claims stand on good pages, and which on wrong, related or third-party ones. */
+  claimQuality: ClaimQuality;
+  /** How many of the golden pages the search found and the run read. */
+  goldenPages: GoldenRecall;
 };

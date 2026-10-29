@@ -96,3 +96,34 @@ describe("targetFor", () => {
     expect(targetFor("tuning", 1)).toBeNull();
   });
 });
+
+describe("summarize retrieval and claim quality", () => {
+  const summary = summarize([good, broken, failed]);
+
+  it("adds up the Sourced claims and those on good pages, and gives their share", () => {
+    expect(summary.sourcedClaims).toBe(
+      good.claimQuality.sourced + broken.claimQuality.sourced,
+    );
+    expect(summary.goodClaims).toBe(
+      good.claimQuality.good + broken.claimQuality.good,
+    );
+    expect(summary.goodShare).toBeCloseTo(
+      summary.goodClaims / summary.sourcedClaims,
+      9,
+    );
+  });
+
+  it("has a share of zero when nothing is Sourced", () => {
+    expect(summarize([failed]).goodShare).toBe(0);
+  });
+
+  it("adds up the golden pages found and read", () => {
+    expect(summary.goldenTotal).toBe(18);
+    expect(summary.goldenInResults).toBe(
+      good.goldenPages.inResults + broken.goldenPages.inResults,
+    );
+    expect(summary.goldenFetched).toBe(
+      good.goldenPages.fetched + broken.goldenPages.fetched,
+    );
+  });
+});

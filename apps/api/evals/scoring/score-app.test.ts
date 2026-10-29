@@ -152,3 +152,27 @@ describe("scoreApp timing", () => {
     ).toBe(1);
   });
 });
+
+describe("scoreApp retrieval and claim quality", () => {
+  it("counts the golden pages the search found and the run read", () => {
+    expect(scoreApp(goodCapture(), gmail, null).goldenPages).toEqual({
+      total: 6,
+      inResults: 2,
+      fetched: 1,
+    });
+  });
+
+  it("reports the share of Sourced claims that stand on good pages", () => {
+    const good = scoreApp(goodCapture(), gmail, null).claimQuality;
+    const broken = scoreApp(brokenCapture(), gmail, null).claimQuality;
+    expect(good.wrongProduct).toBe(0);
+    expect(good.share).toBeGreaterThan(broken.share);
+    expect(broken.wrongProduct).toBeGreaterThan(0);
+  });
+
+  it("scores a run that failed before saving as no claims and no pages read", () => {
+    const score = scoreApp(failedCapture(), gmail, null);
+    expect(score.claimQuality).toMatchObject({ sourced: 0, share: 0 });
+    expect(score.goldenPages).toEqual({ total: 6, inResults: 0, fetched: 0 });
+  });
+});

@@ -64,7 +64,9 @@ export const searchNode = stageNode("search", async (state, config) => {
   if (runs.every((hits) => hits === null)) {
     return { failure: makeFailure(2, "INTERNAL") };
   }
-  const hits = runs.flatMap((found) => found ?? []);
+  const hits = runs.flatMap((found, index) =>
+    (found ?? []).map((hit) => ({ ...hit, topic: jobs[index]?.topic })),
+  );
   const searchResults = orderResults(toSearchResults(hits, app.domain));
   logger.info("search summary", {
     runId: deps.runId,
