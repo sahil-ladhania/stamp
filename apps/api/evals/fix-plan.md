@@ -20,7 +20,7 @@ Plan only. Nothing here is built. It follows [diagnosis.md](./diagnosis.md), whi
 1. **A1.** The revision is recorded as a **new decision** (the next free number after D23), not as an edit of D7. Its rule, in its own words: _a model may only downgrade a label, never upgrade it._ D7 gets a one-line pointer to it. Done in PR 4.
 2. **A3.** Each new `DowngradeReason` gets its copy on the **live run page** (`apps/web/src/utils/downgrade-reason.ts` and `run-groups.ts`), in the same PR as the schema values. Done in PR 4.
 3. **A4.** The timeline links each milestone to the relevant Steps, so removing the effort prose loses no context. PR 5 adds a test that every milestone still links to a step.
-4. **A2.** PR 4 reports what the verify model call adds, measured from the `--repeat 3` runs: stage time (mean and p95), tokens and dollars per run, before and after.
+4. **A2.** PR 4 reports what the verify model call adds, measured from the stage's `--repeat 1` run against the clean baseline's mean: stage time, tokens and dollars per run, before and after.
 
 No stage adds a dependency or touches `prisma/schema.prisma`.
 
@@ -41,23 +41,28 @@ Each PR branches from `main` after the previous one merges. I do not merge.
 
 Why this order: selection needs to know the product's identity; the trust checks need the same identity and work best on better pages; extraction shape fixes lean on the trust judge; the score is only as good as the gate facts under it.
 
-**Cost** (from the baseline: $1.04 and 60 credits per tuning batch of 6; Tavily is about 46% of it):
+**Cost, after the credit rule of 2026-10-29** (stage evals use `--repeat 1`; `--repeat 3` only for the clean baseline and the final comparison). One batch of 6 is about $1.04 and 60 credits; Tavily is about 46% of the dollars and all of the credits.
 
-| Item                                              | Batches of 6 | Cost                                |
-| ------------------------------------------------- | ------------ | ----------------------------------- |
-| Clean baseline, `--repeat 3`                      | 3            | $3.1                                |
-| After each of stages 2 to 6, `--repeat 3`         | 15           | $15.6                               |
-| Stage 2 extra (optional): first-pass pages 4 vs 6 | 3            | $3.1                                |
-| Model experiment, new model only (control reused) | 3            | about $1.6                          |
-| Search fixtures for tests                         |              | about $0.12                         |
-| Holdout, once, 4 apps                             | 1 (of 4)     | about $0.7                          |
-| **Total**                                         |              | **about $24** (high case about $48) |
+| Item                                                             | Batches of 6 | Dollars                                          | Credits                     |
+| ---------------------------------------------------------------- | ------------ | ------------------------------------------------ | --------------------------- |
+| Spent: first baseline, one run per app                           | 1            | $1.04                                            | 60                          |
+| Spent: clean baseline, `--repeat 3`                              | 3            | $3.15                                            | 184                         |
+| **Used by evals so far**                                         |              | **$4.19**                                        | **244**                     |
+| After each of stages 2 to 6, `--repeat 1`                        | 5            | about $5.2                                       | about 305                   |
+| Search fixtures for tests                                        |              | about $0.12                                      | about 15                    |
+| Final comparison, `--repeat 3`: current models and the new model | 6            | about $4.7                                       | about 366                   |
+| Holdout, once, 4 apps                                            | 0.67         | about $0.7                                       | about 41                    |
+| Optional: first-pass pages 4 vs 6, `--repeat 1`                  | 1            | about $1.0                                       | about 61                    |
+| **Still to spend** (without the optional item)                   |              | **about $10.7**                                  | **about 727**               |
+| **Programme total**                                              |              | **about $15 (about $16 with the optional item)** | **about 971 (about 1,033)** |
 
-Stage 3's judge adds about $0.003 a run, which is inside the noise. Without the optional pages 4 vs 6 comparison the total is about $21.
+**Read the credits column against your Tavily plan.** Tavily's free tier is 1,000 credits a month (its credits page says so). If that is your plan, the programme as written uses nearly all of it and leaves almost nothing for the live demo. Ways to cut it, your call: run the final comparison with `--repeat 2` (saves about 120), skip the optional item, spread the batches across two billing months, or move to a paid tier. Each batch still prints the credits used so far and the running total before it asks for your confirmation.
+
+Stage 3's judge adds about $0.003 a run, which is inside the noise.
 
 ## 2. How every stage is judged
 
-- **`--repeat 3`** on the tuning set, reported as mean and range. One run per app per repeat tells us nothing about variance, and the baseline has none.
+- **`--repeat 1` for each stage's eval, `--repeat 3` for the clean baseline and the final comparison** (the credit rule). A single run varies: the clean baseline shows contradictions from 21 to 60, the share of claims on good pages from 34% to 60%, and 5 of 24 verdicts changing between repetitions. So a stage's single run is read **against the baseline's range, not its mean**; a change smaller than the range is not a result. Effects that code makes deterministic (milestone durations, fake scopes, wrong-product claims labelled Sourced) are judged as pass or fail instead.
 - **A stage passes** when its target metrics move as predicted in the mean, the zero-targets (wrong-product pages, fake scopes) hold in **every** repeat, and no guard metric regresses: p95 time at most 100 s, cost per run within 25%, and no per-app verdict that flipped from correct to wrong.
 - **Every target below is my estimate, set before building.** If a stage misses its targets, the PR says so and says why; I do not move the target.
 - **The PR description** carries the before and after table (mean and range) against the rescored baseline.
@@ -131,7 +136,7 @@ Evidence: 11 of 25 failing cells; 124 Sourced claims exposed; 11 of the 12 golde
 2. _Model re-rank:_ one fast-model call over titles and snippets. Likely better at relevance, but a second model call in the graph, and it needs your approval. Reserve it: use it only if option 1 does not reach the targets.
 3. _Read more pages_ (first pass 6, not 4). Cheap (+1 to 2 s, at most +1 credit), but it feeds more noise to Extract's fixed 14,000-character excerpts.
 
-**Pick: option 1.** Option 3 is tested, not assumed: `AGENT_FIRST_PASS_PAGES` (env, 4 to 6, default 4) and one extra `--repeat 3` batch. **I change the budget only if that comparison shows a gain** (your rule).
+**Pick: option 1.** Option 3 is tested, not assumed: `AGENT_FIRST_PASS_PAGES` (env, 4 to 6, default 4) and one extra `--repeat 1` batch. **I change the budget only if that comparison shows a gain** (your rule).
 
 **The path penalty must be soft.** Gmail's verification FAQ is `support.google.com/cloud/answer/13463817`; an "answer" path rule that excluded it would remove a golden page. Hard exclusion stays limited to what is already `forum`. Any pattern list is a data file of generic web conventions (not vendor paths); I will state in the PR whether the holdout needed an entry.
 
@@ -195,7 +200,7 @@ The judge runs only on claims that already passed every code check, so it **cann
 
 A higher Uncertain share is the intended price: it is the honest answer when the right page was not read.
 
-**Overfitting risk.** The judge is a model, so it varies. Guards: `--repeat 3`; a labelled set of about 60 baseline claims (supported, partly, unsupported) that the judge must score at least 90% on, **which you spot-check** (a sample of 20); the code checks carry most of the weight and are deterministic; holdout at the end.
+**Overfitting risk.** The judge is a model, so it varies. Guards: the result is read against the baseline's range, since a stage runs once; a labelled set of about 60 baseline claims (supported, partly, unsupported) that the judge must score at least 90% on, **which you spot-check** (a sample of 20); the code checks carry most of the weight and are deterministic; holdout at the end.
 
 **Tests.** Table tests for the whole decision matrix; the judge with a fake model (outage, bad JSON, injection, "partly"); the tier rule on gates and scopes; a regression test that the 94 wrong-product claims from the baseline all fall out; web mapping for the three new reasons.
 
@@ -271,7 +276,7 @@ Effort becomes "time to complete the step", which docs rarely state, so most eff
 - `lib/openai-params.ts` recognises reasoning models with `/^(o\d|gpt-5)/`, so `gpt-6-luna` would be sent a temperature it may reject. The rule needs a capability check or a wider pattern.
 - Reasoning tokens bill as output and add latency. I would test `reasoning_effort` at `none` and at the default and report both.
 
-**Design.** The models are environment variables, so no new flag: `OPENAI_MODEL_FAST=gpt-6-luna OPENAI_MODEL_STRONG=gpt-6-luna pnpm --filter api eval -- --set tuning --repeat 3 --confirm`. Control is Stage 5's final result (already measured). Treatment is the new model on both tiers. I add the price to `pricing.json` with its source quote.
+**Design.** The models are environment variables, so no new flag: `OPENAI_MODEL_FAST=gpt-6-luna OPENAI_MODEL_STRONG=gpt-6-luna pnpm --filter api eval -- --set tuning --repeat 3 --confirm`. Control is the final code with the current models, and treatment is the same code with the new model on both tiers, each at `--repeat 3`: a single stage run cannot be compared with a three-repetition mean. I add the price to `pricing.json` with its source quote.
 
 **Decision rule, set before I look:** the new model wins if the correctness metrics are within noise (mean within the control's range) and p95 time and cost do not get worse. Otherwise stay on `gpt-4.1` and plan the migration as a follow-up (the shutdown is 77 days away).
 
@@ -283,6 +288,6 @@ Effort becomes "time to complete the step", which docs rarely state, so most eff
 
 - **Six apps is a small tuning set.** Holdout (4) is the only unbiased read, and it is used once.
 - **The golden set has a human in it.** I added three entries after seeing a run; I said so in the files. Any further addition has to be flagged the same way.
-- **Retrieval depends on a third party** (Tavily's ranking can change between runs). `--repeat 3` shows the spread; it does not remove it.
+- **Retrieval depends on a third party** (Tavily's ranking can change between runs). The clean baseline's `--repeat 3` shows the spread; it does not remove it.
 - **Stage 3 trades coverage for honesty.** If the Uncertain share rises a lot before Stage 2 lands, the intermediate guides look thin. That is the correct failure.
 - **Microsoft stays hard.** "Microsoft" names a dozen products. Stage 1 improves the odds; it does not resolve the ambiguity (option 3 in Stage 1).
