@@ -58,6 +58,13 @@ describe("isRealScope", () => {
     expect(isRealScope(name, `Use ${name} to do things.`, DOCS)).toBe(false);
   });
 
+  it.each(["/.default", "/auth/gmail.readonly", "/"])(
+    "rejects the URL fragment %s, which no provider defines as a scope",
+    (name) => {
+      expect(isRealScope(name, `Use ${name} here.`, DOCS)).toBe(false);
+    },
+  );
+
   it.each(["session:role:", "user:", "read-", "scope_"])(
     "rejects the unfinished name %s",
     (name) => {
