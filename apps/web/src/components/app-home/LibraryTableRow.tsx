@@ -12,6 +12,7 @@ import { AppIdentity } from "@/components/shared/AppIdentity";
 import { DifficultyDots } from "@/components/shared/DifficultyDots";
 import { KindChip } from "@/components/shared/KindChip";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { isRated } from "@/utils/difficulty-rating";
 import { formatAsOf } from "@/utils/format-date";
 import type { LibraryTimes } from "@/utils/library-times";
 import { LibraryTimeCell } from "./LibraryTimeCell";
@@ -32,7 +33,7 @@ export function LibraryTableRow({ guide, times, isLoadingTimes }: LibraryTableRo
         </Link>
       </TableCell>
       <TableCell>
-        <DifficultyDots score={guide.difficulty} hasValue />
+        <DifficultyDots score={guide.difficulty} hasValue isRated={isRated(guide.archetype)} />
       </TableCell>
       <TableCell>
         <KindChip archetype={guide.archetype} />

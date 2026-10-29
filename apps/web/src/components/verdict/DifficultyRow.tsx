@@ -11,11 +11,13 @@ import type { Difficulty } from "@/types/guide-model";
 import { DifficultyPopover } from "./DifficultyPopover";
 import { VerdictRowFrame } from "./VerdictRow";
 
-export function DifficultyRow({ difficulty, isHighlighted }: { difficulty: Difficulty; isHighlighted: boolean }): ReactElement {
+type DifficultyRowProps = { difficulty: Difficulty; isHighlighted: boolean; isRated?: boolean }
+
+export function DifficultyRow({ difficulty, isHighlighted, isRated = true }: DifficultyRowProps): ReactElement {
   return (
     <VerdictRowFrame id="verdict-difficulty" label="Difficulty" href={null} linkLabel="" isHighlighted={isHighlighted}>
-      <DifficultyDots score={difficulty.score} hasValue />
-      <DifficultyPopover difficulty={difficulty} />
+      <DifficultyDots score={difficulty.score} hasValue isRated={isRated} />
+      <DifficultyPopover difficulty={difficulty} isRated={isRated} />
     </VerdictRowFrame>
   );
 }

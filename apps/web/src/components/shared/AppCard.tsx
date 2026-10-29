@@ -9,6 +9,7 @@ import type { ReactElement } from 'react'
 import { Link } from 'react-router'
 import { cn } from '@/lib/utils'
 import { ARCHETYPE_BLURB, ARCHETYPE_LABEL } from '@/utils/archetype'
+import { isRated } from '@/utils/difficulty-rating'
 import { formatAsOf } from '@/utils/format-date'
 import { AppIcon } from './AppIcon'
 import { DifficultyDots } from './DifficultyDots'
@@ -30,7 +31,7 @@ export function AppCard({ guide, className }: AppCardProps): ReactElement {
           <AppIcon slug={guide.slug} className="text-ink-muted" />
           {guide.appName}
         </h3>
-        <DifficultyDots score={guide.difficulty} hasValue className="pt-1" />
+        <DifficultyDots score={guide.difficulty} hasValue isRated={isRated(guide.archetype)} className="pt-1" />
       </div>
       <p className="text-body text-ink-muted">{ARCHETYPE_BLURB[guide.archetype]}</p>
       <p className="mt-auto flex flex-wrap gap-x-2 pt-1 text-small text-ink-muted">

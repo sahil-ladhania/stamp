@@ -266,6 +266,15 @@ Red = the rule. Blue = product decisions. Green = technical decisions.
 | Rejected | Model only: one wrong answer becomes a wrong label with nothing behind it. Code only: misses a right quote on a right page that says something else. Failing closed when the call fails: a transient outage would turn a whole guide Uncertain |
 | Cost | One fast-model call per verify pass (about $0.003 and 1 to 2 seconds in the first measurements), up to 8 seconds allowed. A model can still wrongly remove a good claim; that costs coverage, never trust. Revises the second half of D7's last rejection |
 
+### D25. No number when the review gate is unverified
+
+| | |
+| --- | --- |
+| Chosen | A guide whose review gate was not verified gets the archetype `unknown`, and the web app shows "Not rated" instead of the dots, the stamp's number and the card number. The stored difficulty is kept as a lower bound for sorting, and the breakdown says "points so far" |
+| Why | The review gate is the biggest factor. An unknown gate scored 0 points, so apps with an unverified gate came out as an easy 2 of 5, a confident number built on nothing. A confident wrong claim is worse than an honest "Not rated" |
+| Rejected | A nullable difficulty: needs a schema change and a database migration (`guides.difficulty` is a non-null, indexed column). A new "lower bound" field in the shared schema: the clearest contract, but the same cost for a flag the archetype already carries |
+| Cost | More guides read "Not rated" until the gate is verified. The library, whose guides are reviewed, is unaffected |
+
 ---
 
 ## 4. Findings that shaped the decisions

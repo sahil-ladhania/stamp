@@ -10,6 +10,7 @@ import { Link } from "react-router";
 import { AppIdentity } from "@/components/shared/AppIdentity";
 import { DifficultyDots } from "@/components/shared/DifficultyDots";
 import { KindChip } from "@/components/shared/KindChip";
+import { isRated } from "@/utils/difficulty-rating";
 import { formatAsOf } from "@/utils/format-date";
 import type { LibraryTimes } from "@/utils/library-times";
 import { LibraryTimeCell } from "./LibraryTimeCell";
@@ -26,7 +27,7 @@ export function LibraryCard({ guide, times, isLoadingTimes }: LibraryCardProps):
         <span className="text-card-title text-ink">
           <AppIdentity name={guide.appName} slug={guide.slug} size="md" />
         </span>
-        <DifficultyDots score={guide.difficulty} hasValue className="pt-1" />
+        <DifficultyDots score={guide.difficulty} hasValue isRated={isRated(guide.archetype)} className="pt-1" />
       </div>
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
         <KindChip archetype={guide.archetype} />

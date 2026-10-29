@@ -12,12 +12,13 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import type { Difficulty } from "@/types/guide-model";
+import { breakdownSentence, whyLabel } from "@/utils/difficulty-rating";
 
 const PHONE = "(max-width: 47.9375rem)";
 const TRIGGER_CLASS =
   "inline-flex cursor-pointer items-center gap-1 text-small font-medium text-ink underline-offset-4 hover:underline";
 
-function Breakdown({ difficulty }: { difficulty: Difficulty }): ReactElement {
+function Breakdown({ difficulty, isRated }: { difficulty: Difficulty; isRated: boolean }): ReactElement {
   return (
     <div className="flex flex-col gap-3 text-left">
       <ul className="flex flex-col divide-y divide-rule">
@@ -31,17 +32,17 @@ function Breakdown({ difficulty }: { difficulty: Difficulty }): ReactElement {
           </li>
         ))}
       </ul>
-      <p className="text-body text-ink">{`${difficulty.total} points, so the score is ${difficulty.score} of 5.`}</p>
+      <p className="text-body text-ink">{breakdownSentence(difficulty.total, difficulty.score, isRated)}</p>
       <TextLink to="/how-we-verify#difficulty">Read how difficulty is scored</TextLink>
     </div>
   );
 }
 
-export function DifficultyPopover({ difficulty }: { difficulty: Difficulty }): ReactElement {
+export function DifficultyPopover({ difficulty, isRated = true }: { difficulty: Difficulty; isRated?: boolean }): ReactElement {
   const isPhone = useMediaQuery(PHONE);
   const trigger = (
     <button type="button" className={TRIGGER_CLASS}>
-      Why this score
+      {whyLabel(isRated)}
       <ChevronDown aria-hidden className="size-4" />
     </button>
   );
@@ -51,7 +52,7 @@ export function DifficultyPopover({ difficulty }: { difficulty: Difficulty }): R
       <Sheet>
         <SheetTrigger asChild>{trigger}</SheetTrigger>
         <SheetContent title="Why this score">
-          <Breakdown difficulty={difficulty} />
+          <Breakdown difficulty={difficulty} isRated={isRated} />
         </SheetContent>
       </Sheet>
     );
@@ -60,7 +61,7 @@ export function DifficultyPopover({ difficulty }: { difficulty: Difficulty }): R
     <Popover>
       <PopoverTrigger asChild>{trigger}</PopoverTrigger>
       <PopoverContent>
-        <Breakdown difficulty={difficulty} />
+        <Breakdown difficulty={difficulty} isRated={isRated} />
       </PopoverContent>
     </Popover>
   );
