@@ -119,6 +119,17 @@ describe("scoreTopBlocker", () => {
     expect(result.reasons.join(" ")).toMatch(/wrong product/);
   });
 
+  it("fails the Notion top blocker that comes from the Snowflake connector article", () => {
+    const result = scoreTopBlocker(
+      blocker("You see 'invalid_client' while signing in or refreshing.", {
+        url: "https://www.notion.com/zh-cn/help/set-up-the-snowflake-mcp-for-notion",
+      }),
+      golden("notion"),
+    );
+    expect(result.verdict).toBe("fail");
+    expect(result.reasons.join(" ")).toMatch(/wrong product/);
+  });
+
   it("sends a blocker with no golden keyword to a manual check", () => {
     const result = scoreTopBlocker(
       blocker("Rate limits apply to the batch endpoint"),

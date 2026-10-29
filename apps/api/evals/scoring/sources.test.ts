@@ -127,6 +127,44 @@ describe("scoreSources", () => {
     ]);
   });
 
+  it("flags the Snowflake connector help article as wrong product in every language", () => {
+    const urls = [
+      "https://www.notion.com/zh-cn/help/set-up-the-snowflake-mcp-for-notion",
+      "https://www.notion.com/pt/help/set-up-the-snowflake-mcp-for-notion",
+      "https://www.notion.com/help/set-up-the-snowflake-mcp-for-notion",
+    ];
+    expect(scoreSources(urls, golden("notion")).wrongProduct).toEqual(urls);
+  });
+
+  it("does not flag Notion's own API help or developer docs", () => {
+    const result = scoreSources(
+      [
+        "https://www.notion.com/help/add-and-manage-connections-with-the-api",
+        "https://developers.notion.com/guides/get-started/authorization",
+      ],
+      golden("notion"),
+    );
+    expect(result.wrongProduct).toEqual([]);
+  });
+
+  it("flags the Azure DevOps scopes blog as wrong product for Microsoft", () => {
+    const url =
+      "https://devblogs.microsoft.com/devops/new-azure-devops-scopes-now-available-for-microsoft-identity-oauth-delegated-flow-apps";
+    expect(scoreSources([url], golden("microsoft")).wrongProduct).toEqual([
+      url,
+    ]);
+  });
+
+  it("flags Slack's legacy OAuth pages as a related product to look at, not as wrong product", () => {
+    const urls = [
+      "https://api.slack.com/docs/oauth",
+      "https://api.slack.com/docs/oauth-scopes",
+    ];
+    const result = scoreSources(urls, golden("slack"));
+    expect(result.softProduct).toEqual(urls);
+    expect(result.wrongProduct).toEqual([]);
+  });
+
   it("counts a repeated URL once", () => {
     const url = "https://docs.cloud.google.com/contact-center/x";
     expect(scoreSources([url, url], gmail).wrongProduct).toEqual([url]);

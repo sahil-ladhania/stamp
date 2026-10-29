@@ -16,29 +16,31 @@ Baseline run of the tuning set (6 apps, one run each), 2026-10-29. Nothing was f
 
 ## 2. Scorecard
 
-| App       | Time (s) | Pages | Retries | Wrong-product | Gate                        | Wait    | Real / listed scopes | Fake scopes | Durations or Unknown | Top blocker | Contradictions | Uncertain | Cost  |
-| --------- | -------- | ----- | ------- | ------------- | --------------------------- | ------- | -------------------- | ----------- | -------------------- | ----------- | -------------- | --------- | ----- |
-| github    | 33.2     | 6     | 1       | 1             | wrong (required_to_scale)   | unknown | 0/0                  | 0           | 2/4                  | pass        | 15             | 41%       | $0.18 |
-| gmail     | 27.6     | 4     | 0       | 1             | match (security_assessment) | unknown | 1/2                  | 1           | 1/4                  | none        | 8              | 26%       | $0.19 |
-| hubspot   | 24.0     | 4     | 0       | 0             | unknown                     | unknown | 2/2                  | 0           | 2/4                  | none        | 0              | 58%       | $0.15 |
-| microsoft | 37.4     | 4     | 0       | 1             | unknown                     | unknown | 3/11                 | 4           | 1/4                  | pass        | 12             | 30%       | $0.17 |
-| notion    | 37.8     | 4     | 0       | 0             | match (optional_listing)    | unknown | 0/2                  | 2           | 1/4                  | manual      | 2              | 14%       | $0.19 |
-| slack     | 25.1     | 4     | 0       | 0             | unknown                     | unknown | 3/9                  | 1           | 2/4                  | fail        | 1              | 38%       | $0.16 |
-| **Total** | p95 37.8 | 26    | 1       | 3             | 2/6                         | 0/6     | 3 of 6 apps with 2+  | 8           | 9/24                 | 2 pass      | 38             | 34%       | $1.04 |
+| App       | Time (s) | Pages | Retries | Wrong-product | Gate                        | Wait    | Real / listed scopes | Fake scopes | Durations or Unknown | Top blocker    | Contradictions | Uncertain | Cost  |
+| --------- | -------- | ----- | ------- | ------------- | --------------------------- | ------- | -------------------- | ----------- | -------------------- | -------------- | -------------- | --------- | ----- |
+| github    | 33.2     | 6     | 1       | 1             | wrong (required_to_scale)   | unknown | 0/0                  | 0           | 2/4                  | pass           | 15             | 41%       | $0.18 |
+| gmail     | 27.6     | 4     | 0       | 1             | match (security_assessment) | unknown | 1/2                  | 1           | 1/4                  | none           | 8              | 26%       | $0.19 |
+| hubspot   | 24.0     | 4     | 0       | 0             | unknown                     | unknown | 2/2                  | 0           | 2/4                  | none           | 0              | 58%       | $0.15 |
+| microsoft | 37.4     | 4     | 0       | 2             | unknown                     | unknown | 3/11                 | 4           | 1/4                  | pass           | 13             | 30%       | $0.17 |
+| notion    | 37.8     | 4     | 0       | 1             | match (optional_listing)    | unknown | 0/2                  | 2           | 1/4                  | fail           | 66             | 14%       | $0.19 |
+| slack     | 25.1     | 4     | 0       | 0             | unknown                     | unknown | 3/9                  | 1           | 2/4                  | fail           | 1              | 38%       | $0.16 |
+| **Total** | p95 37.8 | 26    | 1       | 5             | 2/6                         | 0/6     | 3 of 6 apps with 2+  | 8           | 9/24                 | 2 pass, 2 fail | 103            | 34%       | $1.04 |
 
-| Metric                                         | Target          | Baseline                                           |
-| ---------------------------------------------- | --------------- | -------------------------------------------------- |
-| Wrong-product sources                          | 0               | 3 (5 confirmed, see section 7)                     |
-| Sourced claims that contradict the golden set  | 0               | 38                                                 |
-| Review gate correct                            | at least 5 of 6 | 2 of 6                                             |
-| Apps with at least 2 real scopes               | at least 5 of 6 | 3 of 6                                             |
-| Fake or tutorial scopes                        | 0               | 8                                                  |
-| Milestone fields that are durations or Unknown | 100%            | 9 of 24 (38%)                                      |
-| Top blocker is a setup or approval blocker     | at least 5 of 6 | 2 pass, 1 by hand (fails on inspection, section 7) |
-| Runs that end within 120 s                     | 100%            | 6 of 6                                             |
-| p95 run time                                   | at most 100 s   | 37.8 s                                             |
-| Uncertain share                                | report          | 34%                                                |
-| Cost per run                                   | report          | $0.17                                              |
+| Metric                                         | Target          | Baseline               |
+| ---------------------------------------------- | --------------- | ---------------------- |
+| Wrong-product sources                          | 0               | 5                      |
+| Sourced claims that contradict the golden set  | 0               | 103                    |
+| Review gate correct                            | at least 5 of 6 | 2 of 6                 |
+| Apps with at least 2 real scopes               | at least 5 of 6 | 3 of 6                 |
+| Fake or tutorial scopes                        | 0               | 8                      |
+| Milestone fields that are durations or Unknown | 100%            | 9 of 24 (38%)          |
+| Top blocker is a setup or approval blocker     | at least 5 of 6 | 2 pass, 2 fail, 2 none |
+| Runs that end within 120 s                     | 100%            | 6 of 6                 |
+| p95 run time                                   | at most 100 s   | 37.8 s                 |
+| Uncertain share                                | report          | 34%                    |
+| Cost per run                                   | report          | $0.17                  |
+
+**Scorer correction.** The first version of these two tables was scored with the golden set as approved, which did not list three bad pages. After adding them (section 7) the saved baseline was re-scored, with no new run: wrong-product sources 3 to 5, contradictions 38 to 103 (Notion alone has 66), Notion's top blocker "manual" to fail. Nothing else moved. Use these numbers as the baseline.
 
 **Uncertain share is not a quality signal here.** Notion has the lowest share (14%) and the worst guide: 64 of its 66 Sourced claims quote one help article about connecting Snowflake. HubSpot has the highest share (58%) and is the cleanest guide on every check we have. Report the share of Sourced claims on good pages next to it.
 
@@ -72,7 +74,7 @@ Contract items: 1 pages about this app's API, 2 review gate, 3 real scopes, 4 du
 | 15 to 20 | all six   | 4    | No milestone is a duration; 15 prose, 9 Unknown                                                             | Extract      | none                 | Prompt asks "what it takes" (`prompts/extract-sections.ts:29-31`); examples in section 6, H5                                      |
 | 21       | gmail     | 5    | Verdict names no top blocker although 6 blockers exist                                                      | Extract      | none                 | `topBlockerId: null`                                                                                                              |
 | 22       | hubspot   | 5    | No blockers, and the verdict says "no major blockers" as Sourced                                            | Select/Fetch | Verify               | Blockers section "nothing_found"; the review page was never read                                                                  |
-| 23       | notion    | 5    | Top blocker is `invalid_client` from the Snowflake article                                                  | Select/Fetch | Verify               | Scorer says "manual"; fails on inspection                                                                                         |
+| 23       | notion    | 5    | Top blocker is `invalid_client` from the Snowflake article                                                  | Select/Fetch | Verify               | Scored "manual" at first; a fail once the golden set lists the page                                                               |
 | 24       | slack     | 5    | Top blocker is a redirect-URI note from a third-party blog (8 Sourced claims)                               | Select/Fetch | Verify               | `hoop.dev/blog/oauth-2-0-workflow-approvals-in-slack-...`                                                                         |
 | 25       | gmail     | 6    | The gate matches the golden, but its only source is third party; 22 of 40 Sourced claims cite `unipile.com` | Verify       | none                 | `reviewGateTier: third_party`; labels ignore tier (`evidence/labelling.ts:29-40`)                                                 |
 
@@ -132,9 +134,9 @@ The scorecard counts only what the approved golden set lists. Three pages were c
 | `devblogs.microsoft.com/devops/...scopes...`            | Azure DevOps OAuth scopes                                                                 | Wrong product: 1 claim (`user_impersonation`)                                                |
 | `api.slack.com/docs/oauth`, `.../oauth-scopes`          | Redirect to `docs.slack.dev/legacy/legacy-authentication/` and `.../legacy-oauth-scopes/` | Legacy generation: 17 claims                                                                 |
 
-Wrong-product pages: **5 distinct (scorer 3)**, plus 2 legacy. Top blocker: Notion is a fail, not "manual".
+Wrong-product pages: **5 distinct** (the first scorecard showed 3), plus 2 legacy. Notion's top blocker is a fail, not "manual".
 
-Proposed golden additions, **not applied** because the golden set is yours to approve: Notion hard avoid `notion.com` help articles under `/help/set-up-`; Microsoft hard avoid `devblogs.microsoft.com/devops`; Slack hard avoid `docs.slack.dev/legacy` and `api.slack.com/docs/oauth`.
+Golden additions, **applied on your approval (2026-10-29)**: Notion hard avoid on help articles ending `-mcp-for-notion`, Microsoft hard avoid on `devblogs.microsoft.com/devops`, and Slack's legacy hint extended to `api.slack.com/docs/oauth`. The Slack legacy pages stay **soft**: they are listed under "related-product pages cited" for a manual look and are not counted as wrong-product, so Slack's item-1 cell still fails in section 4 even though the scorer does not count it.
 
 ## 8. What this baseline cannot tell us
 

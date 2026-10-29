@@ -124,9 +124,17 @@
       }
     }
   ],
-  "avoidProducts": [],
+  "avoidProducts": [
+    {
+      "name": "Notion help articles for connecting other products to Notion agents",
+      "severity": "hard",
+      "hostPathHints": ["-mcp-for-notion"],
+      "why": "End-user help articles about connecting a third-party product (here Snowflake) to Notion's agents; they describe that product's OAuth setup, not the Notion API's",
+      "evidence": "Baseline run 2026-10-29: 64 of 66 Sourced claims in the Notion guide cite www.notion.com/zh-cn/help/set-up-the-snowflake-mcp-for-notion, a page that begins 'Learn how to connect Snowflake to a Custom Agent or your Notion Agent' (apps/api/evals/diagnosis.md, section 7)"
+    }
+  ],
   "notes": [
     "Notion has no scope strings. Access is set by capabilities chosen at creation, so the real list holds capability names. Please confirm this treatment of scopes.",
-    "No sibling product was identified that Stamp is likely to confuse with the Notion API."
+    "The avoidProducts entry was added after the first baseline run showed the agent building a guide from a Snowflake connector help article. It was not in the golden set approved on 2026-10-29."
   ]
 }

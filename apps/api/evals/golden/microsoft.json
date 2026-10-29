@@ -130,10 +130,18 @@
       "hostPathHints": ["learn.microsoft.com/en-us/azure/active-directory-b2c", "learn.microsoft.com/azure/active-directory-b2c"],
       "why": "Customer identity service with its own app registrations; not the way an agent calls Microsoft Graph for a user",
       "evidence": "Stored microsoft guide cited a B2C client credentials page in 9 of 24 claims (08b, case 3)"
+    },
+    {
+      "name": "Azure DevOps OAuth",
+      "severity": "hard",
+      "hostPathHints": ["devblogs.microsoft.com/devops"],
+      "why": "Azure DevOps has its own OAuth scopes (such as user_impersonation); they are not Microsoft Graph permissions",
+      "evidence": "Baseline run 2026-10-29: the Microsoft guide cites devblogs.microsoft.com/devops/new-azure-devops-scopes-now-available-for-microsoft-identity-oauth-delegated-flow-apps for the scope user_impersonation (apps/api/evals/diagnosis.md, section 7)"
     }
   ],
   "notes": [
     "Microsoft has no review queue. required_to_scale is primary because unverified multitenant apps hit user-consent limits in other tenants; none is the one accepted alternate. Approved by the owner on 2026-10-29.",
+    "The Azure DevOps avoidProducts entry was added after the first baseline run. It was not in the golden set approved on 2026-10-29.",
     "The wait is minutes for publisher verification only; the partner-account verification time is not stated, so confidence is low."
   ]
 }

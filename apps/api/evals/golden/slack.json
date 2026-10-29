@@ -145,13 +145,14 @@
     {
       "name": "Slack classic and legacy apps",
       "severity": "soft",
-      "hostPathHints": ["docs.slack.dev/legacy/"],
-      "why": "The legacy app model predates granular scopes and the v2 OAuth flow",
-      "evidence": "Appeared in web search results for Slack OAuth (2026-10-29): Migrating classic apps"
+      "hostPathHints": ["docs.slack.dev/legacy/", "api.slack.com/docs/oauth"],
+      "why": "The legacy app model predates granular scopes and the v2 OAuth flow; api.slack.com/docs/oauth and /docs/oauth-scopes redirect to docs.slack.dev/legacy/",
+      "evidence": "Web search results for Slack OAuth (2026-10-29): Migrating classic apps. Baseline run 2026-10-29: 17 Sourced claims cite the two redirecting pages (apps/api/evals/diagnosis.md, section 7). Kept soft, so it is flagged for a manual look and not counted as wrong-product."
     }
   ],
   "notes": [
     "Judgment call for your review: optional_listing vs required_to_scale. Slack says commercial apps should be listed, and unlisted commercial apps are throttled on two methods, but unlisted install works. Both labels are accepted.",
-    "Slack docs moved from api.slack.com to docs.slack.dev. Both are official."
+    "Slack docs moved from api.slack.com to docs.slack.dev. Both are official.",
+    "The legacy hint api.slack.com/docs/oauth was added after the first baseline run. It was not in the golden set approved on 2026-10-29."
   ]
 }
