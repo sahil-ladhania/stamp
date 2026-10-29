@@ -1,6 +1,6 @@
 /**
  * File: run-view.test.ts
- * Purpose: Tests deriveRunView: stage status, the retry pass, trace rows, counts and the outcome.
+ * Purpose: Tests deriveRunView: stage status, the retry pass, counts and the outcome.
  * Exports: none
  * Used by: vitest
  */
@@ -65,13 +65,6 @@ describe('deriveRunView retry pass', () => {
     expect(deriveRunView(firstPass).retries).toBe(0)
     expect(deriveRunView([...firstPass, started(2)]).retries).toBe(1)
   })
-
-  it('keeps both passes in the trace, oldest first', () => {
-    const trace = deriveRunView([...firstPass, started(2)]).trace
-    const searchStarts = trace.filter((item) => item.type === 'stage-started' && item.name === 'Search')
-    expect(searchStarts).toHaveLength(2)
-    expect(trace.at(-1)).toMatchObject({ type: 'stage-started', name: 'Search' })
-  })
 })
 
 describe('deriveRunView after the run ends', () => {
@@ -120,7 +113,7 @@ describe('deriveRunView after the run ends', () => {
   })
 })
 
-describe('deriveRunView trace and counts', () => {
+describe('deriveRunView counts', () => {
   const events: RunViewEvent[] = [
     started(2),
     runEvent('search.query', { query: 'example oauth' }),
@@ -137,21 +130,5 @@ describe('deriveRunView trace and counts', () => {
     expect(view.pagesRead).toBe(2)
     expect(view.claimsKept).toBe(1)
     expect(view.claimsDowngraded).toBe(2)
-  })
-
-  it('writes one trace row per event in order, with a stable id', () => {
-    expect(view.trace.map((item) => item.type)).toEqual([
-      'stage-started', 'search', 'page', 'page', 'kept', 'downgraded', 'downgraded', 'stage-done',
-    ])
-    expect(view.trace.map((item) => item.id)).toEqual([0, 1, 2, 3, 4, 5, 6, 7])
-  })
-
-  it('words a downgrade reason for the page, not as the wire value', () => {
-    const reasons = view.trace.flatMap((item) => (item.type === 'downgraded' ? [item.reason] : []))
-    expect(reasons).toEqual(['Sources disagree', 'Quote not found in source'])
-  })
-
-  it('keeps the forum tier on a page row', () => {
-    expect(view.trace[3]).toMatchObject({ type: 'page', tier: 'forum' })
   })
 })

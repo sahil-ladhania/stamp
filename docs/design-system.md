@@ -131,10 +131,10 @@ flowchart TD
 
 Top to bottom = most important to least. A sticky section navigation sits beside the page (a "Jump to" select on a phone) and marks a section that is mostly Uncertain.
 
-- **Verdict** is the one summary. Each claim row links to the section that holds the full version, so no fact is told twice.
-- **Timeline** runs across on a wide screen and down on a phone. A node shows the duration its text states in mono, or "No duration stated".
-- **Steps** are a numbered stepper. An actor summary explains the count ("11 steps: 11 by you, 0 by an agent"). The detail opens on click.
-- **Requirements, scopes and limits** are three stacked subsections. Requirements are a checklist with hollow boxes, since a tick would say "done". Scopes are a table; a scope string is mono with a copy button, and a scope the sources describe in words is plain text.
+- **Verdict** is the one summary. The stamp mark holds the score, so there is no difficulty row; the kind of hard row ends with "Why this score". The page title already names the app, so the verdict does not. Each claim row links to the section that holds the full version, so no fact is told twice.
+- **Timeline** runs across on a wide screen and down on a phone. A node shows the duration its text states in mono, or "No duration found" once. When no node states a duration, one callout says so. An unknown "Waits on" is left out.
+- **Steps** are a numbered stepper. An actor summary explains the count ("11 steps: 11 by you, 0 by an agent"). The label of the detail sits at the right of the title; a quiet line says who does it and the effort; the effort and its label open with the detail.
+- **Requirements, scopes and limits** are three stacked subsections. Requirements are a plain list, since a box looks clickable and saving progress is on the Won't list. Scopes are a table; a scope string is mono with a copy button, and a scope the sources describe in words is plain text.
 - **Blockers** are warning callouts. The top blocker is tagged and open; the others start closed.
 - **Sources** are a table (source, tier, claims that use it) beside a stacked bar of Tested, Sourced and Uncertain with the numbers.
 
@@ -142,7 +142,7 @@ Top to bottom = most important to least. A sticky section navigation sits beside
 
 ## 6. Rules for evidence and data
 
-Nine causes of clutter, each fixed once in a shared component.
+Eleven causes of clutter, each fixed once in a shared component.
 
 | # | Rule | Where it lives |
 | --- | --- | --- |
@@ -155,6 +155,8 @@ Nine causes of clutter, each fixed once in a shared component.
 | R7 | Never cut a heading mid-word. Cut on a word or a clause, and show the full text in the body. | `clampWords`, `clauseTitle` |
 | R8 | One page frame (1120 px, 16 / 24 px gutters) for the header, every page and the footer. Reading text stays near 70 characters. | `PageContainer` |
 | R9 | A long page has a map: a sticky nav on a wide screen, a "Jump to" select on a phone, the active section highlighted, a marker on a section that is mostly Uncertain (more than half of its content claims). | `SectionNav` |
+| R10 | The run summary and the guide use the same counts and the same words. Only Tested is confirmed, so Sourced reads "sourced" ("11 of 24 claims sourced"). An Uncertain claim says why: downgraded (the stream says which), not found (no source), or a time estimate (an estimate with a source stays Uncertain by rule). Counts: "24 claims: 11 sourced, 13 uncertain (2 downgraded, 10 not found, 1 time estimate)". | `claimSummary`, `describeClaimCounts` |
+| R11 | A label sits beside the text it belongs to. A row never puts two labels side by side. A quiet fact in a meta line ("Human · Effort not stated") has no label; its label shows where its text is shown in full. | `StepRow`, `BlockerCallout` |
 
 ---
 
@@ -177,11 +179,28 @@ Nine causes of clutter, each fixed once in a shared component.
 | `SectionNav`, `JumpToSelect` | R9 |
 | `CopyButton` | Copies a value and says so |
 | `KindChip`, `ActorChip` | The kind of hard and who does a step. Neutral, never a label colour |
+| `LabelBar` | The claims by label as one stacked bar with the numbers. On the Guide and on the run result |
+| `RunHeader`, `RunStatusPill`, `RunMeters` | The sticky bar of the run page, its status pill and its time and page meters |
+| `StageBar`, `TraceTimeline`, `StageGroup`, `EventRow`, `QuoteRow` | The run's stage bar and its trace grouped by stage |
+| `RunResultCard`, `RunNotice` | The run's result (the compact Verdict) and the callout for a run that did not finish |
 | Primitives | `popover`, `sheet`, `accordion`, `table` over the `radix-ui` package |
 
 ---
 
-## 8. Motion
+## 8. Live run page
+
+The page answers four questions in order: is it working, how long is left, can I trust what it finds, and where do I go.
+
+- **Sticky bar:** the app (the guide's own name once the run is done, else what the visitor typed made readable, else the slug), a status pill (Researching, Done, Partial, Stopped, Disconnected, Not found), the current stage in plain words ("Reading pages"), and time and page meters. Retries show only after a retry. Only the stage line is a polite live region.
+- **Merged timeline:** a nine segment stage bar (a check for done, a pulse for running, a dash for not run; each segment opens its group), then the trace grouped by stage in time order. A group header names the stage, who runs it (our code, an AI model, an outside call), its state, its time and a summary ("4 pages read: 3 official, 1 third party", "13 quotes checked: 11 matched, 2 downgraded"). The running group is open and a done group closes. A stage that sends no events has a header only.
+- **Rows:** a search is the query in mono; a page is a source chip, never a raw address; a quote reads "Blocker 1, Fix" with its chip and the Sourced label; a downgrade has an ink bar, the Uncertain label and its reason, and a filter shows only those; a retry says why the run searched again.
+- **Follow:** the page scrolls, with no inner scroll box. It follows the newest row while the reader is at the end, and "Jump to latest" appears when they scroll up. When the run ends while it follows, it scrolls to the result.
+- **Result:** the compact Verdict, the count sentence (R10) with a label bar, and "Open the guide" (plus "Retry run" when partial). The trace stays below, closed, as the audit trail.
+- **Not finished:** a run error, a lost stream or an unknown run is a callout with its actions. The trace so far stays under it, closed.
+
+---
+
+## 9. Motion
 
 Motion appears only where it explains something. CSS transitions and one `IntersectionObserver`; no animation library. With `prefers-reduced-motion`, every item shows its final state at once.
 
@@ -192,17 +211,21 @@ Motion appears only where it explains something. CSS transitions and one `Inters
 | Evidence popover and sheet | Fade and scale, or slide, 150 to 200 ms | Shows where the panel comes from |
 | Steps and blockers | Height and opacity, 200 ms | Keeps the reader's place |
 | Section nav | Active item colour | Shows the scroll position |
+| Run page: stage bar and meters | A segment changes colour over 200 ms; a meter fills over 250 ms | Shows progress |
+| Run page: new rows and groups | A row fades in over 150 ms; a group opens over 200 ms | Shows where an event came from |
+| Run page: follow and "Jump to latest" | The page follows the newest row at the end of the trace; "Jump to latest" fades in when the reader scrolled up. Instant under reduced motion | Keeps the newest event in view without taking the reader's place |
+| Run page: live dot | The running segment, the status dot and a running group's dot pulse, and stop when the run ends | The one loop: it says "this is still working". Under reduced motion it is a still dot and the word "Running" |
 
-Nothing loops, there is no parallax and no scroll-jacking.
+There is no parallax and no scroll-jacking. The live dot is the only motion that repeats, and only while a run is live.
 
 ---
 
-## 9. Voice in the UI
+## 10. Voice in the UI
 
 | Do | Don't |
 | --- | --- |
 | "Approval wait: unknown" | "Approval should be quick!" |
-| "Quote not found in source" | "Error: verification failed" |
+| "Quote not found in the page" | "Error: verification failed" |
 | "Copy link" | "Click here to share" |
 | "Not found" with the Uncertain label | A large "Unknown" heading |
 

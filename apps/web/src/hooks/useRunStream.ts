@@ -14,11 +14,13 @@ import {
   INITIAL_RUN_STREAM_STATE,
   runStreamReducer,
 } from '@/utils/run-stream-state'
-import { deriveRunView, type RunView } from '@/utils/run-view'
+import { deriveRunView, type RunView, type RunViewEvent } from '@/utils/run-view'
 
 export type UseRunStreamResult = {
   snapshot: RunSnapshot | null
   view: RunView
+  /** The events of the current replay, oldest first, for the grouped trace. */
+  events: RunViewEvent[]
   connection: RunStreamStatus
   error: ApiError | null
 }
@@ -40,6 +42,7 @@ export function useRunStream(runId: string | null): UseRunStreamResult {
   return {
     snapshot: state.snapshot,
     view: deriveRunView(state.events),
+    events: state.events,
     connection: state.status,
     error: state.error,
   }

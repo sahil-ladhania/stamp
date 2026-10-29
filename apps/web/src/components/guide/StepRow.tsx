@@ -1,33 +1,29 @@
 /**
  * File: StepRow.tsx
- * Purpose: One step as a row of a numbered stepper: the number on the line, the title and a one-line detail, then the actor, the
- *          effort and the label of the detail. The full detail opens on click. The effort is a claim too: its chip carries its own label.
+ * Purpose: One step as a row of a numbered stepper. The title and a one-line detail sit beside the label of that detail; under them a quiet
+ *          line says who does it and the effort ("Human · Effort not stated"), with no label. The full detail and the effort, with the effort's
+ *          own label, open on click. Each label sits beside the text it belongs to, so a step never reads as two things at once.
  * Exports: StepRow
  * Used by: components/guide/StepsSection.tsx
  */
 import type { ReactElement } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { ClaimEvidence } from "@/components/evidence/ClaimEvidence";
+import { ClaimLine } from "@/components/evidence/ClaimLine";
 import { ActorChip } from "@/components/shared/ActorChip";
-import { UnknownValue } from "@/components/shared/UnknownValue";
 import { AccordionContent, AccordionHeader, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import type { Claim, Step } from "@/types/guide-model";
+import type { Step } from "@/types/guide-model";
 import { clampWords } from "@/utils/clamp-words";
-import { extractDuration } from "@/utils/extract-duration";
-import { isUnknownClaim } from "@/utils/is-unknown-claim";
-
-function EffortChip({ claim }: { claim: Claim }): ReactElement {
-  if (isUnknownClaim(claim)) return <UnknownValue text="No effort stated" claim={claim} className="text-small" />;
-  const duration = extractDuration(claim.text);
-  return (
-    <ClaimEvidence variant="chip" claim={claim} isMono={duration !== null}>
-      {duration ?? clampWords(claim.text, 40)}
-    </ClaimEvidence>
-  );
-}
+import { describeEffort, type StepEffort } from "@/utils/step-effort";
 
 /** The line is the li's ::before, from under this number to the next row. */
 const LINE = "before:absolute before:top-9 before:-bottom-0 before:left-[0.9375rem] before:w-0.5 before:bg-ink-muted/40 last:before:hidden";
+
+function EffortText({ effort }: { effort: StepEffort }): ReactElement {
+  if (effort.kind === "unknown") return <span>Effort not stated</span>;
+  if (effort.kind === "duration") return <span className="font-mono text-data text-ink">{effort.text}</span>;
+  return <span className="text-ink">{effort.text}</span>;
+}
 
 export function StepRow({ step, number }: { step: Step; number: number }): ReactElement {
   return (
@@ -40,25 +36,36 @@ export function StepRow({ step, number }: { step: Step; number: number }): React
           {number}
         </span>
         <div className="flex min-w-0 flex-col gap-2">
-          <AccordionHeader className="m-0">
-            <AccordionTrigger className="group flex w-full cursor-pointer items-start gap-2 text-left">
-              <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                <span className="text-card-title text-ink">{step.title}</span>
-                <span className="line-clamp-1 text-body text-ink-muted group-data-[state=open]:hidden">{step.detail.text}</span>
-              </span>
-              <ChevronDown
-                aria-hidden
-                className="mt-1 size-4 shrink-0 text-ink-muted motion-safe:transition-transform group-data-[state=open]:rotate-180"
-              />
-            </AccordionTrigger>
-          </AccordionHeader>
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-            <ActorChip actor={step.actor} />
-            <EffortChip claim={step.effort} />
-            <ClaimEvidence claim={step.detail} />
+          <div className="flex items-start gap-3">
+            <AccordionHeader className="m-0 min-w-0 flex-1">
+              <AccordionTrigger className="group flex w-full cursor-pointer items-start gap-2 text-left">
+                <ChevronRight
+                  aria-hidden
+                  className="mt-1 size-4 shrink-0 text-ink-muted motion-safe:transition-transform group-data-[state=open]:rotate-90"
+                />
+                <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                  <span className="text-card-title text-ink">{step.title}</span>
+                  <span className="line-clamp-2 text-body text-ink-muted group-data-[state=open]:hidden">
+                    {clampWords(step.detail.text, 90)}
+                  </span>
+                </span>
+              </AccordionTrigger>
+            </AccordionHeader>
+            <ClaimEvidence claim={step.detail} className="shrink-0" />
           </div>
-          <AccordionContent>
-            <p className="max-w-prose text-body text-ink">{step.detail.text}</p>
+          <p className="flex flex-wrap items-center gap-x-2 gap-y-1 pl-6 text-small text-ink-muted">
+            <ActorChip actor={step.actor} />
+            <span aria-hidden>·</span>
+            <EffortText effort={describeEffort(step.effort)} />
+          </p>
+          <AccordionContent className="pl-6">
+            <div className="flex flex-col gap-3">
+              <p className="max-w-prose text-body text-ink">{step.detail.text}</p>
+              <div className="flex flex-col gap-1">
+                <p className="text-small text-ink-muted">Effort</p>
+                <ClaimLine claim={step.effort} unknownText="Effort not stated" />
+              </div>
+            </div>
           </AccordionContent>
         </div>
       </li>

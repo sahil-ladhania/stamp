@@ -1,22 +1,26 @@
 /**
  * File: step-visual-trace-data.ts
- * Purpose: Made-up stages and events for the still picture of a run on the Landing page. They use example.com and a generic
- *          query, so no provider fact is stated.
- * Exports: SAMPLE_STAGES, SAMPLE_TRACE
+ * Purpose: Made-up events for the still picture of a run on the Landing page, run through the same grouping the real run page uses. They
+ *          use example.com and a generic query, so no provider fact is stated.
+ * Exports: SAMPLE_GROUPS
  * Used by: components/landing/StepVisualTrace.tsx
  */
-import type { StageView, TraceItem } from "@/utils/run-view";
+import { buildStageGroups } from "@/utils/run-groups";
+import { deriveRunView, type RunViewEvent } from "@/utils/run-view";
 
-export const SAMPLE_STAGES: readonly StageView[] = [
-  { stage: 1, name: "Plan searches", kind: "model", status: "done", durationMs: 2000 },
-  { stage: 2, name: "Search", kind: "external", status: "done", durationMs: 4000 },
-  { stage: 3, name: "Fetch pages", kind: "external", status: "running", durationMs: null },
-  { stage: 4, name: "Extract facts", kind: "model", status: "waiting", durationMs: null },
+const events: RunViewEvent[] = [
+  { type: "stage.started", stage: 2, name: "search" },
+  { type: "search.query", query: "example oauth app review" },
+  { type: "search.query", query: "example oauth scopes" },
+  { type: "stage.done", stage: 2, durationMs: 2000 },
+  { type: "stage.started", stage: 3, name: "fetch" },
+  { type: "page.fetched", url: "https://docs.example.com/oauth", tier: "official" },
+  { type: "page.fetched", url: "https://guides.example.net/setup", tier: "third_party" },
 ];
 
-/** Newest first, the way the trace panel lists it. */
-export const SAMPLE_TRACE: readonly TraceItem[] = [
-  { id: 3, type: "kept", claimId: "requirements.0", url: "https://docs.example.com/oauth" },
-  { id: 2, type: "page", url: "https://docs.example.com/oauth", tier: "official" },
-  { id: 1, type: "search", query: "example oauth app review" },
-];
+const STAGES_SHOWN = [2, 3, 5];
+
+/** Search (done), Fetch pages (running, with its rows) and Verify quotes (waiting). */
+export const SAMPLE_GROUPS = buildStageGroups(deriveRunView(events).stages, events).filter((group) =>
+  STAGES_SHOWN.includes(group.stage),
+);
