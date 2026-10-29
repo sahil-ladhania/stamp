@@ -30,25 +30,25 @@ export type BudgetNode =
   | "score"
   | "save";
 
-/** Time ceilings per node on the first pass: 84 s in total, 40 s of it for extract. */
+/** Time ceilings per node on the first pass: 84 s in total, 34 s of it for extract and 8 s for verify (its support check). */
 export const NODE_CAP_MS: Record<BudgetNode, number> = {
   resolve: 6_000,
   plan: 6_000,
   search: 8_000,
   fetch: 12_000,
-  extract: 40_000,
-  verify: 2_000,
+  extract: 34_000,
+  verify: 8_000,
   probe: 4_000,
   score: 1_000,
   save: 5_000,
 };
 
-/** Tighter ceilings for the retry pass (search, fetch, a smaller extract, verify): 34 s, so 118 s worst case. */
+/** Tighter ceilings for the retry pass (search, fetch, a smaller extract, verify): 35 s, so 119 s worst case. */
 export const RETRY_NODE_CAP_MS: Partial<Record<BudgetNode, number>> = {
   search: 6_000,
   fetch: 8_000,
   extract: 18_000,
-  verify: 2_000,
+  verify: 3_000,
 };
 
 /** A node is not started with less than this left; code-only nodes (0) always run. */
@@ -80,8 +80,8 @@ const RESERVE_AFTER_MS: Record<BudgetNode, number> = {
 /** The first pass leaves room for the retry: 6 pages in total, 4 on the first pass. */
 export const FIRST_PASS_PAGE_CAP = 4;
 
-/** A retry only starts when this much is left after verify: the 34 s retry pass plus the 10 s of probe, score and save. */
-export const RETRY_MIN_REMAINING_MS = 45_000;
+/** A retry only starts when this much is left after verify: the 35 s retry pass plus the 10 s of probe, score and save. */
+export const RETRY_MIN_REMAINING_MS = 46_000;
 
 /** Clock values are plain numbers (milliseconds) so every check is a pure function of `now`. */
 export type BudgetClock = { startedAt: number; maxDurationMs: number };

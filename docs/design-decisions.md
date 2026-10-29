@@ -122,7 +122,7 @@ Red = the rule. Blue = product decisions. Green = technical decisions.
 | --- | --- |
 | Chosen | A fixed pipeline: the model plans searches and extracts facts; code verifies quotes and scores; one retry if a section has no verified quote |
 | Why | Predictable time and cost during a live demo; quote checks in code cannot agree with a mistake |
-| Rejected | A free agent loop: unbounded time and cost. Multi-agent hand-offs: errors compound, and a model checking a model can agree with a hallucination |
+| Rejected | A free agent loop: unbounded time and cost. Multi-agent hand-offs: errors compound, and a model checking a model can agree with a hallucination. Revised in part by [D24](#d24-a-model-may-only-downgrade-a-label): a model may now check support, but only to remove a label |
 
 ### D8. Stack
 
@@ -256,6 +256,15 @@ Red = the rule. Blue = product decisions. Green = technical decisions.
 | Why | Two labels side by side made a step read as both Uncertain and Sourced. A checklist box looks clickable, and saving progress is on the Won't list (W1) |
 | Rejected | A checklist saved in the browser: W1. Hiding the effort label for good: it must stay reachable |
 | Cost | An unknown "Waits on" has no row, so it has no Report control. It has no text to report |
+
+### D24. A model may only downgrade a label
+
+| | |
+| --- | --- |
+| Chosen | After code has checked every quote, one batched fast-model call asks, for the claims code left Sourced and for the review gate and approval wait, whether the quote states the claim and whether the page is about this app. It lists only the items with a problem. Code then turns those claims into Uncertain (no source) or those facts into unknown. The model can **only downgrade a label, never upgrade it**: it is never asked about an Uncertain claim, an omission changes nothing, and if the call fails twice the labels stay as code set them and the guide is partial |
+| Why | The quote check proves a quote is on a page, not that it says what the claim says or that the page is about this product. In the baseline 150 of 188 Sourced claims stood on another product's, a legacy or a third-party page, and 94 on another product's. Text comparison catches numbers and scope names, not meaning |
+| Rejected | Model only: one wrong answer becomes a wrong label with nothing behind it. Code only: misses a right quote on a right page that says something else. Failing closed when the call fails: a transient outage would turn a whole guide Uncertain |
+| Cost | One fast-model call per verify pass (about $0.003 and 1 to 2 seconds in the first measurements), up to 8 seconds allowed. A model can still wrongly remove a good claim; that costs coverage, never trust. Revises the second half of D7's last rejection |
 
 ---
 

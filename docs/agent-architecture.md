@@ -55,6 +55,7 @@ Blue = AI model. Red = external call. Green = our code.
 | Task | Done by | Why |
 | --- | --- | --- |
 | Pick the official domains and the product phrase | Code (with search results) | Deterministic |
+| Judge whether a quote states a claim (downgrade only) | AI model (fast), after code | Meaning, not text; it can only remove a label |
 | Plan search queries | AI model (fast) | Needs judgment about the app |
 | Pull facts from messy pages | AI model (strong) | Needs reading skill |
 | Check quotes exist | Code | Must be exact and repeatable |
@@ -136,14 +137,14 @@ Time caps per stage (seconds). A stage also gets less when the run is running la
 | 1 Plan | 6 | |
 | 2 Search | 8 | 6 |
 | 3 Fetch | 12 | 8 |
-| 4 Extract | 40 | 18 |
-| 5 Verify | 2 | 2 |
+| 4 Extract | 34 | 18 |
+| 5 Verify | 8 | 3 |
 | 6 Probe | 4 | |
 | 7 Score | 1 | |
 | 8 Save | 5 | |
-| **Total** | **84** | **+ 34 = 118** |
+| **Total** | **84** | **+ 35 = 119** |
 
-- Extract needs 20 seconds left to start, and a retry needs 45 seconds left (the 34-second retry pass plus the 10 seconds of probe, score and save).
+- Extract needs 20 seconds left to start, and a retry needs 46 seconds left (the 35-second retry pass plus the 10 seconds of probe, score and save).
 
 - **Checked before each stage.** Every edge goes through one routing rule (`routes.ts`). A stage starts only if its minimum time remains (`NODE_MIN_REMAINING_MS` in `budget.ts`).
 - **When time runs out,** the run skips ahead, then `score`, then `save`, and the guide is partial. If the run holds drafted sections or gates that `verify` has not checked, it goes through `verify` first; with no drafts it goes straight to `score`. The stages in between never start, so they emit no events. `verify` and `score` are code only and need no minimum time, so they always run: `verify` also runs right after `extract` with no time left. `routes.ts` states the rule (`hasUnverifiedWork`) so it does not depend on that minimum being 0, and a stop never sends the run back to `verify` once it has run. A stop before `extract` has no drafts, so `score` may find no gates or claims and must treat missing facts as unknown.
@@ -242,11 +243,13 @@ Time caps per stage (seconds). A stage also gets less when the run is running la
 - A retry pass redoes only the sections verify reported, and the verdict if steps or blockers were redone.
 - Each model call logs its tier, model, section, tokens and duration; the stage logs one `extract summary` line with a row per section.
 
-**5 Verify** (`nodes/verify.ts`, `verify/`, code only)
+**5 Verify** (`nodes/verify.ts`, `verify/`; code, plus one batched fast-model support check that can only downgrade, see D24)
 - Every claim in the drafts gets a stable id (`steps.0.detail`, `milestones.production.wait`, `blockers.1.fix` ...; `guide/claim-slots.ts`). Its quote is looked up in the page it cites, word for word after normalising whitespace and case (`evidence/quote-match.ts`). The label comes from `labelClaim`, never from the model: quote found gives Sourced; quote not found, a confirmed conflict, or a time estimate gives Uncertain.
-- Time estimates (milestone effort and wait, step effort) stay Uncertain even with a real quote, with no downgrade event. Other downgrades send `claim.downgraded` with the reason (`quote_not_found` or `sources_disagree`); Sourced claims send `claim.verified`. On the retry pass only claims that are new or changed send events.
+- Time estimates (milestone effort and wait, step effort) stay Uncertain even with a real quote, with no downgrade event. Other downgrades send `claim.downgraded` with the reason (`quote_not_found`, `sources_disagree`, `stale_source`, `third_party_only`, `not_supported` or `off_product`); Sourced claims send `claim.verified`. On the retry pass only claims that are new or changed send events.
 - Conflicts: the model proposes them; code confirms one only when both quotes are found, the two sources are different pages and the two statements differ. The preferred source is the more authoritative tier (official, then third party, then forum); with equal tiers and no page dates the first listed is shown first, and the reason says so. A claim that takes part in a confirmed conflict is downgraded to Uncertain with `sources_disagree`.
-- Gates: every evidence quote behind a gates fact is checked too. A fact whose quote is not found becomes unknown, so the score never counts it.
+- Trust checks on a Sourced claim (`verify/trust-checks.ts`), in order, each turning it Uncertain with no source and a reason: `stale_source` (a legacy, deprecated or archived page, from the search result's title or the path); `third_party_only` (scope names from a page that is not official); `not_supported` (a number of two or more digits, or a scope name, in the claim that the quote does not contain).
+- Support check (`verify/support-judge.ts`, `prompts/support-judge.ts`): one fast-model call, up to two attempts, over the claims code left Sourced and the review gate and approval wait (as sentences code writes from their values, `verify/gate-judge.ts`). Inputs are the claim, the quote and the page's title and address, inside tags and marked as data. The model lists only the items whose quote does not state the claim (`not_supported`) or whose page is about another product (`off_product`); code applies them. It never sees an Uncertain claim and cannot create a Sourced one. If it cannot run (no time, two failures) the labels stay as code set them and the run is partial.
+- Gates: every evidence quote behind a gates fact is checked too. A fact whose quote is not found becomes unknown, so the score never counts it. The review gate and the approval wait must also come from an official page (`third_party_only`), and must pass the support check.
 - Retry flag: `missingSections` lists `reviewGate` when the review gate is unknown after verify, and `steps`, `scopes` or `blockers` when none of their claims ended up Sourced. The graph then goes back to search once, if at least 45 seconds remain.
 - Every quote check (pass or fail) is recorded in `checks` with the page's content hash, so a claim can be traced to the exact page version.
 

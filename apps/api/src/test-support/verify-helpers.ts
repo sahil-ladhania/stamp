@@ -12,8 +12,11 @@ import { DRAFTS } from "./guide-fixtures.js";
 import { verifyNode } from "../agent/nodes/verify.js";
 
 /** One verify run: the update it returned, its claims and the harness that recorded the events. */
-export async function verify(over: Parameters<typeof state>[1] = {}) {
-  const h = createHarness();
+export async function verify(
+  over: Parameters<typeof state>[1] = {},
+  harness: ReturnType<typeof createHarness> = createHarness(),
+) {
+  const h = harness;
   const update = await verifyNode(
     state(PAGES, { drafts: DRAFTS, ...over }),
     h.config,

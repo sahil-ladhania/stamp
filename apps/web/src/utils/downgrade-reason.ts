@@ -12,4 +12,7 @@ export const DOWNGRADE_REASON_LABEL: Record<DowngradeReason, string> = {
   stale_source: 'Source is out of date',
   schema_failed: 'Output did not match the expected format',
   time_budget: 'Ran out of time',
+  off_product: "This page is about a different product, not this app's API",
+  not_supported: 'The quote does not say what the claim says',
+  third_party_only: 'Only a third-party page says this, not the provider',
 }

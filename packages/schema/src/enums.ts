@@ -59,6 +59,9 @@ export const DowngradeReasonSchema = z.enum([
   "stale_source",
   "schema_failed",
   "time_budget",
+  "off_product",
+  "not_supported",
+  "third_party_only",
 ]);
 export type DowngradeReason = z.infer<typeof DowngradeReasonSchema>;
 

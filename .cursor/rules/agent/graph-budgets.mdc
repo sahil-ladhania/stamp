@@ -16,8 +16,8 @@ alwaysApply: false
 - One file per stage in `src/agent/nodes/`. Graph wiring lives in `src/agent/graph.ts`.
 
 ## Model vs code
-- Call the AI model only in `plan` and `extract`.
-- `resolve`, `verify`, `score` and `save` are plain, tested code.
+- Call the AI model only in `plan`, `extract` and the `verify` support check, which can only downgrade a label (D24).
+- `resolve`, `score` and `save` are plain, tested code. `verify` is plain code too, apart from its one support check, which may only remove a label.
 - Use the fast model for `plan` and the strong model for `extract`. Use a low temperature.
 
 ## Budgets
