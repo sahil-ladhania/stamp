@@ -10,9 +10,12 @@ import {
   PAGE_INDEX,
   PAGES,
   QUOTES,
+  REVIEW_TEXT,
   REVIEW_URL,
   claim,
 } from "../../test-support/extract-fixtures.js";
+import { pageRecord } from "../../test-support/node-fixtures.js";
+import { indexPages } from "../extract/sanitize.js";
 import { GATES_OUTPUT } from "../../test-support/extract-replies.js";
 import type { SectionOutput } from "../extract/sections.js";
 import { verifyGates } from "./verify-gates.js";
@@ -133,5 +136,37 @@ describe("verifyGates", () => {
     const before = JSON.stringify(GATES_OUTPUT);
     verify({ reviewGateEvidence: fake() });
     expect(JSON.stringify(GATES_OUTPUT)).toBe(before);
+  });
+
+  describe("evidence from a page that is not official", () => {
+    const BLOG = "https://blog.example.net/acme-review";
+    const index = indexPages([
+      ...PAGES,
+      pageRecord(BLOG, "third_party", REVIEW_TEXT),
+    ]);
+    const run = (over: Partial<SectionOutput<"gates">>) =>
+      verifyGates({ ...GATES_OUTPUT, ...over }, index);
+
+    it("makes the review gate unknown, and records why, when only a third-party page says it", () => {
+      const result = run({ reviewGateEvidence: claim(BLOG, QUOTES.approval) });
+      expect(result?.gates.reviewGateEvidence).toBeNull();
+      expect(
+        result?.checks.find((c) => c.claimId === "gates.reviewGateEvidence"),
+      ).toMatchObject({
+        result: "fail",
+        detail: { reason: "third_party_only" },
+      });
+    });
+
+    it("makes the approval wait unknown the same way", () => {
+      const result = run({ approvalWaitEvidence: claim(BLOG, QUOTES.review) });
+      expect(result?.gates.approvalWaitEvidence).toBeNull();
+      expect(result?.gates.approvalWait).toBe("unknown");
+    });
+
+    it("keeps the other facts, such as a prerequisite, that a third party gives", () => {
+      const result = run({ prerequisites: [claim(BLOG, QUOTES.approval)] });
+      expect(result?.gates.prerequisites).toHaveLength(1);
+    });
   });
 });

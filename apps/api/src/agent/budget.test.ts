@@ -34,7 +34,7 @@ describe("the documented limits", () => {
     });
   });
 
-  it("keeps the first pass at 84 s and the retry path at 118 s, both within 120 s", () => {
+  it("keeps the first pass at 84 s and the retry path at 119 s, both within 120 s", () => {
     const firstPass = sum(Object.values(NODE_CAP_MS));
     const retryPass = sum(
       Object.values(RETRY_NODE_CAP_MS).filter(
@@ -42,8 +42,8 @@ describe("the documented limits", () => {
       ),
     );
     expect(firstPass).toBe(84_000);
-    expect(retryPass).toBe(34_000);
-    expect(firstPass + retryPass).toBe(118_000);
+    expect(retryPass).toBe(35_000);
+    expect(firstPass + retryPass).toBe(119_000);
     expect(firstPass + retryPass).toBeLessThanOrEqual(RUN_BUDGET.maxDurationMs);
   });
 
@@ -120,7 +120,7 @@ describe("checkBudget", () => {
 
 describe("nodeTimeoutMs", () => {
   it("is the node's ceiling while plenty of time remains", () => {
-    expect(nodeTimeoutMs(clock, at(0), "extract")).toBe(40_000);
+    expect(nodeTimeoutMs(clock, at(0), "extract")).toBe(34_000);
     expect(nodeTimeoutMs(clock, at(0), "search")).toBe(8_000);
   });
 

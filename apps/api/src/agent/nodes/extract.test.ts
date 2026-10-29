@@ -146,7 +146,7 @@ describe("extractNode logging", () => {
       runId: "run_1",
       retryPass: false,
       concurrency: 5,
-      windowMs: 40_000,
+      windowMs: 34_000,
     });
     const rows = (
       summary?.[1] as {

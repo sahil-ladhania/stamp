@@ -147,7 +147,12 @@ export const ALL_OUTPUTS: Record<string, unknown> = {
  * already a reply (has `ok`) is returned as it is, so a test can make one section fail or malformed.
  */
 export function replyBySection(overrides: Record<string, unknown> = {}) {
-  const outputs = { ...ALL_OUTPUTS, ...overrides };
+  // The support check in verify answers with no verdicts, which changes no label, unless a test overrides it.
+  const outputs: Record<string, unknown> = {
+    judge_support: { verdicts: [] },
+    ...ALL_OUTPUTS,
+    ...overrides,
+  };
   return (_tier: string, options: { name: string }) => {
     const section = options.name
       .replace(/^extract_/, "")

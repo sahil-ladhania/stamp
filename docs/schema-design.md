@@ -44,7 +44,7 @@
 | RunStatus | `running`, `done`, `partial`, `failed` | |
 | RunErrorCode | `AMBIGUOUS_APP`, `NOT_OAUTH`, `NO_PUBLIC_DOCS`, `INTERNAL` | UPPER_SNAKE |
 | ApiErrorCode | `VALIDATION_ERROR`, `NOT_FOUND`, `RATE_LIMITED`, `RUN_CAP_REACHED`, `INTERNAL` | UPPER_SNAKE |
-| DowngradeReason | `quote_not_found`, `sources_disagree`, `stale_source`, `schema_failed`, `time_budget` | Stream `claim.downgraded` |
+| DowngradeReason | `quote_not_found`, `sources_disagree`, `stale_source`, `schema_failed`, `time_budget`, `off_product`, `not_supported`, `third_party_only` | Stream `claim.downgraded` |
 | GuideCoverage | `full`, `partial` | On Guide |
 | StageId | `0`–`8` + names | `constants.ts` |
 | SCHEMA_VERSION | `1` | On Guide |
