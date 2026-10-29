@@ -22,7 +22,7 @@ The contract each guide has to meet (the brief left it empty, so this default wa
 
 - **Golden set** (`apps/api/evals/golden/`): 10 apps researched by hand from official pages, each fact with its URL and a verbatim quote, and at most two accepted values per field. Six apps are the **tuning set** (GitHub, Gmail, HubSpot, Microsoft, Notion, Slack), used to build and tune. Four are the **holdout** (Asana, Calendly, Dropbox, Zoom), run **once**, at the end, never tuned on and never used to build a test fixture.
 - **Harness** (`apps/api/evals/`): runs the real agent on an app with no database writes and a fresh page fetch, captures every stage, and scores the guide against the golden file with code (no model judges the score). `--repeat N` reruns the batch and reports the mean and the lowest-to-highest range; `eval:rescore` scores saved runs again for free.
-- **Cost control:** every batch prints its estimate and the credits used so far and runs only with `--confirm`; at most 12 runs a batch, 2 in parallel. Total Tavily use for the whole programme is below (721 credits in the ledger).
+- **Cost control:** every batch prints its estimate and the credits used so far and runs only with `--confirm`; at most 12 runs a batch, 2 in parallel. Total Tavily use for the whole programme is below (820 credits in the ledger; the Tavily dashboard read about 25 higher).
 - **Read single runs against the baseline range, not its mean.** The clean baseline (three repetitions) shows how much one run varies: contradictions 21 to 60, claims on good pages 34% to 60%, and 5 of 24 verdicts changing between repetitions. A change smaller than that range is not a result.
 
 Reproduce:
@@ -37,18 +37,20 @@ pnpm --filter api eval:rescore -- apps/api/evals/runs/<run folder>
 
 Run folders are in `apps/api/evals/runs/` (git-ignored; they hold full traces). Credits are Tavily credits from the run ledger; the Tavily dashboard read about 25 higher.
 
-| Folder (2026-10-29)                                                       | What it measured                                        | Runs   | Credits |
-| ------------------------------------------------------------------------- | ------------------------------------------------------- | ------ | ------- |
-| `14-39-20Z`                                                               | First baseline, one run per app                         | 6      | 60      |
-| `17-23-52Z`                                                               | **Clean baseline**, `--repeat 3`, same code             | 18     | 184     |
-| `17-53-33Z`                                                               | Stage 1, first try (with "OAuth" in the resolve query)  | 12     | 89      |
-| `17-58-08Z`                                                               | Stage 1, after removing that word                       | 6      | 65      |
-| `18-11-45Z`                                                               | Stage 2: selection                                      | 6      | 64      |
-| `18-29-23Z`                                                               | Stage 3: trust checks and the support check             | 6      | 70      |
-| `18-43-33Z`                                                               | Stage 4: shape                                          | 6      | 71      |
-| `18-54-14Z`                                                               | Stage 5: score; the **final "after"** on the tuning set | 6      | 71      |
-| `19-09-54Z`                                                               | **Holdout**, run once, at the end                       | 4      | 47      |
-| **Total** (tuning 66 runs and 674 credits, holdout 4 runs and 47 credits) |                                                         | **70** | **721** |
+| Folder (2026-10-29)                                                                                  | What it measured                                                   | Runs   | Credits |
+| ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ------ | ------- |
+| `14-39-20Z`                                                                                          | First baseline, one run per app                                    | 6      | 60      |
+| `17-23-52Z`                                                                                          | **Clean baseline**, `--repeat 3`, same code                        | 18     | 184     |
+| `17-53-33Z`                                                                                          | Stage 1, first try (with "OAuth" in the resolve query)             | 12     | 89      |
+| `17-58-08Z`                                                                                          | Stage 1, after removing that word                                  | 6      | 65      |
+| `18-11-45Z`                                                                                          | Stage 2: selection                                                 | 6      | 64      |
+| `18-29-23Z`                                                                                          | Stage 3: trust checks and the support check                        | 6      | 70      |
+| `18-43-33Z`                                                                                          | Stage 4: shape                                                     | 6      | 71      |
+| `18-54-14Z`                                                                                          | Stage 5: score; the **final "after"** on the tuning set            | 6      | 71      |
+| `19-09-54Z`                                                                                          | **Holdout**, run once, at the end                                  | 4      | 47      |
+| `21-32-26Z`                                                                                          | PR 6b: the coverage changes (reverted, see section 8)              | 6      | 66      |
+| `21-42-08Z`                                                                                          | **Fresh holdout** (Discord, Pipedrive, Xero), run once, final code | 3      | 33      |
+| **Total** (tuning 66 runs and 674 credits, holdout 4 and 47, PR 6b 6 and 66, fresh holdout 3 and 33) |                                                                    | **79** | **820** |
 
 ## 4. The numbers, stage by stage
 
@@ -89,6 +91,7 @@ Tuning set, six apps. Baseline is the mean (lowest to highest) of the clean `--r
 - **Only one run per stage.** Each stage was judged on a single run read against the baseline range, because of the credit budget. The stage numbers in section 4 are therefore indicative; only the baseline has a measured spread.
 - **The support check is a model.** It can wrongly remove a good claim. That costs coverage, never trust; it was not measured against a labelled set (the 90% accuracy target in the plan was not built).
 - **Cost per run rose 20%** ($0.17 to $0.21): the retry now fires on every run, re-extracts the gates, and the support check adds a call.
+- **Two page-tiering gaps seen on the fresh holdout** (a forum host label like `devcommunity` counted as official; documentation on a hosting platform's domain counted as third party): see section 9. Not fixed.
 
 ## 7. Holdout
 
@@ -117,7 +120,50 @@ The holdout is Asana, Calendly, Dropbox and Zoom, run **once** (`19-09-54Z`, 47 
 - **Not met:** wrong-product 0, contradictions 0 and review gate at least 3 of 4. The tuning numbers overstate how well the system generalises; Dropbox is the counterexample, and it shows the same class of failure (a different product of the same company) that the tuning apps showed before Stage 1.
 - **This is the pre-6b result.** Any change made after seeing it, including a fix for the Dropbox identity, is not tested by a clean holdout. A fresh holdout of apps not yet researched would be needed to claim generalisation again.
 
-## 8. Not done, on purpose
+## 8. PR 6b: coverage changes tried and reverted
+
+PR 6b tried four coverage changes together (markdown pages, an 8-page budget, a gate-first retry, and reusing the support check's verdicts across passes) and ran them once on the tuning set (`21-32-26Z`, 66 credits). They lowered trust metrics against the Stage 5 run, so they were reverted (kept at the git tag `experiment-coverage-6b`):
+
+| Guard                                   | Stage 5 final | PR 6b run |
+| --------------------------------------- | ------------- | --------- |
+| Wrong-product pages cited               | 0             | 2         |
+| Contradictions with the golden set      | 1             | 10        |
+| Fake scopes                             | 1             | 3         |
+| Sourced claims on good pages            | 85%           | 82%       |
+| Correct review gates (HubSpot, Slack)   | 2             | 0         |
+| Top blocker is setup or approval (of 6) | 4             | 1         |
+| Apps with at least 2 real scopes        | 2             | 4         |
+
+The verdict reuse was one certain cause: it locked in a pass-1 "accept" that the old second pass used to remove, so Gmail's claims from another Google product stayed Sourced. The other four changes could not be separated with one run, and testing them one at a time needs about 260 credits. What shipped in PR 6b: the identity fixes (a domain named after the app scores more; a runner-up brand within 90% of the leader ends in "did you mean"), "Researched as: <product> (<domain>)" on the run page and the guide header, a name guard on the reserved reading slot, and a log line listing what the support check removed. Details: `apps/api/evals/coverage-plan.md` section 6.
+
+## 9. Fresh holdout
+
+The first holdout was spent when its Dropbox failure was acted on. Three apps not used anywhere (Discord, Pipedrive, Xero) were researched afterwards and their golden answers committed (`d2568cf`) **before** any agent run on them, with 42 of 42 quotes found on their pages (some quotes are short, such as a scope name, so they prove the page says it, not that it supports the claim). They were run once (`21-42-08Z`, 33 credits) with the final code, and nothing was changed after.
+
+| Metric                                         | Target          | Fresh holdout (3 apps)      | First holdout (4 apps) | Tuning final (6 apps) |
+| ---------------------------------------------- | --------------- | --------------------------- | ---------------------- | --------------------- |
+| Wrong-product pages cited                      | 0               | **0**                       | 3                      | 0                     |
+| Sourced claims that contradict the golden set  | 0               | **0**                       | 30                     | 1                     |
+| Fake or tutorial scopes                        | 0               | **0**                       | 10                     | 1                     |
+| Milestone fields that are durations or Unknown | 100%            | 12 of 12                    | 16 of 16               | 24 of 24              |
+| Runs within 120 s / p95                        | 100% / 100 s    | 3 of 3 / 36.4 s             | 4 of 4 / 45.7 s        | 6 of 6 / 35.8 s       |
+| Sourced claims on good pages                   | report          | 92% (79 of 86)              | 74%                    | 85%                   |
+| Review gate correct                            | at least 2 of 3 | **0 of 3**                  | 0 of 4                 | 2 of 6                |
+| Approval wait correct                          | report          | 0 of 3                      | 0 of 4                 | 1 of 6                |
+| Apps with at least 2 real scopes               | report          | 2 of 3 (Discord, Xero)      | 2 of 4                 | 2 of 6                |
+| Top blocker is setup or approval               | report          | 0 of 3 (1 to check by hand) | 1 of 4                 | 4 of 6                |
+| Uncertain share / cost per run                 | report          | 40% / $0.20                 | 50% / $0.20            | 38% / $0.21           |
+
+**What this says.** On three apps the system had never seen, the trust metrics held: no wrong-product page, no contradiction, no fake scope, and 92% of Sourced claims on the right product's pages. The coverage targets were missed: no review gate or approval wait was verified for any of the three, and no top blocker passed. Stamp is careful on apps it has not seen; on this evidence it is not yet complete. Three apps are a small sample.
+
+**Two new generic gaps the run showed (not fixed, to keep this a clean holdout):**
+
+- **A user-written forum on the official domain counts as official.** 4 of Pipedrive's 6 pages read were `devcommunity.pipedrive.com`, its developer community forum. The forum check only recognises a host label spelled exactly `community` or `forum`, so `devcommunity` is tiered official, and 7 of Pipedrive's 10 Sourced claims rest on forum posts (3 of 10 on good pages).
+- **Official documentation on a documentation platform's domain counts as third party.** Pipedrive's real docs live on `pipedrive.readme.io`, a different registrable domain from `pipedrive.com`, so the page that states the approval process was tiered third-party; its gate was drafted (`security_assessment`, which the golden file does not accept) and was dropped by the official-page rule. Dropping it was right by the rule and wrong in fact for the page, and a wrong gate was still avoided.
+
+Discord and Xero both read only official pages and had every Sourced claim on good pages (49 of 49 and 27 of 27); neither drafted a review gate.
+
+## 10. Not done, on purpose
 
 - The model comparison (`gpt-4.1` against its recommended replacement `gpt-6-luna`): dropped to save credits. Both current models shut down on 2027-01-14, so a migration is still needed.
 - First-pass pages 4 against 6: skipped (about 60 credits); the first pass still reads 4 pages and the retry up to 6.
