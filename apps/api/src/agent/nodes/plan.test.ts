@@ -42,6 +42,35 @@ beforeEach(() => {
   warn.mockReset().mockImplementation(() => {});
 });
 
+describe("planNode with a product phrase", () => {
+  const gmail = { ...APP, appName: "Gmail", product: "Gmail API" };
+
+  it("sends the product to the model, and builds the template queries from it when the model gives nothing", async () => {
+    const h = createHarness();
+    reply(nulls);
+    const update = await planNode(makeState({ app: gmail }), h.config);
+    expect(model.mock.calls[0]?.[1].messages).toEqual(planMessages(gmail));
+    expect(update.queries).toEqual(defaultQueries("Gmail API"));
+  });
+
+  it("drops a model query that leaves the product out and keeps one that has it", async () => {
+    const h = createHarness();
+    reply({
+      ...nulls,
+      scopes: "Gmail OAuth scopes reference",
+      limits: "Gmail API quota and rate limits",
+    });
+    const update = await planNode(makeState({ app: gmail }), h.config);
+    const queries = update.queries as { topic: string; text: string }[];
+    expect(queries.find((q) => q.topic === "scopes")?.text).toBe(
+      defaultQueries("Gmail API").find((q) => q.topic === "scopes")?.text,
+    );
+    expect(queries.find((q) => q.topic === "limits")?.text).toBe(
+      "Gmail API quota and rate limits",
+    );
+  });
+});
+
 describe("planNode", () => {
   it("asks the fast model with the plan prompt, schema, time cap and the run's meter", async () => {
     const h = createHarness();

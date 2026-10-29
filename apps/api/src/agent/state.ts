@@ -21,8 +21,18 @@ import type { CheckRecord } from "../services/verification-log.js";
 import type { DraftSectionId, SectionOutput } from "./extract/sections.js";
 import type { SearchResult } from "./search-result.js";
 
-/** The official app the run is about; resolve (stage 0) fills it. */
-export type AppIdentity = { appName: string; domain: string; slug: string };
+/**
+ * The official app the run is about; resolve (stage 0) fills it. `domain` is the primary domain: the guide's
+ * domain and the only one the probe may contact. `domains` is every official domain, the primary first, and
+ * decides which pages count as official. `product` is the phrase the official page titles agree on, or null.
+ */
+export type AppIdentity = {
+  appName: string;
+  domain: string;
+  slug: string;
+  domains: string[];
+  product: string | null;
+};
 
 /** One guide section after extract: drafted, not found in the pages, or failed (the reason says why). */
 export type SectionDraft<K extends DraftSectionId> =

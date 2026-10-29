@@ -5,11 +5,15 @@
  * Used by: vitest
  */
 import { describe, expect, it } from "vitest";
-import { defaultQueries } from "../queries.js";
+import { defaultQueries, searchName } from "../queries.js";
 import { buildJobs } from "./jobs.js";
 
-const app = { appName: "HubSpot", domain: "hubspot.com" };
-const planned = defaultQueries(app.appName);
+const app = {
+  appName: "HubSpot",
+  domains: ["hubspot.com"],
+  product: null,
+};
+const planned = defaultQueries(searchName(app));
 
 describe("buildJobs first pass", () => {
   it("searches every planned query on the official domain first, then the open topics across the web", () => {
@@ -83,5 +87,33 @@ describe("buildJobs topics", () => {
     const jobs = buildJobs(app, planned, ["scopes"]);
     expect(jobs.length).toBeGreaterThan(0);
     expect(jobs.every((job) => typeof job.topic === "string")).toBe(true);
+  });
+});
+
+describe("buildJobs with several official domains and a product phrase", () => {
+  const gmail = {
+    appName: "Gmail",
+    domains: ["google.com", "google.dev"],
+    product: "Gmail API",
+  };
+
+  it("scopes every on-domain search to all the official domains and leaves the open ones open", () => {
+    const jobs = buildJobs(gmail, defaultQueries(searchName(gmail)), []);
+    expect(jobs.slice(0, 6).map((job) => job.includeDomains)).toEqual(
+      Array(6).fill(["google.com", "google.dev"]),
+    );
+    expect(jobs.slice(6).map((job) => job.includeDomains)).toEqual([[], []]);
+  });
+
+  it("names the product in the default queries when the plan produced none", () => {
+    const jobs = buildJobs(gmail, [], []);
+    expect(jobs).toHaveLength(8);
+    expect(jobs.every((job) => job.query.startsWith("Gmail API "))).toBe(true);
+  });
+
+  it("names the product in the retry queries too, on all the official domains", () => {
+    const jobs = buildJobs(gmail, [], ["steps", "scopes"]);
+    expect(jobs.every((job) => job.query.startsWith("Gmail API "))).toBe(true);
+    expect(jobs.every((job) => job.includeDomains.length === 2)).toBe(true);
   });
 });

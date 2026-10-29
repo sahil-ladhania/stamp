@@ -24,6 +24,8 @@ export type Candidate = {
   match: Match;
   score: number;
   hits: number;
+  /** True when at least one of its hits looks like developer documentation. */
+  docs: boolean;
 };
 
 /** Default weights. Search rank adds 1/(position + 1) per hit; tune these against real searches. */
@@ -139,6 +141,7 @@ export function rankCandidates(name: string, hits: ResolveHit[]): Candidate[] {
         match,
         score: group.position + group.docs + bonus,
         hits: group.hits,
+        docs: group.docs > 0,
       };
     })
     .sort((a, b) => b.score - a.score || a.domain.localeCompare(b.domain));

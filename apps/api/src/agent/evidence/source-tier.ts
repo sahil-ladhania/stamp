@@ -1,7 +1,7 @@
 /**
  * File: source-tier.ts
  * Purpose: Classifies a URL as official, third_party or forum relative to the app's official domain.
- * Exports: sourceTier, normalizeDomain, isUnderDomain
+ * Exports: sourceTier, normalizeDomain, isUnderDomain, OfficialDomains
  * Used by: agent/nodes/search.ts, agent/nodes/fetch.ts, agent/evidence/conflicts.ts
  */
 import type { SourceTier } from "@stamp/schema";
@@ -59,21 +59,35 @@ function hostOf(url: string): string | null {
   }
 }
 
+/** One official domain or a company's several. */
+export type OfficialDomains = string | readonly string[];
+
 /**
  * Forum beats official: user-generated pages are not the provider speaking.
- * Anything unparseable, non-http or on another domain is third_party.
+ * Anything unparseable, non-http or on another domain is third_party. A company with more than one
+ * documentation domain (slack.com and slack.dev) passes them all; an unusable entry is ignored.
  */
-export function sourceTier(url: string, officialDomain: string): SourceTier {
+export function sourceTier(
+  url: string,
+  officialDomains: OfficialDomains,
+): SourceTier {
   const host = hostOf(url);
   if (host === null) {
     return "third_party";
   }
-  const official = normalizeDomain(officialDomain);
-  const isOfficialHost = isUnderDomain(host, official);
+  const officials = (
+    typeof officialDomains === "string" ? [officialDomains] : officialDomains
+  )
+    .map(normalizeDomain)
+    .filter((domain) => domain !== "");
+  const isOfficialHost = officials.some((domain) =>
+    isUnderDomain(host, domain),
+  );
 
   const labels = host.split(".");
-  const officialIsForumHost =
-    official !== "" && FORUM_LABELS.has(official.split(".")[0] ?? "");
+  const officialIsForumHost = officials.some((domain) =>
+    FORUM_LABELS.has(domain.split(".")[0] ?? ""),
+  );
   const onForumSubdomain =
     labels.length >= 3 &&
     FORUM_LABELS.has(labels[0] ?? "") &&

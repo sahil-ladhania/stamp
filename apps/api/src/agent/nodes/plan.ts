@@ -12,7 +12,7 @@ import { getDeps } from "../deps.js";
 import { callTimeoutMs } from "../node-timing.js";
 import { PlanOutputSchema, type PlanOutput } from "../plan-output.js";
 import { planMessages } from "../prompts/plan.js";
-import { mergePlan } from "../queries.js";
+import { mergePlan, searchName } from "../queries.js";
 import { stageNode } from "../stage-node.js";
 
 export const planNode = stageNode("plan", async (state, config) => {
@@ -48,5 +48,5 @@ export const planNode = stageNode("plan", async (state, config) => {
     });
   }
   // Without a usable model reply the run still searches, with the template queries.
-  return { queries: mergePlan(app.appName, plan) };
+  return { queries: mergePlan(searchName(app), plan) };
 });

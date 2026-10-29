@@ -46,6 +46,22 @@ describe("toSearchResults", () => {
     ]);
   });
 
+  it("tiers against every official domain of a company, so its second documentation site is official", () => {
+    const results = toSearchResults(
+      [
+        hit("https://docs.slack.dev/authentication"),
+        hit("https://api.slack.com/legacy"),
+        hit("https://example.net/slack"),
+      ],
+      ["slack.com", "slack.dev"],
+    );
+    expect(results.map((r) => r.tier)).toEqual([
+      "official",
+      "official",
+      "third_party",
+    ]);
+  });
+
   it("drops a repeated URL and keeps the first", () => {
     const results = toSearchResults(
       [

@@ -27,7 +27,7 @@ Blue = AI model. Red = external call. Green = our code.
 
 | # | Stage | What it does | Output |
 | --- | --- | --- | --- |
-| 0 | Resolve app | Turns a name or URL into one official domain; asks "Did you mean" if unclear | App identity |
+| 0 | Resolve app | Turns a name or URL into the official app (its domains and product phrase); asks "Did you mean" if unclear | App identity |
 | 1 | Plan searches | Writes targeted queries: setup, scopes, review, limits | Search queries |
 | 2 | Search | Finds pages, official docs first | URLs with source tier |
 | 3 | Fetch pages | Reads up to 6 pages; reuses cached pages | Page text |
@@ -54,7 +54,7 @@ Blue = AI model. Red = external call. Green = our code.
 
 | Task | Done by | Why |
 | --- | --- | --- |
-| Pick an official domain | Code (with search results) | Deterministic |
+| Pick the official domains and the product phrase | Code (with search results) | Deterministic |
 | Plan search queries | AI model (fast) | Needs judgment about the app |
 | Pull facts from messy pages | AI model (strong) | Needs reading skill |
 | Check quotes exist | Code | Must be exact and repeatable |
@@ -206,21 +206,22 @@ Time caps per stage (seconds). A stage also gets less when the run is running la
 ## 10. Stages 0 to 8 in detail
 
 **0 Resolve** (`nodes/resolve.ts`, code only)
-- A typed domain or URL gives the official domain directly (`developers.notion.com` becomes `notion.com`). There is no search and no "did you mean".
-- A name runs one search, `<name> API developer documentation`, for 8 results.
+- A typed domain or URL gives the official domain directly (`developers.notion.com` becomes `notion.com`), with no product phrase. There is no search and no "did you mean".
+- A name runs one search, `<name> API OAuth developer documentation`, for 8 results.
 - Hits are grouped by registrable domain. Forums, aggregators and code hosts are skipped unless the name is the site's own (`resolve/denylist.ts`). Each domain scores its search positions, a bonus for docs-looking pages, and a bonus for how well its brand label matches the name (equal, contained, or only in a page title).
 - `AMBIGUOUS_APP` when two or more candidates with different brand labels match the name and the runner-up scores at least 60% of the leader. The options are `{name, domain}`, up to 3. `NO_PUBLIC_DOCS` when nothing matches the name.
 - The weights (`SCORE_WEIGHTS`) and the thresholds (`RESOLVE_TUNING`) are defaults to tune against live searches.
-- Limits: an app has one official domain, so docs split across two domains (for example `slack.com` and `slack.dev`) count only the better-scoring one as official. A name with no Latin letters needs a typed domain.
+- **Identity** (`resolve/identity.ts`). The app identity is `{appName, domain, slug, domains, product}`. `domain` is the best-scoring domain: the guide's domain and the only one the probe may contact. `domains` lists every official domain, the primary first (`resolve/official-domains.ts`): other candidates with the same brand label that had a docs-looking hit (`slack.com` and `slack.dev`), at most 3, never a shared hosting domain such as `github.io`, and none when the winner matched the name only by a page title (Gmail on `google.com`). `product` is the longest phrase that starts with the app's name and appears in the titles of at least two official, non-forum hits (`resolve/product-phrase.ts`): "Gmail API", "Microsoft Graph". It reads only the part of a title before the site name, ends at stop words and marks, and never ends on a generic word such as "docs" or "developers", so most apps get none and search by name as before.
+- Limits: a name with no Latin letters needs a typed domain. The phrase comes from page titles, so a product that no two official titles share is not found.
 
 **1 Plan** (`nodes/plan.ts`, fast model, prompt in `prompts/plan.ts`)
 - The model returns one search query for each of 6 topics (setup, scopes, review, limits, auth type, approval wait), or `null` for "unknown". It is told never to state facts about the app.
-- Code checks every query: it must name the app, be 8 to 160 characters and 3 to 16 words, and contain no URL; quotes and operators are stripped. A query that fails, a `null`, or a failed or slow model call is replaced by a template (`queries.ts`). The plan stage never fails the run.
+- Code checks every query: it must name the app (the product phrase when the run has one, which the prompt also tells the model to use as written), be 8 to 160 characters and 3 to 16 words, and contain no URL; quotes and operators are stripped. A query that fails, a `null`, or a failed or slow model call is replaced by a template (`queries.ts`). The plan stage never fails the run.
 
 **2 Search** (`nodes/search.ts`, code only)
-- First pass: every query on the official domain, then the review and approval-wait queries across the web, up to 4 at a time inside the node's time window. Each distinct query is announced with `search.query`.
-- Retry pass: at most 2 differently worded searches on the official domain, for the sections that had no matched quote.
-- Results are tiered by code against the official domain and ordered official, third party, forum, then by Tavily's score. The run fails with `INTERNAL` only if every search fails.
+- First pass: every query on the official domains, then the review and approval-wait queries across the web, up to 4 at a time inside the node's time window. Each distinct query is announced with `search.query`. Queries name the product phrase when the run has one (`searchName` in `queries.ts`), else the app.
+- Retry pass: at most 2 differently worded searches on the official domains, for the sections that had no matched quote.
+- Results are tiered by code against every official domain and ordered official, third party, forum, then by Tavily's score. The run fails with `INTERNAL` only if every search fails.
 
 **3 Fetch** (`nodes/fetch.ts`, `fetch/`)
 - The first pass reads at most 4 pages and the retry pass the rest of the 6; cache hits count. Official pages come first, and one slot is kept for a non-official page when there is room for 3 or more.
@@ -253,7 +254,7 @@ Time caps per stage (seconds). A stage also gets less when the run is running la
 - Finds the first OAuth authorize URL (`/authorize`, `/oauth/authorize`, `/oauth2/v2/authorize`, `/oauth/auth`, `/o/oauth2/v2/auth`) that a Sourced claim quotes from an official page. No such claim, no probe.
 - One GET, with a dummy client ID and `response_type=code`. No redirects are followed, no cookies are sent, the body is read up to 4 KB, and the request stops after 3 seconds (less if the run has less time).
 - Passes (the claims that quote the URL become Tested) on: a 400, 401 or 403 whose body mentions `invalid_client`, `client_id` or `redirect_uri`; or a 3xx to a login or error page on the official domain. A 404, a 5xx, any other response and any network error leave the claims Sourced.
-- Guards, all checked before anything is sent: https only, port 443, no credentials, no IP-address host, the host must be the app's official domain or a subdomain, and the host must resolve to public addresses only (no private, loopback, link-local or reserved range; `probe/ip.ts`).
+- Guards, all checked before anything is sent: https only, port 443, no credentials, no IP-address host, the host must be the app's primary domain or a subdomain of it (not its other official domains), and the host must resolve to public addresses only (no private, loopback, link-local or reserved range; `probe/ip.ts`).
 - Known limit: the name is resolved once for the check and again by `fetch`, so a hostile DNS server could answer differently the second time (DNS rebinding). The domain guard (only the app's own domain, which the run resolved from the docs) keeps this out of reach in practice. Pinning the checked address would need a custom HTTP agent, which is a new dependency.
 - `AGENT_PROBE=off` turns the stage into a no-op. The probe sends no claim events. Each upgraded claim gets a `probe` row in the verification log (also on failure).
 - The probe never fails the run.
@@ -278,7 +279,7 @@ One JSON object per line (`lib/logger.ts`); info goes to stdout, warnings and er
 
 | Message | From | Fields worth reading |
 | --- | --- | --- |
-| `resolve summary` | stage 0 | `decision` (`official`, `ambiguous`, `none`), top 5 `candidates` with `domain`, `match`, `score`, `hits`, and `resolveHits`, the `url` and `title` of every hit the decision was made from (no page text). This is the data the ambiguity thresholds are tuned against |
+| `resolve summary` | stage 0 | `decision` (`official`, `ambiguous`, `none`), top 5 `candidates` with `domain`, `match`, `score`, `hits`, and `resolveHits`, the `url` and `title` of every hit the decision was made from (no page text), and `identity` (`domains` and `product`, null unless the decision is `official`). This is the data the ambiguity thresholds are tuned against |
 | `search summary` | stage 2 | `queries`, `failedQueries`, `results`, `byTier`, `retryPass` |
 | `pages loaded` | stage 3 | pages from the network and from the cache |
 | `extract summary` | stage 4 | one row per section: status, duration, tokens |

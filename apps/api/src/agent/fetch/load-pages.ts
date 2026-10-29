@@ -15,8 +15,8 @@ import type { PageCachePort, PageRecord } from "../page-record.js";
 import { MIN_PAGE_CHARS } from "./select-pages.js";
 
 export type LoadContext = {
-  /** The app's official domain; every page's tier is decided against it. */
-  domain: string;
+  /** The app's official domains; every page's tier is decided against them. */
+  domains: readonly string[];
   timeoutMs: number;
   signal?: AbortSignal;
   usage: RunUsage;
@@ -62,7 +62,7 @@ async function keep(
   try {
     return await (ctx.cache?.store ?? storePage)({
       url: page.url,
-      tier: sourceTier(page.url, ctx.domain),
+      tier: sourceTier(page.url, ctx.domains),
       text: page.text,
     });
   } catch (err) {
@@ -89,7 +89,7 @@ export async function loadPages(
     if (hit) {
       byHash.set(hit.urlHash, {
         ...hit,
-        tier: sourceTier(hit.url, ctx.domain),
+        tier: sourceTier(hit.url, ctx.domains),
       });
     } else {
       misses.push(url);

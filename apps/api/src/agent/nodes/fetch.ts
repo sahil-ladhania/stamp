@@ -30,7 +30,7 @@ export const fetchNode = stageNode("fetch", async (state, config) => {
   const loaded = await loadPages(
     picks.map((pick) => pick.url),
     {
-      domain: app.domain,
+      domains: app.domains,
       timeoutMs: callTimeoutMs(config, "fetch", { retryPass }),
       signal: config.signal,
       usage: deps.usage,

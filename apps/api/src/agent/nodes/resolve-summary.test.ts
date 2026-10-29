@@ -61,6 +61,39 @@ describe("the resolve summary line", () => {
     expect(Number.isInteger(candidates[0]!.score * 100)).toBe(true);
   });
 
+  it("logs the identity it derived, the official domains and the product phrase, so a run's searches can be explained", async () => {
+    search.mockResolvedValue({
+      hits: [
+        hit(
+          "https://developers.google.com/workspace/gmail/api/guides",
+          0.9,
+          "Gmail API overview  |  Google for Developers",
+        ),
+        hit(
+          "https://developers.google.com/workspace/gmail/api/reference/rest",
+          0.8,
+          "Gmail API  |  Google for Developers",
+        ),
+      ],
+      credits: 1,
+    });
+    await run("Gmail");
+    expect(summary()).toMatchObject({
+      identity: { domains: ["google.com"], product: "Gmail API" },
+    });
+  });
+
+  it("logs a null product when the titles agree on none", async () => {
+    search.mockResolvedValue({
+      hits: [hit("https://developers.notion.com/docs")],
+      credits: 1,
+    });
+    await run("Notion");
+    expect(summary()).toMatchObject({
+      identity: { domains: ["notion.com"], product: null },
+    });
+  });
+
   it("logs the ambiguous decision too, with both candidates", async () => {
     search.mockResolvedValue({
       hits: [hit("https://mercury.com/"), hit("https://docs.mercuryapp.io/x")],
