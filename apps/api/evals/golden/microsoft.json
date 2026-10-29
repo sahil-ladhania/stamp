@@ -1,0 +1,139 @@
+{
+  "slug": "microsoft",
+  "set": "tuning",
+  "typedNames": ["Microsoft", "Microsoft Graph"],
+  "researchedOn": "2026-10-29",
+  "product": {
+    "name": "Microsoft Graph (authorized through the Microsoft identity platform / Microsoft Entra ID)",
+    "source": {
+      "url": "https://learn.microsoft.com/en-us/graph/auth/auth-concepts",
+      "quote": "Microsoft Graph is a protected API gateway for accessing data in Microsoft cloud services like Microsoft Entra ID and Microsoft 365."
+    }
+  },
+  "docs": {
+    "domains": ["learn.microsoft.com"],
+    "pathHints": ["/graph/", "/entra/identity-platform/", "/entra/identity/"]
+  },
+  "oauthAppCreation": {
+    "where": "Microsoft Entra admin center: Entra ID > App registrations > New registration",
+    "source": {
+      "url": "https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app",
+      "quote": "Browse to Entra ID > App registrations and select New registration."
+    }
+  },
+  "reviewGate": {
+    "value": "required_to_scale",
+    "alsoAccept": ["none"],
+    "confidence": "medium",
+    "trigger": "No approval queue exists for Graph delegated permissions. Publisher verification (automated, no cost) gates user consent for multitenant apps in other tenants; admin consent gates high-privilege permissions; AppSource and Microsoft 365 App Certification are optional.",
+    "source": {
+      "url": "https://learn.microsoft.com/en-us/entra/identity-platform/publisher-verification-overview",
+      "quote": "users can't consent to most newly registered multitenant apps that aren't publisher verified"
+    }
+  },
+  "approvalWait": {
+    "kind": "range",
+    "minDays": 0,
+    "maxDays": 1,
+    "stated": "Publisher verification: minutes once the prerequisites (a verified Microsoft AI Cloud Partner Program account) are met. Time to verify that partner account is not stated.",
+    "confidence": "low",
+    "source": {
+      "url": "https://learn.microsoft.com/en-us/entra/identity-platform/publisher-verification-overview",
+      "quote": "Developers who have already met these requirements can be verified in minutes."
+    }
+  },
+  "testBeforeApproval": {
+    "possible": true,
+    "how": "Register a single-tenant app and sign in with users in your own tenant; no review is involved",
+    "source": {
+      "url": "https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app",
+      "quote": "For single-tenant apps for use only by users (or guests) in your tenant."
+    }
+  },
+  "scopes": {
+    "kind": "scope_strings",
+    "namePattern": "^((https://graph\\.microsoft\\.com/)?([A-Z][A-Za-z]+\\.)+[A-Za-z]+(\\.[A-Za-z]+)*|openid|profile|email|offline_access)$",
+    "knownFake": ["app.read", "app.write"],
+    "real": [
+      {
+        "name": "User.Read",
+        "source": {
+          "url": "https://learn.microsoft.com/en-us/graph/auth-v2-user",
+          "quote": "the app requests the User.Read and Mail.Read Microsoft Graph permissions, which allow the app to read the profile and mail of the signed-in user respectively."
+        }
+      },
+      {
+        "name": "Mail.Read",
+        "source": {
+          "url": "https://learn.microsoft.com/en-us/graph/auth-v2-user",
+          "quote": "the app requests the User.Read and Mail.Read Microsoft Graph permissions, which allow the app to read the profile and mail of the signed-in user respectively."
+        }
+      },
+      {
+        "name": "offline_access",
+        "source": {
+          "url": "https://learn.microsoft.com/en-us/graph/auth-v2-user",
+          "quote": "The offline_access permission is a standard OIDC scope that's requested so that the app can get a refresh token."
+        }
+      },
+      {
+        "name": "Calendars.Read",
+        "source": {
+          "url": "https://learn.microsoft.com/en-us/graph/permissions-reference",
+          "quote": "The Calendars.Read delegated permission is available for consent in personal Microsoft accounts."
+        }
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "summary": "Application permissions and many high-privilege delegated permissions need an administrator to grant consent",
+      "kind": "approval",
+      "keywords": ["admin consent", "administrator", "high-privilege", "tenant"],
+      "source": {
+        "url": "https://learn.microsoft.com/en-us/entra/identity-platform/permissions-consent-overview",
+        "quote": "application permissions and many high-privilege delegated permissions can only be consented to by an administrator"
+      }
+    },
+    {
+      "summary": "Users in other tenants cannot consent to most new multitenant apps that lack publisher verification",
+      "kind": "approval",
+      "keywords": ["publisher verification", "verified publisher", "multitenant", "unverified"],
+      "source": {
+        "url": "https://learn.microsoft.com/en-us/entra/identity-platform/publisher-verification-overview",
+        "quote": "users can't consent to most newly registered multitenant apps that aren't publisher verified"
+      }
+    },
+    {
+      "summary": "An Azure account with at least the Application Developer role and a tenant are needed to register an app",
+      "kind": "setup",
+      "keywords": ["application developer", "tenant", "app registration", "azure account"],
+      "source": {
+        "url": "https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app",
+        "quote": "The Azure account must be at least an Application Developer"
+      }
+    },
+    {
+      "summary": "Tenant administrators can disable user consent, so users are not prompted and cannot use the app",
+      "kind": "setup",
+      "keywords": ["user consent", "disabled", "consent policy", "tenant admin"],
+      "source": {
+        "url": "https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/user-admin-consent-overview",
+        "quote": "If user consent is disabled, or users aren't allowed to consent for the requested permissions, they aren't prompted for consent."
+      }
+    }
+  ],
+  "avoidProducts": [
+    {
+      "name": "Azure AD B2C",
+      "severity": "hard",
+      "hostPathHints": ["learn.microsoft.com/en-us/azure/active-directory-b2c", "learn.microsoft.com/azure/active-directory-b2c"],
+      "why": "Customer identity service with its own app registrations; not the way an agent calls Microsoft Graph for a user",
+      "evidence": "Stored microsoft guide cited a B2C client credentials page in 9 of 24 claims (08b, case 3)"
+    }
+  ],
+  "notes": [
+    "Microsoft has no review queue. required_to_scale is primary because unverified multitenant apps hit user-consent limits in other tenants; none is the one accepted alternate. Approved by the owner on 2026-10-29.",
+    "The wait is minutes for publisher verification only; the partner-account verification time is not stated, so confidence is low."
+  ]
+}

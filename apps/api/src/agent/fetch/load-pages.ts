@@ -11,7 +11,7 @@ import { getCachedPage, storePage } from "../../services/page-cache.js";
 import { errorText } from "../../utils/error-text.js";
 import { hashUrl } from "../../utils/hash-url.js";
 import { sourceTier } from "../evidence/source-tier.js";
-import type { PageRecord } from "../page-record.js";
+import type { PageCachePort, PageRecord } from "../page-record.js";
 import { MIN_PAGE_CHARS } from "./select-pages.js";
 
 export type LoadContext = {
@@ -21,6 +21,8 @@ export type LoadContext = {
   signal?: AbortSignal;
   usage: RunUsage;
   runId: string;
+  /** Replaces the database page cache; absent in normal runs. */
+  cache?: PageCachePort;
 };
 
 export type Loaded = {
@@ -41,7 +43,7 @@ async function readCache(
   ctx: LoadContext,
 ): Promise<PageRecord | null> {
   try {
-    return await getCachedPage(url);
+    return await (ctx.cache?.get ?? getCachedPage)(url);
   } catch (err) {
     ctx.signal?.throwIfAborted();
     logger.warn("page cache read failed", {
@@ -58,7 +60,7 @@ async function keep(
   ctx: LoadContext,
 ): Promise<PageRecord | null> {
   try {
-    return await storePage({
+    return await (ctx.cache?.store ?? storePage)({
       url: page.url,
       tier: sourceTier(page.url, ctx.domain),
       text: page.text,

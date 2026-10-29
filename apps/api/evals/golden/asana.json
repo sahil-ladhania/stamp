@@ -1,0 +1,158 @@
+{
+  "slug": "asana",
+  "set": "holdout",
+  "typedNames": ["Asana"],
+  "researchedOn": "2026-10-29",
+  "product": {
+    "name": "Asana API (OAuth apps)",
+    "source": {
+      "url": "https://developers.asana.com/docs/oauth",
+      "quote": "Asana uses OAuth 2.0 for secure user authorization."
+    }
+  },
+  "docs": {
+    "domains": ["developers.asana.com"],
+    "pathHints": ["/docs/"]
+  },
+  "oauthAppCreation": {
+    "where": "Asana developer console: Create new app, then OAuth > Permission scopes",
+    "source": {
+      "url": "https://developers.asana.com/docs/oauth",
+      "quote": "To do so, first visit the developer console and select Create new app"
+    }
+  },
+  "reviewGate": {
+    "value": "optional_listing",
+    "alsoAccept": [],
+    "confidence": "high",
+    "trigger": "Review is only needed to publish the app in the Asana App Directory (and for apps with app components, a security and QA review). An OAuth app works without review.",
+    "source": {
+      "url": "https://developers.asana.com/docs/submit-your-app",
+      "quote": "Submitting your app for review is not required to obtain a token."
+    },
+    "moreSources": [
+      {
+        "url": "https://developers.asana.com/docs/submit-your-app",
+        "quote": "If you're building an internal tool or testing your integration, you can create and use an OAuth app without submitting it for review."
+      }
+    ]
+  },
+  "approvalWait": {
+    "kind": "range",
+    "minDays": 0,
+    "maxDays": 7,
+    "stated": "Initial response on a submission within one week; longer for complex apps and apps with app components",
+    "confidence": "medium",
+    "source": {
+      "url": "https://developers.asana.com/docs/submit-your-app",
+      "quote": "We aim to provide an initial response on app submissions within one week."
+    }
+  },
+  "testBeforeApproval": {
+    "possible": true,
+    "how": "Create the app and use it without submitting for review",
+    "source": {
+      "url": "https://developers.asana.com/docs/submit-your-app",
+      "quote": "If you're building an internal tool or testing your integration, you can create and use an OAuth app without submitting it for review."
+    }
+  },
+  "scopes": {
+    "kind": "scope_strings",
+    "namePattern": "^[a-z_]+:(read|write|delete)$",
+    "knownFake": [],
+    "real": [
+      {
+        "name": "tasks:read",
+        "source": {
+          "url": "https://developers.asana.com/docs/oauth",
+          "quote": "tasks:read - View basic task information like name and assignee"
+        }
+      },
+      {
+        "name": "projects:write",
+        "source": {
+          "url": "https://developers.asana.com/docs/oauth",
+          "quote": "projects:write - Create or modify projects"
+        }
+      },
+      {
+        "name": "users:read",
+        "source": {
+          "url": "https://developers.asana.com/docs/oauth",
+          "quote": "users:read - Access user information like email and profile picture"
+        }
+      },
+      {
+        "name": "tasks:write",
+        "source": {
+          "url": "https://developers.asana.com/docs/oauth",
+          "quote": "scope=projects:read tasks:read tasks:write tasks:delete"
+        }
+      },
+      {
+        "name": "projects:read",
+        "source": {
+          "url": "https://developers.asana.com/docs/oauth",
+          "quote": "scope=projects:read tasks:read tasks:write tasks:delete"
+        }
+      },
+      {
+        "name": "workspaces:read",
+        "source": {
+          "url": "https://developers.asana.com/docs/oauth-scopes",
+          "quote": "workspaces:read GET /workspaces"
+        }
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "summary": "Requesting a scope that is not registered on the app gives a forbidden_scopes error on the authorization page",
+      "kind": "setup",
+      "keywords": ["forbidden_scopes", "register", "scope", "authorization"],
+      "source": {
+        "url": "https://developers.asana.com/docs/oauth",
+        "quote": "If you request a scope that is not in your app's approved (i.e., registered) list, the user will see a forbidden_scopes error on the authorization page."
+      }
+    },
+    {
+      "summary": "Scopes do not exist for every endpoint, so some apps must switch on Full permissions",
+      "kind": "limit",
+      "keywords": ["full permissions", "scopes not available", "endpoint"],
+      "source": {
+        "url": "https://developers.asana.com/docs/oauth",
+        "quote": "scopes are not yet available for every Asana API endpoint"
+      }
+    },
+    {
+      "summary": "Apps built with app components go through a security review and QA before they are listed in the app gallery",
+      "kind": "approval",
+      "keywords": ["app components", "security review", "QA", "gallery"],
+      "source": {
+        "url": "https://developers.asana.com/docs/submit-your-app",
+        "quote": "if your app uses app components your submission will go through a security review and QA process before it's listed in the in-product app gallery"
+      }
+    },
+    {
+      "summary": "After a submission for review, the app can no longer be edited",
+      "kind": "approval",
+      "keywords": ["submitted", "no longer", "edit", "review"],
+      "source": {
+        "url": "https://developers.asana.com/docs/submit-your-app",
+        "quote": "At this point, the app will no longer be open for further edits."
+      }
+    }
+  ],
+  "avoidProducts": [
+    {
+      "name": "Asana MCP apps",
+      "severity": "soft",
+      "hostPathHints": ["integrating-with-asanas-mcp-server"],
+      "why": "MCP apps are a separate app type that does not use OAuth scopes",
+      "evidence": "Appeared in web search results for the Asana OAuth docs (2026-10-29)"
+    }
+  ],
+  "notes": [
+    "Asana's older pages describe a small default scope set and app creation under account settings; the current docs use the developer console and resource:action scopes. The golden set follows the current docs."
+  ]
+}

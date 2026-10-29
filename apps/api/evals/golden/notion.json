@@ -1,0 +1,132 @@
+{
+  "slug": "notion",
+  "set": "tuning",
+  "typedNames": ["Notion"],
+  "researchedOn": "2026-10-29",
+  "product": {
+    "name": "Notion API (public connections)",
+    "source": {
+      "url": "https://developers.notion.com/guides/get-started/public-connections",
+      "quote": "A public connection is an OAuth connection that users install into their Notion workspaces."
+    }
+  },
+  "docs": {
+    "domains": ["developers.notion.com"],
+    "pathHints": ["/guides/get-started/", "/reference/"]
+  },
+  "oauthAppCreation": {
+    "where": "Notion Developer portal > Build > Public connections > Create new connection; client ID and secret are on the Configuration tab",
+    "source": {
+      "url": "https://developers.notion.com/guides/get-started/public-connections",
+      "quote": "Click Create new connection and fill in the required fields"
+    }
+  },
+  "reviewGate": {
+    "value": "optional_listing",
+    "alsoAccept": ["none"],
+    "confidence": "medium",
+    "trigger": "A public connection installs into any workspace without review; listing it on the Notion Marketplace is optional and reviewed by the Notion team.",
+    "source": {
+      "url": "https://developers.notion.com/guides/get-started/marketplace-listing",
+      "quote": "The Notion team reviews every listing submission."
+    },
+    "moreSources": [
+      {
+        "url": "https://developers.notion.com/guides/get-started/public-connections",
+        "quote": "Any workspace Any Notion user, in any workspace."
+      }
+    ]
+  },
+  "approvalWait": {
+    "kind": "range",
+    "minDays": 7,
+    "maxDays": 14,
+    "stated": "Expect to hear back within 5 to 10 business days (Marketplace listing only)",
+    "derivation": "5 to 10 business days is about 7 to 14 calendar days",
+    "confidence": "high",
+    "source": {
+      "url": "https://developers.notion.com/guides/get-started/marketplace-listing",
+      "quote": "After submission, expect to hear back from our team within 5-10 business days via email."
+    }
+  },
+  "testBeforeApproval": {
+    "possible": true,
+    "how": "Create the connection against a development workspace and authorize it yourself",
+    "source": {
+      "url": "https://developers.notion.com/guides/get-started/public-connections",
+      "quote": "Connection name and development workspace"
+    }
+  },
+  "scopes": {
+    "kind": "capabilities",
+    "namePattern": "content|user information|comment",
+    "namePatternFlags": "i",
+    "knownFake": [],
+    "real": [
+      {
+        "name": "read content",
+        "source": {
+          "url": "https://developers.notion.com/guides/get-started/public-connections",
+          "quote": "Connection capabilities (read content, update content, insert content, etc.)"
+        }
+      },
+      {
+        "name": "update content",
+        "source": {
+          "url": "https://developers.notion.com/guides/get-started/public-connections",
+          "quote": "Connection capabilities (read content, update content, insert content, etc.)"
+        }
+      },
+      {
+        "name": "insert content",
+        "source": {
+          "url": "https://developers.notion.com/guides/get-started/public-connections",
+          "quote": "Connection capabilities (read content, update content, insert content, etc.)"
+        }
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "summary": "Installation scope (any workspace or selected workspaces) is fixed at creation and decides Marketplace eligibility",
+      "kind": "setup",
+      "keywords": ["installation scope", "any workspace", "selected workspaces", "creation", "marketplace-eligible"],
+      "source": {
+        "url": "https://developers.notion.com/guides/get-started/public-connections",
+        "quote": "Installation scope is set once, at creation time, and can't be changed afterward."
+      }
+    },
+    {
+      "summary": "Each user in a workspace must authorize a public connection individually",
+      "kind": "limit",
+      "keywords": ["each user", "individually", "authorize", "per-user token"],
+      "source": {
+        "url": "https://developers.notion.com/guides/get-started/public-connections",
+        "quote": "each user needs to complete the authorization flow individually"
+      }
+    },
+    {
+      "summary": "Marketplace listing is reviewed by the Notion team, with feedback and resubmission if changes are required",
+      "kind": "approval",
+      "keywords": ["marketplace", "listing", "review", "submission", "feedback"],
+      "source": {
+        "url": "https://developers.notion.com/guides/get-started/marketplace-listing",
+        "quote": "The Notion team reviews every listing submission."
+      }
+    },
+    {
+      "summary": "Users pick the pages the connection can reach in a page picker, so access is limited to the pages they grant",
+      "kind": "setup",
+      "keywords": ["page picker", "pages", "grant access", "share"],
+      "source": {
+        "url": "https://developers.notion.com/guides/get-started/public-connections",
+        "quote": "The user selects which pages to grant the connection access to using the page picker."
+      }
+    }
+  ],
+  "avoidProducts": [],
+  "notes": [
+    "Notion has no scope strings. Access is set by capabilities chosen at creation, so the real list holds capability names. Please confirm this treatment of scopes.",
+    "No sibling product was identified that Stamp is likely to confuse with the Notion API."
+  ]
+}

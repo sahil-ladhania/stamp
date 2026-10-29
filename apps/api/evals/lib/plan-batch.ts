@@ -1,0 +1,69 @@
+/**
+ * File: plan-batch.ts
+ * Purpose: Plans a batch before anything runs: picks the apps, enforces the 12-run limit and the holdout guard, and writes the cost estimate the owner must confirm.
+ * Exports: planBatch, BatchPlan
+ * Used by: evals/cli.ts
+ */
+import { estimateBatch, type BatchEstimate, type Pricing } from "./cost.js";
+import { MAX_RUNS_PER_BATCH, type CliArgs } from "./cli-args.js";
+import { selectGolden, type Golden } from "./golden.js";
+
+export type BatchPlan = {
+  goldens: Golden[];
+  estimate: BatchEstimate;
+  /** What to print before asking for --confirm. */
+  lines: string[];
+};
+
+const usd = (value: number): string => `$${value.toFixed(2)}`;
+
+function estimateLine(estimate: BatchEstimate): string {
+  const credits = `${estimate.credits} Tavily credits (up to ${estimate.highCredits})`;
+  if (estimate.totalUsd === null || estimate.highUsd === null) {
+    return `Estimate: dollars unknown: no price for ${estimate.missingPrices.join(", ")} in evals/pricing.json; ${credits}.`;
+  }
+  return `Estimate: about ${usd(estimate.totalUsd)} (up to ${usd(estimate.highUsd)} if runs cost double), ${credits}.`;
+}
+
+function priceSources(models: readonly string[], pricing: Pricing): string {
+  const urls = models.flatMap(
+    (model) => pricing.models[model]?.source.url ?? [],
+  );
+  return [...new Set([...urls, pricing.tavilyCreditUsd.source.url])].join(", ");
+}
+
+/**
+ * Throws, with a plain message, for a selection the rules do not allow. The holdout set needs --allow-holdout
+ * so that it is only ever run on purpose, once, after the last fix.
+ */
+export function planBatch(
+  args: CliArgs,
+  all: readonly Golden[],
+  pricing: Pricing,
+  models: { fast: string; strong: string },
+): BatchPlan {
+  const goldens = selectGolden(all, args.selector);
+  if (goldens.length > MAX_RUNS_PER_BATCH) {
+    throw new Error(
+      `A batch is at most ${MAX_RUNS_PER_BATCH} runs; this one would run ${goldens.length}.`,
+    );
+  }
+  const holdout = goldens.some((golden) => golden.set === "holdout");
+  if (holdout && !args.allowHoldout) {
+    throw new Error(
+      "The holdout set needs --allow-holdout. Run it once, after the last fix, and never tune on its results.",
+    );
+  }
+  const estimate = estimateBatch(goldens.length, models, pricing);
+  const lines = [
+    `Eval batch: ${args.selector}${holdout ? " (HOLDOUT: run once, do not tune on it)" : ""}`,
+    `Apps: ${goldens.map((golden) => golden.slug).join(", ")}`,
+    `Runs: ${goldens.length} (at most ${MAX_RUNS_PER_BATCH} per batch), ${args.parallel} at a time`,
+    `Models: fast ${models.fast}, strong ${models.strong}`,
+    estimateLine(estimate),
+    `Basis: ${estimate.basis}`,
+    `Prices as of ${pricing.asOf}: ${priceSources([models.fast, models.strong], pricing)}`,
+    "Every run fetches its pages fresh (the page cache is not used) and no guide is saved to the database.",
+  ];
+  return { goldens, estimate, lines };
+}

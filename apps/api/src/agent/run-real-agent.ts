@@ -13,6 +13,7 @@ import { startBudget } from "./budget.js";
 import type { AgentDeps } from "./deps.js";
 import { buildGraph, RECURSION_LIMIT } from "./graph.js";
 import { defaultNodes } from "./nodes/index.js";
+import type { PageCachePort } from "./page-record.js";
 import { isPartial } from "./pipeline.js";
 import { summarizeState } from "./run-summary.js";
 import type { AgentOutcome, RunAgentInput } from "./run-agent.js";
@@ -30,6 +31,8 @@ export type RealAgentOptions = {
   extractConcurrency?: number;
   /** Whether the probe may send its one request; defaults to AGENT_PROBE being "on". */
   probeEnabled?: boolean;
+  /** Replaces the database page cache; evals pass one that never remembers, so every run fetches fresh. */
+  pageCache?: PageCachePort;
 };
 
 function internal(stage: number): AgentOutcome {
@@ -85,6 +88,7 @@ export async function runRealAgent(
     extractConcurrency:
       options.extractConcurrency ?? getConfig().AGENT_EXTRACT_CONCURRENCY,
     probeEnabled: options.probeEnabled ?? getConfig().AGENT_PROBE === "on",
+    pageCache: options.pageCache,
   };
 
   let outcome: AgentOutcome;
