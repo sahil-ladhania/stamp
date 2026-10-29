@@ -58,7 +58,7 @@ Must is the base. Build from the bottom up: every Must works before any Should s
 | M3 | Quote check | Confirms each claim's quote appears in its source page; downgrades it to Uncertain if not | Stops made-up steps from looking trustworthy |
 | M4 | Cache + share link | Saves every guide at `/g/[app]` | Repeat lookups are instant; teams share one link |
 | M5 | Guardrails | Timeouts, rate limit, daily run cap; keys stay on the server | The live demo never hangs or runs up costs |
-| M6 | Home + library | Search box plus 5 hand-checked guides: GitHub, HubSpot, Gmail, LinkedIn, Salesforce | Instant answers for apps that show five kinds of hard |
+| M6 | Home + library | Search box plus the library: guides the agent already researched, each checked by code before it is added (GitHub, HubSpot, Notion, Slack; see D26) | Instant answers for common apps |
 | M7 | Live deploy | A public link anyone can open | Reviewers can try an unfamiliar app themselves |
 
 ---

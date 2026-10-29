@@ -126,7 +126,7 @@ The `data` JSON is the full event, including `type` (it matches the `event:` lin
 | --- | --- |
 | `200` | `[{ "slug", "appName", "archetype", "difficulty", "mode", "asOf" }]` |
 
-- Lists library guides only, easiest first (`difficulty` ascending, then `appName`).
+- Lists library guides only, by stored `difficulty` ascending, then `appName`. The web app re-sorts: a Not rated guide (archetype `unknown`, whose stored difficulty is only a lower bound) comes after every rated one in either direction.
 - Live guides are never listed; they are reached by share link.
 
 ### `GET /api/guides/:slug`

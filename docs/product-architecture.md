@@ -21,7 +21,7 @@ flowchart LR
         GR[Guardrails<br/>rate limit, run cap, timeouts]:::api
         AG[Agent<br/>see agent-architecture.md]:::agent
         DB[(MySQL<br/>guides, runs, page cache, log)]:::db
-        LIB[Library guides<br/>5 JSON files, seeded into MySQL]:::db
+        LIB[Library guides<br/>JSON files in apps/api/library, seeded into MySQL]:::db
     end
     UI -->|HTTP + SSE| R
     R --> GR --> AG
@@ -44,7 +44,7 @@ flowchart LR
 | Guardrails | Keep the live demo fast and cheap |
 | Agent | Research an app and build its guide |
 | MySQL | Store guides, runs, fetched pages and the verification log |
-| Library guides | 5 curated JSON files, seeded into MySQL; no agent run needed |
+| Library guides | JSON files of saved agent guides in `apps/api/library`, checked by code and seeded into MySQL; no agent run needed |
 
 - The browser never holds an API key. Every external call goes through the API.
 
@@ -143,7 +143,7 @@ Full columns and the Prisma draft are in [db-schema-design.md](./db-schema-desig
 
 | What | Kept for | Why |
 | --- | --- | --- |
-| Library guides | Until edited by hand and re-seeded | Curated and reviewed |
+| Library guides | Until re-exported and re-seeded | Checked by code; what is left to check by hand is in `apps/api/library/REVIEW.md` |
 | Live guides | 7 days, then "Refresh" | Repeat lookups cost nothing |
 | Fetched pages | 7 days, with a text hash | Quote checks stay repeatable |
 | Run lock | 3 minutes | No duplicate runs for the same app |
