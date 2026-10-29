@@ -29,10 +29,10 @@ export function EvidenceSection({ sample }: { sample: LandingSample }): ReactEle
           description="Stamp tells you how it knows each fact. Uncertain is shown plainly."
         />
         <div className="grid gap-8 desktop:grid-cols-12 desktop:items-start">
-          <EvidenceDefinitionList className={cn(claim || isLoading ? "desktop:col-span-7" : "desktop:col-span-12")} />
+          <EvidenceDefinitionList className={cn("min-w-0", claim || isLoading ? "desktop:col-span-7" : "desktop:col-span-12")} />
           {isLoading && <div aria-hidden className="h-56 rounded-md border border-rule bg-card desktop:col-span-5" />}
           {guide && claim && (
-            <figure className="m-0 flex flex-col gap-2 desktop:col-span-5">
+            <figure className="m-0 flex min-w-0 flex-col gap-2 desktop:col-span-5">
               <div className="rounded-md border border-ink bg-card p-4">
                 <EvidencePanel claim={claim} />
               </div>

@@ -7,7 +7,8 @@
 import { describe, expect, it } from "vitest";
 import { sampleGuide } from "@/test-support/sample-data";
 import { mapGuide } from "@/utils/map-guide";
-import { getTimelineNodes } from "./timeline-nodes";
+import { emptyPartialGuide } from "@/test-support/guide-fixtures";
+import { getTimelineNodes, hasAnyDuration, knownParts } from "./timeline-nodes";
 
 describe("getTimelineNodes", () => {
   const guide = mapGuide(sampleGuide);
@@ -30,5 +31,39 @@ describe("getTimelineNodes", () => {
 
   it("uses null for a duration the text does not state", () => {
     expect(nodes.slice(1).every((node) => node.duration === null || typeof node.duration === "string")).toBe(true);
+  });
+});
+
+describe("hasAnyDuration", () => {
+  it("is false when no node states a duration", () => {
+    const nodes = getTimelineNodes(mapGuide(emptyPartialGuide).milestones);
+    expect(hasAnyDuration(nodes.map((node) => ({ ...node, duration: node.id === "start" ? undefined : null })))).toBe(false);
+  });
+
+  it("is true when one node does", () => {
+    const nodes = getTimelineNodes(mapGuide(sampleGuide).milestones);
+    expect(hasAnyDuration(nodes.map((node) => (node.id === "approval" ? { ...node, duration: "3 to 7 days" } : node)))).toBe(true);
+  });
+});
+
+describe("knownParts", () => {
+  const source = { url: "https://docs.example.com/a", title: "t", tier: "official" as const };
+  const known = { id: "milestones.firstTest.effort", text: "About an hour.", label: "uncertain" as const, sources: [source] };
+  const unknown = { id: "milestones.firstTest.wait", text: "Not found in the fetched sources.", label: "uncertain" as const, sources: [] };
+
+  it("leaves out a part that is the unknown claim", () => {
+    const node = {
+      id: "first-test" as const,
+      title: "First test connection",
+      duration: null,
+      parts: [{ claim: known }, { label: "Waits on", claim: unknown }],
+    };
+    expect(knownParts(node).map((part) => part.claim.id)).toEqual(["milestones.firstTest.effort"]);
+  });
+
+  it("keeps nothing for a node whose claims are all unknown, and for the start", () => {
+    const allUnknown = { id: "approval" as const, title: "Approval wait", duration: null, parts: [{ claim: unknown }] };
+    expect(knownParts(allUnknown)).toEqual([]);
+    expect(knownParts(getTimelineNodes(mapGuide(sampleGuide).milestones)[0]!)).toEqual([]);
   });
 });

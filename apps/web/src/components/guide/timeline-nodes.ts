@@ -2,10 +2,11 @@
  * File: timeline-nodes.ts
  * Purpose: The four nodes of the timeline (start, first test connection, approval wait, production) built from a guide's two
  *          milestones. Each node keeps the claims behind it and the duration its text states, if any. Pure.
- * Exports: TimelinePart, TimelineNodeData, getTimelineNodes
+ * Exports: TimelinePart, TimelineNodeData, getTimelineNodes, hasAnyDuration, knownParts
  * Used by: components/guide/TimelineSection.tsx
  */
 import type { Claim, Milestone } from "@/types/guide-model";
+import { isUnknownClaim } from "@/utils/is-unknown-claim";
 import { milestoneDurations } from "@/utils/milestone-durations";
 
 export type TimelinePart = { label?: string; claim: Claim };
@@ -32,4 +33,14 @@ export function getTimelineNodes(milestones: readonly [Milestone, Milestone]): T
     { id: "approval", title: "Approval wait", duration: durations.approvalWait, parts: [{ claim: production.wait }] },
     { id: "production", title: "Production", duration: durations.production, parts: [{ claim: production.effort }] },
   ];
+}
+
+/** True when any node states a duration. When none does, the timeline says so once instead of in every node. */
+export function hasAnyDuration(nodes: readonly TimelineNodeData[]): boolean {
+  return nodes.some((node) => typeof node.duration === "string");
+}
+
+/** The parts that say something. A part that is the unknown claim (nothing found) is left out. */
+export function knownParts(node: TimelineNodeData): TimelinePart[] {
+  return node.parts.filter((part) => !isUnknownClaim(part.claim));
 }

@@ -21,10 +21,10 @@ function PlainSteps(): ReactElement {
     <ol className="flex flex-col gap-10">
       {HOW_STEPS.map((step, index) => (
         <li key={step.id} className="grid gap-6 desktop:grid-cols-12 desktop:items-center">
-          <div className="desktop:col-span-5">
+          <div className="min-w-0 desktop:col-span-5">
             <HowStepText step={step} index={index} />
           </div>
-          <div className="desktop:col-span-7">
+          <div className="min-w-0 desktop:col-span-7">
             <StepVisual step={step} />
           </div>
         </li>

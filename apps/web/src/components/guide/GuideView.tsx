@@ -32,7 +32,7 @@ export function GuideView({ guide }: { guide: Guide }): ReactElement {
         <div className="flex min-w-0 flex-col desktop:col-start-2 desktop:row-start-1">
           <div id="verdict" className="flex scroll-mt-24 flex-col gap-6 py-10">
             <GuideHeader guide={guide} />
-            <Verdict guide={guide} detailHref={(row) => `#${row.section}`} />
+            <Verdict guide={guide} variant="guide" hasIdentity={false} detailHref={(row) => `#${row.section}`} />
             {guide.coverage === "partial" && <PartialNotice sections={guide.uncertainSections} slug={guide.slug} />}
           </div>
           <TimelineSection milestones={guide.milestones} />

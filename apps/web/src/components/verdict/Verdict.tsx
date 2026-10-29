@@ -18,8 +18,11 @@ import { VerdictRow } from "./VerdictRow";
 
 type VerdictProps = {
   guide: Guide;
-  /** `compact` is the hero poster: difficulty, first test, production and top blocker. `full` shows every row. */
-  variant?: "full" | "compact";
+  /**
+   * `compact` is the hero poster and the run result: first test, production and top blocker. `full` shows every row, with its own
+   * difficulty row (the Landing sample). `guide` leaves that row out: the stamp mark holds the score and "Why this score" joins the kind row.
+   */
+  variant?: "full" | "compact" | "guide";
   /** False leaves out the app name, for a page that already shows it. The header keeps the stamp mark. */
   hasIdentity?: boolean;
   /** Where a row's full version lives. Return null for a row with no link. */
@@ -32,8 +35,7 @@ type VerdictProps = {
 const COMPACT_ROWS: readonly VerdictRowId[] = ["firstTest", "production", "topBlocker"];
 
 export function Verdict({ guide, variant = "full", hasIdentity = true, detailHref, highlighted = null, className }: VerdictProps): ReactElement {
-  const rows = getVerdictRows(guide).filter((row) => variant === "full" || COMPACT_ROWS.includes(row.id));
-  const isFull = variant === "full";
+  const rows = getVerdictRows(guide).filter((row) => variant !== "compact" || COMPACT_ROWS.includes(row.id));
 
   return (
     <article aria-label={`Verdict for ${guide.appName}`} className={cn("rounded-md border border-ink bg-card", className)}>
@@ -54,8 +56,14 @@ export function Verdict({ guide, variant = "full", hasIdentity = true, detailHre
         <StampMark score={guide.difficulty.score} />
       </header>
       <dl className="flex flex-col divide-y divide-rule">
-        {isFull && <DifficultyRow difficulty={guide.difficulty} isHighlighted={highlighted === "difficulty"} />}
-        {isFull && <KindRow archetype={guide.archetype} isHighlighted={highlighted === "kind"} />}
+        {variant === "full" && <DifficultyRow difficulty={guide.difficulty} isHighlighted={highlighted === "difficulty"} />}
+        {variant !== "compact" && (
+          <KindRow
+            archetype={guide.archetype}
+            difficulty={variant === "guide" ? guide.difficulty : undefined}
+            isHighlighted={highlighted === "kind"}
+          />
+        )}
         {rows.map((row) => (
           <VerdictRow
             key={row.id}

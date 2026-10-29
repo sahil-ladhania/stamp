@@ -12,6 +12,7 @@ import { ClaimEvidence } from "@/components/evidence/ClaimEvidence";
 import { UnknownValue } from "@/components/shared/UnknownValue";
 import { cn } from "@/lib/utils";
 import type { VerdictRow as VerdictRowData } from "@/utils/verdict";
+import { clampWords } from "@/utils/clamp-words";
 import { isUnknownClaim } from "@/utils/is-unknown-claim";
 
 type VerdictRowProps = {
@@ -78,7 +79,8 @@ export function VerdictRow({ row, href, isHighlighted }: VerdictRowProps): React
         <UnknownValue claim={claim ?? undefined} />
       ) : (
         <>
-          <span className="line-clamp-2 min-w-0 flex-1 basis-48 text-body text-ink">{row.value}</span>
+          {/* Cut on a word; the full text is in the evidence panel. The line clamp is only a net for a very narrow screen. */}
+          <span className="line-clamp-3 min-w-0 flex-1 basis-48 text-body text-ink">{clampWords(row.value, 120)}</span>
           {claim && <ClaimEvidence claim={claim} />}
         </>
       )}
