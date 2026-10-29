@@ -15,7 +15,8 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "smoke:live": "tsx scripts/smoke-live.ts",
-    "capture:fixtures": "tsx scripts/capture-fixtures.ts"
+    "capture:fixtures": "tsx scripts/capture-fixtures.ts",
+    "eval": "tsx evals/cli.ts"
   },
   "keywords": [],
   "author": "",

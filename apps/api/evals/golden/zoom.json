@@ -1,0 +1,153 @@
+{
+  "slug": "zoom",
+  "set": "holdout",
+  "typedNames": ["Zoom"],
+  "researchedOn": "2026-10-29",
+  "product": {
+    "name": "Zoom API and Zoom App Marketplace OAuth apps",
+    "source": {
+      "url": "https://developers.zoom.us/docs/distribute/app-review-process/",
+      "quote": "Public and unlisted apps undergo a dedicated review process."
+    }
+  },
+  "docs": {
+    "domains": ["developers.zoom.us"],
+    "pathHints": ["/docs/integrations/", "/docs/distribute/", "/docs/build-flow/", "/docs/api/"]
+  },
+  "oauthAppCreation": {
+    "where": "The Zoom App Marketplace build flow: create the app, then use its development credentials",
+    "source": {
+      "url": "https://developers.zoom.us/docs/build-flow/",
+      "quote": "In the development phase, use the build flow to create your app."
+    }
+  },
+  "reviewGate": {
+    "value": "required_to_scale",
+    "alsoAccept": ["security_assessment"],
+    "confidence": "high",
+    "trigger": "Public and unlisted apps (usable outside your own Zoom account) must pass the Marketplace review, which includes a security review of requested scopes. Private and beta apps need no review.",
+    "source": {
+      "url": "https://developers.zoom.us/docs/distribute/app-review-process/",
+      "quote": "Public and unlisted apps undergo a dedicated review process."
+    },
+    "moreSources": [
+      {
+        "url": "https://developers.zoom.us/docs/distribute/app-review-process/",
+        "quote": "Private and beta apps do not require review."
+      }
+    ]
+  },
+  "approvalWait": {
+    "kind": "range",
+    "minDays": 0,
+    "maxDays": 7,
+    "stated": "Review submission response time is within 5 business days. This is the first response, not the end-to-end approval.",
+    "derivation": "5 business days is about 7 calendar days",
+    "confidence": "low",
+    "source": {
+      "url": "https://developers.zoom.us/blog/how-long-does-app-review-take/",
+      "quote": "The app review submission response time is within 5 business days."
+    }
+  },
+  "testBeforeApproval": {
+    "possible": true,
+    "how": "Use the development client ID and credentials; share a private app inside your own Zoom account via an authorization URL",
+    "source": {
+      "url": "https://developers.zoom.us/docs/distribute/sharing-private-and-beta-apps/",
+      "quote": "You can share your private apps and beta apps via distribution of an authorization URL."
+    }
+  },
+  "scopes": {
+    "kind": "scope_strings",
+    "namePattern": "^[a-z_]+:[a-z_]+(:[a-z_]+)*$",
+    "knownFake": [],
+    "real": [
+      {
+        "name": "meeting:read:meeting",
+        "source": {
+          "url": "https://developers.zoom.us/docs/integrations/oauth-scopes-granular/",
+          "quote": "meeting:read:meeting"
+        }
+      },
+      {
+        "name": "meeting:write:meeting",
+        "source": {
+          "url": "https://developers.zoom.us/docs/integrations/oauth-scopes-granular/",
+          "quote": "meeting:write:meeting"
+        }
+      },
+      {
+        "name": "meeting:read:list_meetings",
+        "source": {
+          "url": "https://developers.zoom.us/docs/integrations/oauth-scopes-granular/",
+          "quote": "meeting:read:list_meetings"
+        }
+      },
+      {
+        "name": "user:read:user",
+        "source": {
+          "url": "https://developers.zoom.us/docs/integrations/oauth-scopes-granular/",
+          "quote": "user:read:user"
+        }
+      },
+      {
+        "name": "user:read:list_users",
+        "source": {
+          "url": "https://developers.zoom.us/docs/integrations/oauth-scopes-granular/",
+          "quote": "user:read:list_users"
+        }
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "summary": "The Marketplace security review checks that the app requests only the minimum OAuth scopes and may ask for unused scopes to be removed",
+      "kind": "approval",
+      "keywords": ["security review", "scopes", "minimum", "remove"],
+      "source": {
+        "url": "https://developers.zoom.us/docs/distribute/app-review-process/",
+        "quote": "the app only requests the minimum necessary OAuth scopes required for its functionality"
+      }
+    },
+    {
+      "summary": "Private and beta apps cannot be published, and sharing a beta app outside your account needs Zoom's approval",
+      "kind": "approval",
+      "keywords": ["private", "beta", "approval", "outside your account", "authorization url"],
+      "source": {
+        "url": "https://developers.zoom.us/docs/distribute/sharing-private-and-beta-apps/",
+        "quote": "You must get approval from Zoom to share the authorization URL outside your account."
+      }
+    },
+    {
+      "summary": "Submission completeness is checked first: accurate metadata, technical design documentation and security information are required",
+      "kind": "approval",
+      "keywords": ["submission", "metadata", "technical design", "security information", "rejection"],
+      "source": {
+        "url": "https://developers.zoom.us/docs/distribute/app-review-process/",
+        "quote": "Requirements include accurate metadata, technical design documentation, security information."
+      }
+    },
+    {
+      "summary": "Refresh tokens expire after 90 days, so users must re-authorize if the refresh token lapses",
+      "kind": "limit",
+      "keywords": ["refresh token", "90 days", "expire", "re-authorize"],
+      "source": {
+        "url": "https://developers.zoom.us/docs/integrations/oauth/",
+        "quote": "Refresh tokens expire after 90 days."
+      }
+    }
+  ],
+  "avoidProducts": [
+    {
+      "name": "Zoom Meeting SDK",
+      "severity": "soft",
+      "hostPathHints": ["developers.zoom.us/docs/meeting-sdk"],
+      "why": "SDK embedding has its own review requirements, separate from OAuth app review",
+      "evidence": "The app review page lists Meeting SDK feature review & requirements as a separate section"
+    }
+  ],
+  "notes": [
+    "The 5 business day figure is Zoom's stated response time, not time to approval, so the wait is low confidence.",
+    "Zoom scope names are quoted as bare strings because the scope reference is a long table with no per-scope prose."
+  ]
+}

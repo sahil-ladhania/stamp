@@ -1,0 +1,166 @@
+{
+  "slug": "github",
+  "set": "tuning",
+  "typedNames": ["GitHub"],
+  "researchedOn": "2026-10-29",
+  "product": {
+    "name": "GitHub OAuth apps",
+    "source": {
+      "url": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app",
+      "quote": "You can create and register an OAuth app under your personal account or under any organization you have administrative access to."
+    }
+  },
+  "docs": {
+    "domains": ["docs.github.com"],
+    "pathHints": ["/en/apps/oauth-apps/", "/en/organizations/managing-oauth-access-to-your-organizations-data/", "/en/rest"]
+  },
+  "oauthAppCreation": {
+    "where": "GitHub Settings > Developer settings > OAuth apps > New OAuth App",
+    "source": {
+      "url": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app",
+      "quote": "In the left sidebar, click OAuth apps. Click New OAuth App."
+    }
+  },
+  "reviewGate": {
+    "value": "none",
+    "alsoAccept": ["optional_listing"],
+    "confidence": "high",
+    "trigger": "No review to create or use an OAuth app. A GitHub Marketplace listing is optional; a paid plan needs a verified publisher.",
+    "source": {
+      "url": "https://docs.github.com/en/apps/github-marketplace/creating-apps-for-github-marketplace/requirements-for-listing-an-app",
+      "quote": "To publish a paid plan for your app on the GitHub Marketplace, your app must be owned by an organization that is a verified publisher."
+    },
+    "moreSources": [
+      {
+        "url": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app",
+        "quote": "You can create and register an OAuth app under your personal account or under any organization you have administrative access to."
+      }
+    ]
+  },
+  "approvalWait": {
+    "kind": "none",
+    "stated": "No approval step is described for creating or using an OAuth app. Marketplace listing review time is not stated.",
+    "confidence": "medium",
+    "source": {
+      "url": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app",
+      "quote": "You can create and register an OAuth app under your personal account or under any organization you have administrative access to."
+    }
+  },
+  "testBeforeApproval": {
+    "possible": true,
+    "how": "Register the app under your own account and authorize it immediately",
+    "source": {
+      "url": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app",
+      "quote": "You can create and register an OAuth app under your personal account or under any organization you have administrative access to."
+    }
+  },
+  "scopes": {
+    "kind": "scope_strings",
+    "namePattern": "^[a-z_]+(:[a-z_]+)?$",
+    "knownFake": [],
+    "real": [
+      {
+        "name": "repo",
+        "source": {
+          "url": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps",
+          "quote": "repo Grants full access to public and private repositories including read and write access to code, commit statuses, repository invitations, collaborators, deployment statuses, and repository webhooks."
+        }
+      },
+      {
+        "name": "user",
+        "source": {
+          "url": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps",
+          "quote": "user Grants read/write access to profile info only."
+        }
+      },
+      {
+        "name": "read:org",
+        "source": {
+          "url": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps",
+          "quote": "read:org Read-only access to organization membership, organization projects, and team membership."
+        }
+      },
+      {
+        "name": "gist",
+        "source": {
+          "url": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps",
+          "quote": "gist Grants write access to gists."
+        }
+      },
+      {
+        "name": "workflow",
+        "source": {
+          "url": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps",
+          "quote": "workflow Grants the ability to add and update GitHub Actions workflow files."
+        }
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "summary": "Organizations with OAuth app access restrictions block members from authorizing the app until an owner approves it",
+      "kind": "approval",
+      "keywords": ["organization", "owner", "restrictions", "approve", "access restrictions"],
+      "source": {
+        "url": "https://docs.github.com/en/organizations/managing-oauth-access-to-your-organizations-data/about-oauth-app-access-restrictions",
+        "quote": "When OAuth app access restrictions are enabled, organization members and outside collaborators cannot authorize OAuth app access to organization resources."
+      }
+    },
+    {
+      "summary": "New organizations have OAuth app access restrictions turned on by default",
+      "kind": "approval",
+      "keywords": ["new organization", "default", "restrictions"],
+      "source": {
+        "url": "https://docs.github.com/en/organizations/managing-oauth-access-to-your-organizations-data/about-oauth-app-access-restrictions",
+        "quote": "When you create a new organization, OAuth app access restrictions are enabled by default."
+      }
+    },
+    {
+      "summary": "Coarse scopes: an OAuth app needs the repo scope for issues, pull requests or anything owned by a repository",
+      "kind": "limit",
+      "keywords": ["repo scope", "coarse", "fine-grained", "issues"],
+      "source": {
+        "url": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/differences-between-github-apps-and-oauth-apps",
+        "quote": "OAuth apps need to request the repo scope to get access to issues, pull requests, or anything owned by the repository."
+      }
+    },
+    {
+      "summary": "OAuth apps have lower rate limits that do not scale",
+      "kind": "limit",
+      "keywords": ["rate limit", "does not scale", "lower"],
+      "source": {
+        "url": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/differences-between-github-apps-and-oauth-apps",
+        "quote": "OAuth apps have lower rate limits and do not scale."
+      }
+    },
+    {
+      "summary": "A paid Marketplace plan needs a verified publisher and at least 200 users for an OAuth app",
+      "kind": "approval",
+      "keywords": ["marketplace", "paid", "200 users", "verified publisher"],
+      "source": {
+        "url": "https://docs.github.com/en/apps/github-marketplace/creating-apps-for-github-marketplace/requirements-for-listing-an-app",
+        "quote": "OAuth apps should have a minimum of 200 users."
+      }
+    }
+  ],
+  "avoidProducts": [
+    {
+      "name": "GitHub Actions marketplace publishing",
+      "severity": "hard",
+      "hostPathHints": ["docs.github.com/en/actions"],
+      "why": "Publishing actions is a different Marketplace program from authorizing an OAuth app",
+      "evidence": "Appeared in web search results for GitHub Marketplace listing requirements (2026-10-29)"
+    },
+    {
+      "name": "GitHub Apps (registering and installing)",
+      "severity": "soft",
+      "hostPathHints": ["docs.github.com/en/apps/creating-github-apps"],
+      "why": "GitHub Apps use fine-grained permissions and installation tokens, not OAuth scopes; scope claims must not be sourced from these pages",
+      "evidence": "Differences page states GitHub Apps use fine-grained permissions, OAuth apps use scopes"
+    }
+  ],
+  "notes": [
+    "GitHub also offers GitHub Apps, which GitHub prefers. The golden set follows the OAuth app path because the guide is about OAuth.",
+    "The marketplace listing review wait is not documented, so the wait is none for OAuth use only."
+  ]
+}

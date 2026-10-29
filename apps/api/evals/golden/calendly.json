@@ -1,0 +1,131 @@
+{
+  "slug": "calendly",
+  "set": "holdout",
+  "typedNames": ["Calendly"],
+  "researchedOn": "2026-10-29",
+  "product": {
+    "name": "Calendly API (OAuth apps)",
+    "source": {
+      "url": "https://developer.calendly.com/docs/authentication/creating-an-oauth-app",
+      "quote": "On the OAuth apps tab, select Create OAuth app."
+    }
+  },
+  "docs": {
+    "domains": ["developer.calendly.com"],
+    "pathHints": ["/docs/authentication/", "/docs/"]
+  },
+  "oauthAppCreation": {
+    "where": "Calendly Profile menu > Developer > OAuth apps > Create OAuth app (or developer.calendly.com)",
+    "source": {
+      "url": "https://developer.calendly.com/docs/authentication/creating-an-oauth-app",
+      "quote": "In Calendly, open the Profile menu and select Developer."
+    }
+  },
+  "reviewGate": {
+    "value": "none",
+    "alsoAccept": ["unknown"],
+    "confidence": "low",
+    "trigger": "The docs describe Sandbox and Production app types that the developer picks, and no review. Absence of a documented review is not proof that none exists.",
+    "source": {
+      "url": "https://developer.calendly.com/docs/authentication/creating-an-oauth-app",
+      "quote": "Environment type: select Sandbox for development and testing, or Production when your app is ready for real users."
+    }
+  },
+  "approvalWait": {
+    "kind": "unknown",
+    "stated": "No approval process or wait is documented",
+    "confidence": "low"
+  },
+  "testBeforeApproval": {
+    "possible": true,
+    "how": "Create a Sandbox app for development, then a separate Production app for real customer data",
+    "source": {
+      "url": "https://developer.calendly.com/docs/authentication/creating-an-oauth-app",
+      "quote": "We recommend that you start with a Sandbox app for development. Create a second app for Production when you are ready to use real customer data."
+    }
+  },
+  "scopes": {
+    "kind": "scope_strings",
+    "namePattern": "^[a-z_]+:(read|write)$",
+    "knownFake": [],
+    "real": [
+      {
+        "name": "scheduled_events:read",
+        "source": {
+          "url": "https://developer.calendly.com/docs/authentication/scopes",
+          "quote": "scheduled_events:read Retrieve scheduled events and event invitee information."
+        }
+      },
+      {
+        "name": "event_types:read",
+        "source": {
+          "url": "https://developer.calendly.com/docs/authentication/scopes",
+          "quote": "event_types:read Retrieve event type details and available times."
+        }
+      },
+      {
+        "name": "users:read",
+        "source": {
+          "url": "https://developer.calendly.com/docs/authentication/scopes",
+          "quote": "users:read Retrieve user information."
+        }
+      },
+      {
+        "name": "webhooks:write",
+        "source": {
+          "url": "https://developer.calendly.com/docs/authentication/scopes",
+          "quote": "webhooks:write Create or delete webhook subscriptions."
+        }
+      },
+      {
+        "name": "scheduling_links:write",
+        "source": {
+          "url": "https://developer.calendly.com/docs/authentication/scopes",
+          "quote": "scheduling_links:write Create a single-use scheduling link from an existing event type without any customization."
+        }
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "summary": "A new OAuth app has no API access until scopes are explicitly requested",
+      "kind": "setup",
+      "keywords": ["scopes", "no api access", "explicitly requested", "new oauth app"],
+      "source": {
+        "url": "https://developer.calendly.com/docs/authentication/scopes",
+        "quote": "no API access is granted until scopes are explicitly requested and approved"
+      }
+    },
+    {
+      "summary": "Production apps accept only https redirect URIs, and each app takes exactly one redirect URI",
+      "kind": "setup",
+      "keywords": ["redirect uri", "https", "production", "one uri"],
+      "source": {
+        "url": "https://developer.calendly.com/docs/authentication/creating-an-oauth-app",
+        "quote": "Redirect URI: the URL where Calendly sends users after they authorize your app. Enter exactly one URI."
+      }
+    },
+    {
+      "summary": "Sandbox and Production are separate apps, so going live means creating a second app",
+      "kind": "setup",
+      "keywords": ["sandbox", "production", "second app", "environment"],
+      "source": {
+        "url": "https://developer.calendly.com/docs/authentication/creating-an-oauth-app",
+        "quote": "Create a second app for Production when you are ready to use real customer data."
+      }
+    }
+  ],
+  "avoidProducts": [
+    {
+      "name": "Calendly MCP server",
+      "severity": "soft",
+      "hostPathHints": ["calendly-mcp-server", "/docs/mcp/"],
+      "why": "The MCP server uses dynamic client registration instead of a pre-registered OAuth app",
+      "evidence": "Appeared in web search results for the Calendly OAuth docs (2026-10-29)"
+    }
+  ],
+  "notes": [
+    "Calendly is the thinnest golden entry: no review or wait is documented, so both are low confidence. A guide that says Unknown for the wait is correct, and a guide that invents a number is wrong.",
+    "Webhooks may need a paid Calendly plan according to a search summary, but no official page fetched here states it, so it is not recorded as a blocker."
+  ]
+}

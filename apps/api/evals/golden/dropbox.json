@@ -1,0 +1,147 @@
+{
+  "slug": "dropbox",
+  "set": "holdout",
+  "typedNames": ["Dropbox"],
+  "researchedOn": "2026-10-29",
+  "product": {
+    "name": "Dropbox API (DBX Platform), not Dropbox Sign",
+    "source": {
+      "url": "https://www.dropbox.com/developers/reference/developer-guide",
+      "quote": "When you first create a Dropbox API app, it's given development status and can only be connected to your own account."
+    }
+  },
+  "docs": {
+    "domains": ["dropbox.com", "developers.dropbox.com"],
+    "pathHints": ["/developers/", "/oauth-guide"]
+  },
+  "oauthAppCreation": {
+    "where": "Dropbox App Console: create an app, then choose scopes on its Permissions tab",
+    "source": {
+      "url": "https://www.dropbox.com/developers/reference/developer-guide",
+      "quote": "When you start building an app on the DBX Platform, you'll need to create a Dropbox app in the App Console"
+    }
+  },
+  "reviewGate": {
+    "value": "required_to_scale",
+    "alsoAccept": [],
+    "confidence": "high",
+    "trigger": "A new app is in development status (own account plus a limited number of others, up to 500). Opening it to more users needs production approval, reviewed once the app has linked at least 50 users.",
+    "source": {
+      "url": "https://www.dropbox.com/developers/reference/developer-guide",
+      "quote": "However, if you'd like to open your app to more users, you'll need to apply for production status."
+    }
+  },
+  "approvalWait": {
+    "kind": "range",
+    "minDays": 1,
+    "maxDays": 7,
+    "stated": "Dropbox responds to nearly all production requests within a few business days",
+    "derivation": "A few business days is read as at most about a week; the figure is not numeric in the source",
+    "confidence": "low",
+    "source": {
+      "url": "https://www.dropbox.com/developers/support",
+      "quote": "We respond to nearly all production requests within a few business days."
+    }
+  },
+  "testBeforeApproval": {
+    "possible": true,
+    "how": "Development status works like production for up to 500 linked users; enable extra users from the app's info page",
+    "source": {
+      "url": "https://www.dropbox.com/developers/reference/developer-guide",
+      "quote": "it can only be linked with up to 500 total Dropbox users"
+    }
+  },
+  "scopes": {
+    "kind": "scope_strings",
+    "namePattern": "^[a-z_]+(\\.[a-z_]+)+$",
+    "knownFake": [],
+    "real": [
+      {
+        "name": "account_info.read",
+        "source": {
+          "url": "https://raw.githubusercontent.com/dropbox/dropbox-api-spec/main/users.stone",
+          "quote": "scope = \"account_info.read\""
+        }
+      },
+      {
+        "name": "files.metadata.read",
+        "source": {
+          "url": "https://raw.githubusercontent.com/dropbox/dropbox-api-spec/main/files.stone",
+          "quote": "scope = \"files.metadata.read\""
+        }
+      },
+      {
+        "name": "files.metadata.write",
+        "source": {
+          "url": "https://raw.githubusercontent.com/dropbox/dropbox-api-spec/main/files.stone",
+          "quote": "scope = \"files.metadata.write\""
+        }
+      },
+      {
+        "name": "files.content.read",
+        "source": {
+          "url": "https://raw.githubusercontent.com/dropbox/dropbox-api-spec/main/files.stone",
+          "quote": "scope = \"files.content.read\""
+        }
+      },
+      {
+        "name": "files.content.write",
+        "source": {
+          "url": "https://raw.githubusercontent.com/dropbox/dropbox-api-spec/main/files.stone",
+          "quote": "scope = \"files.content.write\""
+        }
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "summary": "Once 50 users are linked, the app has two weeks to get production approval or it is frozen for new users",
+      "kind": "approval",
+      "keywords": ["50", "two weeks", "frozen", "production status", "link"],
+      "source": {
+        "url": "https://www.dropbox.com/developers/reference/developer-guide",
+        "quote": "your app's ability to link additional Dropbox users will be frozen until you submit an application and are approved for production status"
+      }
+    },
+    {
+      "summary": "A production request is not reviewed until the app has linked at least 50 Dropbox users",
+      "kind": "approval",
+      "keywords": ["50", "linked", "not reviewed", "production"],
+      "source": {
+        "url": "https://www.dropbox.com/developers/reference/developer-guide",
+        "quote": "it will not be reviewed until your app has linked with at least 50 Dropbox users"
+      }
+    },
+    {
+      "summary": "Development status caps the app at 500 linked users",
+      "kind": "limit",
+      "keywords": ["500", "development status", "cap", "limit"],
+      "source": {
+        "url": "https://www.dropbox.com/developers/reference/developer-guide",
+        "quote": "it can only be linked with up to 500 total Dropbox users"
+      }
+    },
+    {
+      "summary": "Reviewers check that the app does not request broader permissions than its functionality needs",
+      "kind": "approval",
+      "keywords": ["least privilege", "permission", "scopes", "broad"],
+      "source": {
+        "url": "https://www.dropbox.com/developers/reference/developer-guide",
+        "quote": "we'll review that your app doesn't request an unnecessarily broad permission based on the functionality provided by the app"
+      }
+    }
+  ],
+  "avoidProducts": [
+    {
+      "name": "Dropbox Sign (HelloSign) API",
+      "severity": "hard",
+      "hostPathHints": ["hellosign.com", "dropbox.com/sign", "developers.dropbox.com/dbx-sign", "sign.dropbox.com"],
+      "why": "A separate e-signature product with its own API and keys",
+      "evidence": "Dropbox Sign admin pages appeared in web search results for the Dropbox API (2026-10-29)"
+    }
+  ],
+  "notes": [
+    "Scope strings come from Dropbox's official API spec repository (github.com/dropbox/dropbox-api-spec) because the scope reference on dropbox.com is rendered by script. It is Dropbox's own repo, but not a docs domain. Please confirm you accept it as an official source.",
+    "The wait is not numeric in the source (a few business days), so confidence is low."
+  ]
+}

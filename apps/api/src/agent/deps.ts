@@ -7,6 +7,7 @@
 import type { RunnableConfig } from "@langchain/core/runnables";
 import type { RunUsage } from "../lib/usage.js";
 import type { BudgetClock } from "./budget.js";
+import type { PageCachePort } from "./page-record.js";
 import type { AgentEvent } from "./run-agent.js";
 
 export type AgentDeps = {
@@ -22,6 +23,8 @@ export type AgentDeps = {
   extractConcurrency: number;
   /** False when AGENT_PROBE is off: the probe stage then sends no request at all. */
   probeEnabled: boolean;
+  /** Replaces the database page cache for this run (evals use one that never remembers). */
+  pageCache?: PageCachePort;
 };
 
 function isDeps(value: unknown): value is AgentDeps {

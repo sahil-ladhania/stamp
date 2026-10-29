@@ -53,6 +53,7 @@ Instructions for every AI coding agent working in this repo (Cursor, Claude Code
 | Add a dependency | `pnpm --filter <workspace> add <pkg>` |
 | Migrate the database | `pnpm --filter api db:migrate` |
 | Seed library guides | `pnpm --filter api db:seed` |
+| Eval reliability (prints the cost estimate; add `--confirm` to run) | `pnpm --filter api eval -- --set tuning` |
 
 Use pnpm only. Never use npm or yarn.
 

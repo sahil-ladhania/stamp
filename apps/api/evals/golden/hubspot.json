@@ -1,0 +1,159 @@
+{
+  "slug": "hubspot",
+  "set": "tuning",
+  "typedNames": ["HubSpot"],
+  "researchedOn": "2026-10-29",
+  "product": {
+    "name": "HubSpot public apps (OAuth) and the HubSpot CRM API",
+    "source": {
+      "url": "https://developers.hubspot.com/docs/apps/legacy-apps/public-apps/overview",
+      "quote": "You can leverage the same features of legacy public apps by instead building an app on the latest version of the developer platform, which still provides OAuth authentication, and can be distributed to a set of allowlisted accounts or via the HubSpot marketplace."
+    }
+  },
+  "docs": {
+    "domains": ["developers.hubspot.com"],
+    "pathHints": ["/docs/apps/", "/docs/api-reference/", "/docs/getting-started/"]
+  },
+  "oauthAppCreation": {
+    "where": "A HubSpot developer account. New-platform apps are created with the HubSpot CLI; legacy public apps are created in the developer account.",
+    "source": {
+      "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/create-an-app",
+      "quote": "Apps on the new developer platform (versions 2025.2 and 2026.03) are initialized using the HubSpot CLI"
+    }
+  },
+  "reviewGate": {
+    "value": "optional_listing",
+    "alsoAccept": ["required_to_scale"],
+    "confidence": "high",
+    "trigger": "Submitting a listing to the HubSpot Marketplace starts a manual review by the Ecosystem Quality team. An unlisted app can still be installed through its install URL but shows a not reviewed banner.",
+    "source": {
+      "url": "https://developers.hubspot.com/docs/apps/legacy-apps/public-apps/overview",
+      "quote": "HubSpot will display the verified domain along with a banner on the install screen that says the app has not been reviewed or approved by HubSpot."
+    },
+    "moreSources": [
+      {
+        "url": "https://developers.hubspot.com/docs/apps/legacy-apps/public-apps/overview",
+        "quote": "When an app has been listed on the marketplace, passing HubSpot's app review process, HubSpot will not display either of the above banners."
+      }
+    ]
+  },
+  "approvalWait": {
+    "kind": "range",
+    "minDays": 14,
+    "maxDays": 60,
+    "stated": "Initial review within 10 business days; the whole review and feedback process should take no more than 60 days from the time feedback is shared.",
+    "derivation": "10 business days is about 14 calendar days; 60 days is the stated cap",
+    "confidence": "high",
+    "source": {
+      "url": "https://developers.hubspot.com/docs/apps/developer-platform/list-apps/listing-your-app/app-marketplace-listing-requirements",
+      "quote": "the HubSpot Ecosystem Quality team will complete an initial review within 10 business days."
+    },
+    "moreSources": [
+      {
+        "url": "https://developers.hubspot.com/docs/apps/developer-platform/list-apps/listing-your-app/app-marketplace-listing-requirements",
+        "quote": "The entire app review and feedback process should take no more than 60 days from the time feedback is shared."
+      }
+    ]
+  },
+  "testBeforeApproval": {
+    "possible": true,
+    "how": "Create a free developer test account (up to 10) and install the app there",
+    "source": {
+      "url": "https://developers.hubspot.com/docs/getting-started/account-types",
+      "quote": "You can create up to 10 test accounts to test apps and integrations without affecting any real HubSpot data."
+    }
+  },
+  "scopes": {
+    "kind": "scope_strings",
+    "namePattern": "^[a-z][a-z0-9_-]*(\\.[a-z0-9_-]+)*$",
+    "knownFake": [],
+    "real": [
+      {
+        "name": "crm.objects.contacts.read",
+        "source": {
+          "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/app-configuration",
+          "quote": "(e.g., crm.objects.contacts.read to retrieve contacts)"
+        }
+      },
+      {
+        "name": "crm.objects.contacts.write",
+        "source": {
+          "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/app-configuration",
+          "quote": "\"requiredScopes\": [\"crm.objects.contacts.read\", \"crm.objects.contacts.write\"]"
+        }
+      },
+      {
+        "name": "oauth",
+        "source": {
+          "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/oauth/oauth-quickstart-guide",
+          "quote": "separated by URL-encoded spaces (%20). oauth%20crm.objects.contacts.read"
+        }
+      },
+      {
+        "name": "crm.objects.custom.read",
+        "source": {
+          "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/scopes",
+          "quote": "you could add the crm.objects.custom.read scope as an optional scope"
+        }
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "summary": "A Marketplace listing needs at least three active, unique installs from accounts unaffiliated with the developer",
+      "kind": "approval",
+      "keywords": ["three", "installs", "active", "marketplace", "listing"],
+      "source": {
+        "url": "https://developers.hubspot.com/docs/apps/developer-platform/list-apps/listing-your-app/app-marketplace-listing-requirements",
+        "quote": "Installs: your app must have at least three active, unique installs."
+      }
+    },
+    {
+      "summary": "Only a Super Admin can install an app, and the installer needs access to every requested scope or the install fails",
+      "kind": "setup",
+      "keywords": ["super admin", "install", "scopes", "permission"],
+      "source": {
+        "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/oauth/oauth-quickstart-guide",
+        "quote": "You must be a Super Admin to install an app in a HubSpot account."
+      }
+    },
+    {
+      "summary": "Unlisted apps show a banner that says the app has not been reviewed or approved by HubSpot",
+      "kind": "approval",
+      "keywords": ["banner", "not been reviewed", "unlisted", "verified domain"],
+      "source": {
+        "url": "https://developers.hubspot.com/docs/apps/legacy-apps/public-apps/overview",
+        "quote": "HubSpot will display the verified domain along with a banner on the install screen that says the app has not been reviewed or approved by HubSpot."
+      }
+    },
+    {
+      "summary": "A listed app must use every scope it requests; unused scopes must be removed",
+      "kind": "approval",
+      "keywords": ["scopes", "unused", "least", "listing"],
+      "source": {
+        "url": "https://developers.hubspot.com/docs/apps/developer-platform/list-apps/listing-your-app/app-marketplace-listing-requirements",
+        "quote": "Your app must use all of the scopes that it requests during installation."
+      }
+    }
+  ],
+  "avoidProducts": [
+    {
+      "name": "HubSpot Template Marketplace",
+      "severity": "hard",
+      "hostPathHints": ["developers.hubspot.com/docs/cms/marketplace"],
+      "why": "A separate listing program for CMS templates with its own policies",
+      "evidence": "Appeared in web search results for HubSpot app listing review (2026-10-29)"
+    },
+    {
+      "name": "HubSpot legacy private apps",
+      "severity": "soft",
+      "hostPathHints": ["private-apps"],
+      "why": "Private apps use a static access token, not OAuth",
+      "evidence": "Named on the OAuth quickstart page as a separate app type"
+    }
+  ],
+  "notes": [
+    "Several HubSpot pages exist twice: legacy-apps and developer-platform. Both are official. The new platform pages are preferred; legacy pages are used where only they state the fact.",
+    "HubSpot publishes the full scope table as a dynamic table that plain HTML does not carry. Scopes here come from pages that quote them in prose or config examples."
+  ]
+}

@@ -35,6 +35,7 @@ export const fetchNode = stageNode("fetch", async (state, config) => {
       signal: config.signal,
       usage: deps.usage,
       runId: deps.runId,
+      cache: deps.pageCache,
     },
   );
 

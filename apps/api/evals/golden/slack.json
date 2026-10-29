@@ -1,0 +1,158 @@
+{
+  "slug": "slack",
+  "set": "tuning",
+  "typedNames": ["Slack"],
+  "researchedOn": "2026-10-29",
+  "product": {
+    "name": "Slack Web API (installing apps with OAuth v2)",
+    "source": {
+      "url": "https://docs.slack.dev/authentication/installing-with-oauth/",
+      "quote": "Slack apps are installed with a v2 OAuth 2.0 flow."
+    }
+  },
+  "docs": {
+    "domains": ["docs.slack.dev", "api.slack.com"],
+    "pathHints": ["/authentication/", "/app-management/", "/slack-marketplace/", "/reference/scopes", "/apis/web-api/"]
+  },
+  "oauthAppCreation": {
+    "where": "api.slack.com/apps (the app settings page): create an app, then add scopes and redirect URLs under OAuth & Permissions",
+    "source": {
+      "url": "https://docs.slack.dev/faq/",
+      "quote": "find your application's settings page at https://api.slack.com/apps"
+    }
+  },
+  "reviewGate": {
+    "value": "optional_listing",
+    "alsoAccept": ["required_to_scale"],
+    "confidence": "medium",
+    "trigger": "Marketplace review is required to be listed. Unlisted apps can be distributed to any workspace but commercially distributed unlisted apps get the 1 request per minute limit on conversations.history and conversations.replies.",
+    "source": {
+      "url": "https://docs.slack.dev/app-management/distribution/",
+      "quote": "apps intended for commercial distribution should be submitted and approved for listing in the Slack Marketplace"
+    },
+    "moreSources": [
+      {
+        "url": "https://docs.slack.dev/faq/",
+        "quote": "If you don't submit your app, we won't display it there, but it will be installable by any workspace you give the authorization URL to."
+      },
+      {
+        "url": "https://docs.slack.dev/changelog/2025/05/29/rate-limit-changes-for-non-marketplace-apps/",
+        "quote": "will be limited to 1 request per minute, unless they are approved for the Slack Marketplace."
+      }
+    ]
+  },
+  "approvalWait": {
+    "kind": "range",
+    "minDays": 14,
+    "maxDays": 84,
+    "stated": "Preliminary review up to 10 business days; functional review up to 10 weeks for new submissions and 6 weeks for resubmissions.",
+    "derivation": "10 business days is about 14 calendar days; plus up to 10 weeks (70 days) for the functional review, in sequence",
+    "confidence": "high",
+    "source": {
+      "url": "https://docs.slack.dev/slack-marketplace/slack-marketplace-review-guide/",
+      "quote": "Currently, the preliminary part of the review takes up to 10 business days to receive feedback, while the functional review takes up to 10 weeks for new submissions and 6 weeks for published apps resubmitting changes."
+    }
+  },
+  "testBeforeApproval": {
+    "possible": true,
+    "how": "Install the app in its own development workspace right away, or distribute it unlisted to other workspaces for a pilot",
+    "source": {
+      "url": "https://docs.slack.dev/app-management/distribution/",
+      "quote": "Once created, your app can be installed to its associated workspace without any code for handling authorization."
+    }
+  },
+  "scopes": {
+    "kind": "scope_strings",
+    "namePattern": "^[a-z][a-z_.-]*(:[a-z_.-]+)?$",
+    "knownFake": [],
+    "real": [
+      {
+        "name": "chat:write",
+        "source": {
+          "url": "https://docs.slack.dev/authentication/installing-with-oauth/",
+          "quote": "\"scope\": \"chat:write\""
+        }
+      },
+      {
+        "name": "channels:history",
+        "source": {
+          "url": "https://docs.slack.dev/authentication/installing-with-oauth/",
+          "quote": "where you request channels:history and then installs your app again where you request channels:read"
+        }
+      },
+      {
+        "name": "channels:read",
+        "source": {
+          "url": "https://docs.slack.dev/authentication/installing-with-oauth/",
+          "quote": "where you request channels:history and then installs your app again where you request channels:read"
+        }
+      },
+      {
+        "name": "incoming-webhook",
+        "source": {
+          "url": "https://docs.slack.dev/authentication/installing-with-oauth/",
+          "quote": "a comma-separated list of scopes, such as: scope=incoming-webhook,commands"
+        }
+      },
+      {
+        "name": "commands",
+        "source": {
+          "url": "https://docs.slack.dev/authentication/installing-with-oauth/",
+          "quote": "a comma-separated list of scopes, such as: scope=incoming-webhook,commands"
+        }
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "summary": "Marketplace submission is blocked until the app is installed on 10 or more active workspaces",
+      "kind": "approval",
+      "keywords": ["10", "active workspaces", "marketplace", "submit"],
+      "source": {
+        "url": "https://docs.slack.dev/slack-marketplace/slack-marketplace-review-guide/",
+        "quote": "Your app has been installed on 10 or more active workspaces and the service has been tested on those workspaces"
+      }
+    },
+    {
+      "summary": "Commercially distributed apps outside the Marketplace are limited to 1 request per minute on conversations.history and conversations.replies",
+      "kind": "limit",
+      "keywords": ["conversations.history", "rate limit", "1 request per minute", "non-marketplace", "unlisted"],
+      "source": {
+        "url": "https://docs.slack.dev/changelog/2025/05/29/rate-limit-changes-for-non-marketplace-apps/",
+        "quote": "will be limited to 1 request per minute, unless they are approved for the Slack Marketplace."
+      }
+    },
+    {
+      "summary": "Some workspaces only let admins install apps, or only apps listed in the Marketplace",
+      "kind": "approval",
+      "keywords": ["workspace admin", "restrict", "install", "marketplace"],
+      "source": {
+        "url": "https://docs.slack.dev/app-management/distribution/",
+        "quote": "Some workspaces will restrict app installation so that only workspace administrators can provide authorization."
+      }
+    },
+    {
+      "summary": "Changing a listed app's permissions or integration types needs another review",
+      "kind": "approval",
+      "keywords": ["re-review", "resubmit", "scopes", "changes", "review again"],
+      "source": {
+        "url": "https://docs.slack.dev/faq/",
+        "quote": "or to request additional permissions, you'll need your app to be reviewed again."
+      }
+    }
+  ],
+  "avoidProducts": [
+    {
+      "name": "Slack classic and legacy apps",
+      "severity": "soft",
+      "hostPathHints": ["docs.slack.dev/legacy/", "api.slack.com/docs/oauth"],
+      "why": "The legacy app model predates granular scopes and the v2 OAuth flow; api.slack.com/docs/oauth and /docs/oauth-scopes redirect to docs.slack.dev/legacy/",
+      "evidence": "Web search results for Slack OAuth (2026-10-29): Migrating classic apps. Baseline run 2026-10-29: 17 Sourced claims cite the two redirecting pages (apps/api/evals/diagnosis.md, section 7). Kept soft, so it is flagged for a manual look and not counted as wrong-product."
+    }
+  ],
+  "notes": [
+    "Judgment call for your review: optional_listing vs required_to_scale. Slack says commercial apps should be listed, and unlisted commercial apps are throttled on two methods, but unlisted install works. Both labels are accepted.",
+    "Slack docs moved from api.slack.com to docs.slack.dev. Both are official.",
+    "The legacy hint api.slack.com/docs/oauth was added after the first baseline run. It was not in the golden set approved on 2026-10-29."
+  ]
+}

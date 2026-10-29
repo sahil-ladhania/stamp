@@ -1,0 +1,50 @@
+{
+  "asOf": "2026-10-29",
+  "models": {
+    "gpt-4.1": {
+      "inputPerMillionUsd": 2.0,
+      "outputPerMillionUsd": 8.0,
+      "source": {
+        "url": "https://developers.openai.com/api/docs/models/gpt-4.1",
+        "quote": "Input $2.00 Cached input $0.50 Output $8.00"
+      }
+    },
+    "gpt-4.1-mini": {
+      "inputPerMillionUsd": 0.4,
+      "outputPerMillionUsd": 1.6,
+      "source": {
+        "url": "https://developers.openai.com/api/docs/models/gpt-4.1-mini",
+        "quote": "Input $0.40 Cached input $0.10 Output $1.60"
+      }
+    }
+  },
+  "tavilyCreditUsd": {
+    "value": 0.008,
+    "source": {
+      "url": "https://docs.tavily.com/documentation/api-credits",
+      "quote": "Pay-as-you-go : $0.008 per credit"
+    }
+  },
+  "typicalRun": {
+    "basis": "The one real run in api.log (Notion, 2026-10-28, status done, 30 s, one retry). Replace with the mean of the first tuning batch once it exists.",
+    "usage": {
+      "fastCalls": 1,
+      "fastInputTokens": 381,
+      "fastOutputTokens": 64,
+      "strongCalls": 10,
+      "strongInputTokens": 35961,
+      "strongOutputTokens": 1774,
+      "totalTokens": 38180,
+      "tavilySearchCalls": 10,
+      "tavilyExtractCalls": 2,
+      "tavilyCredits": 11,
+      "pagesFetched": 6,
+      "pageCacheHits": 0
+    }
+  },
+  "highFactor": 2,
+  "notes": [
+    "Prices are public list prices. Tavily is priced at pay-as-you-go, so an account with free monthly credits pays less.",
+    "highFactor is an assumption, not a measurement: the high estimate is the typical run times this number."
+  ]
+}

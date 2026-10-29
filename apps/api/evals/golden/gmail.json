@@ -1,0 +1,184 @@
+{
+  "slug": "gmail",
+  "set": "tuning",
+  "typedNames": ["Gmail"],
+  "researchedOn": "2026-10-29",
+  "product": {
+    "name": "Gmail API",
+    "source": {
+      "url": "https://developers.google.com/workspace/gmail/api/auth/scopes",
+      "quote": "This document contains Gmail API-specific authorization and authentication information."
+    }
+  },
+  "docs": {
+    "domains": ["developers.google.com", "support.google.com"],
+    "pathHints": ["/workspace/gmail", "/workspace/guides", "/identity/protocols/oauth2", "/cloud/answer"]
+  },
+  "oauthAppCreation": {
+    "where": "Google Cloud console, Google Auth platform: Branding, Audience and Data Access for the consent screen, then Clients for the OAuth client ID",
+    "source": {
+      "url": "https://developers.google.com/workspace/guides/configure-oauth-consent",
+      "quote": "Google Auth platform > Branding"
+    }
+  },
+  "reviewGate": {
+    "value": "security_assessment",
+    "alsoAccept": ["required_to_scale"],
+    "confidence": "high",
+    "trigger": "Restricted scopes (gmail.readonly, gmail.modify, gmail.compose, mail.google.com) need OAuth verification plus an annual third-party security assessment when data is stored on a server. Sensitive scopes (gmail.send) need verification only.",
+    "source": {
+      "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification",
+      "quote": "Every app that requests access to Google users' restricted data and has the ability to access data from or through a third-party server must go through a security assessment from Google-empanelled security assessors."
+    }
+  },
+  "approvalWait": {
+    "kind": "range",
+    "minDays": 42,
+    "maxDays": 42,
+    "stated": "Restricted scope verification: 6 weeks. Sensitive scope verification: 10 business days. Brand verification: 2-3 business days. Estimates are not guaranteed.",
+    "alsoValid": [{ "label": "sensitive scopes only", "minDays": 10, "maxDays": 14 }],
+    "confidence": "medium",
+    "source": {
+      "url": "https://support.google.com/cloud/answer/13463817",
+      "quote": "An additional Security assessment is required to demonstrate a minimum level of capability in handling data securely and deleting user data upon user request. 6 weeks"
+    },
+    "moreSources": [
+      {
+        "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/sensitive-scope-verification",
+        "quote": "The sensitive scope verification process can take up to 10 days to complete."
+      },
+      {
+        "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification",
+        "quote": "the restricted scopes verification process can potentially take several weeks to complete"
+      }
+    ]
+  },
+  "testBeforeApproval": {
+    "possible": true,
+    "how": "Keep the consent screen in Testing status: up to 100 listed test users, authorizations expire after 7 days",
+    "source": {
+      "url": "https://support.google.com/cloud/answer/15549945",
+      "quote": "Projects configured with a publishing status of Testing are limited to up to 100 test users listed in the OAuth consent screen."
+    }
+  },
+  "scopes": {
+    "kind": "scope_strings",
+    "namePattern": "^((https://www\\.googleapis\\.com/auth/)?gmail\\.[a-z.]+|https://mail\\.google\\.com/)$",
+    "knownFake": [],
+    "offSurface": {
+      "names": [
+        "gmail.addons.current.action.compose",
+        "gmail.addons.current.message.action",
+        "gmail.addons.current.message.metadata",
+        "gmail.addons.current.message.readonly"
+      ],
+      "why": "Real strings, but only for Google Workspace add-ons, not for a standalone Gmail API app",
+      "source": {
+        "url": "https://developers.google.com/workspace/gmail/api/auth/scopes",
+        "quote": "View your email message metadata when the add-on is running."
+      }
+    },
+    "real": [
+      {
+        "name": "https://www.googleapis.com/auth/gmail.readonly",
+        "source": {
+          "url": "https://developers.google.com/workspace/gmail/api/auth/scopes",
+          "quote": "https://www.googleapis.com/auth/gmail.readonly View your email messages and settings."
+        }
+      },
+      {
+        "name": "https://www.googleapis.com/auth/gmail.send",
+        "source": {
+          "url": "https://developers.google.com/workspace/gmail/api/auth/scopes",
+          "quote": "https://www.googleapis.com/auth/gmail.send Send email on your behalf."
+        }
+      },
+      {
+        "name": "https://www.googleapis.com/auth/gmail.modify",
+        "source": {
+          "url": "https://developers.google.com/workspace/gmail/api/auth/scopes",
+          "quote": "https://www.googleapis.com/auth/gmail.modify Read, compose, and send emails from your Gmail account."
+        }
+      },
+      {
+        "name": "https://www.googleapis.com/auth/gmail.compose",
+        "source": {
+          "url": "https://developers.google.com/workspace/gmail/api/auth/scopes",
+          "quote": "https://www.googleapis.com/auth/gmail.compose Manage drafts and send emails."
+        }
+      },
+      {
+        "name": "https://www.googleapis.com/auth/gmail.labels",
+        "source": {
+          "url": "https://developers.google.com/workspace/gmail/api/auth/scopes",
+          "quote": "https://www.googleapis.com/auth/gmail.labels See and edit your email labels."
+        }
+      },
+      {
+        "name": "https://www.googleapis.com/auth/gmail.metadata",
+        "source": {
+          "url": "https://developers.google.com/workspace/gmail/api/auth/scopes",
+          "quote": "https://www.googleapis.com/auth/gmail.metadata View your email message metadata such as labels and headers, but not the email body."
+        }
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "summary": "Restricted Gmail scopes need an annual security assessment by a Google-approved third-party assessor",
+      "kind": "approval",
+      "keywords": ["security assessment", "restricted", "assessor", "annual"],
+      "source": {
+        "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification",
+        "quote": "must undergo an annual security assessment from an independent, third-party assessor that is approved by Google"
+      }
+    },
+    {
+      "summary": "A public app using sensitive or restricted scopes must pass OAuth verification, or users see an unverified app screen",
+      "kind": "approval",
+      "keywords": ["verification", "unverified app", "sensitive", "restricted"],
+      "source": {
+        "url": "https://developers.google.com/workspace/gmail/api/auth/scopes",
+        "quote": "If your public application uses scopes that permit access to certain user data, it must complete a verification process."
+      }
+    },
+    {
+      "summary": "Brand verification comes first for every app and takes 2-3 business days",
+      "kind": "approval",
+      "keywords": ["brand verification", "branding", "consent screen"],
+      "source": {
+        "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification",
+        "quote": "all apps must complete the brand verification step first, which typically takes 2-3 business days"
+      }
+    },
+    {
+      "summary": "In Testing status, test-user authorizations and refresh tokens expire after seven days",
+      "kind": "limit",
+      "keywords": ["testing", "test users", "7 days", "seven days", "refresh token"],
+      "source": {
+        "url": "https://support.google.com/cloud/answer/15549945",
+        "quote": "Authorizations by a test user will expire seven days from the time of consent."
+      }
+    }
+  ],
+  "avoidProducts": [
+    {
+      "name": "Contact Center AI Platform",
+      "severity": "hard",
+      "hostPathHints": ["docs.cloud.google.com/contact-center", "cloud.google.com/contact-center"],
+      "why": "A different Google product with its own Gmail OAuth setup page",
+      "evidence": "Stored gmail guide cited it in 11 of 39 claims (docs/walkthrough/08b-trust-real-cases.md, case 1)"
+    },
+    {
+      "name": "Google Workspace add-ons",
+      "severity": "hard",
+      "hostPathHints": ["developers.google.com/workspace/add-ons"],
+      "why": "Add-on scopes are not what a standalone Gmail API app requests",
+      "evidence": "Stored gmail guide listed add-on scope descriptions as its scopes (08b, case 2)"
+    }
+  ],
+  "notes": [
+    "Review gate depends on the scopes: sensitive-only apps stop at verification (required_to_scale), restricted-scope apps that store data on servers need the security assessment. The golden value is the restricted path because reading mail is the common agent use.",
+    "The sensitive-scope page says 10 days and the FAQ table says 10 business days. Both are recorded."
+  ]
+}
