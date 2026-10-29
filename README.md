@@ -14,7 +14,7 @@
 
 - **Problem:** before launch, developers cannot tell if OAuth app setup takes one hour or six weeks, or what will block approval.
 - **Solution:** a guide that puts the verdict first (difficulty, time, top blocker, next step), then the steps.
-- **Two modes:** a library of 5 hand-checked guides, and a live agent that researches any app in real time.
+- **Two modes:** a library of guides the agent already researched (each one checked by code before it is added), and a live agent that researches any app in real time.
 - **Evidence:** code checks every quote against its source page; unconfirmed claims are marked Uncertain.
 
 ---
@@ -47,15 +47,16 @@ flowchart LR
 
 ## Library guides
 
-| App | Kind of hard |
-| --- | --- |
-| GitHub | Instant: no review unless listed on the GitHub Marketplace |
-| HubSpot | Hidden limits: capped at 25 installs until listed on the HubSpot Marketplace |
-| Gmail | Review needed: restricted scopes require a security assessment |
-| LinkedIn | Partner-gated: API access needs vetting |
-| Salesforce | Enterprise: new Connected Apps restricted; External Client Apps replace them |
+The library holds guides the agent researched on 2026-10-29. A guide is added only after a code check: it parses, has full coverage, every Sourced claim stands on an official page, and every scope name passes the scope rules. See `apps/api/library/REVIEW.md` for what is still to be checked by hand.
 
-Try the live agent with any app outside this list.
+| App | What its guide shows |
+| --- | --- |
+| GitHub | Not rated: the review gate could not be verified. 35 scopes listed |
+| HubSpot | Hidden limits: difficulty 5 of 5 |
+| Notion | Not rated: the review gate could not be verified. No scopes found |
+| Slack | Hidden limits: difficulty 3 of 5 |
+
+Gmail and Microsoft were researched too but fail the check (a Gmail guide whose Sourced claims lean on a personal blog; a Microsoft scope list with a URL fragment). They are held for a re-run. LinkedIn and Salesforce are not in the library. Try the live agent with any app outside this list.
 
 ---
 
@@ -114,6 +115,8 @@ Try the live agent with any app outside this list.
    pnpm --filter api db:seed
    ```
 
+   `db:seed` checks each file in `apps/api/library` first and writes nothing if one fails. Add `-- --dry-run` to run the checks without opening a database.
+
 5. Start everything:
 
    ```bash
@@ -164,7 +167,7 @@ Try the live agent with any app outside this list.
 | Difficulty | Computed by a fixed rule, not the AI model | Same inputs give the same score, with a reason |
 | Time | Split into "first test" and "production" | HubSpot takes about an hour to test but needs a listing past 25 installs |
 | Agent | Fixed pipeline; the model plans and extracts, code verifies and scores | Predictable during a live demo; a model checking a model can agree with a mistake |
-| Library | One app per kind of hard | Variety tests the product better than popularity |
+| Library | Guides the agent already researched, each checked by code before it is added | A guide written by hand would put provider facts in the repo with no quote check behind them |
 
 Full reasoning and rejected options: [docs/design-decisions.md](./docs/design-decisions.md).
 
@@ -200,7 +203,7 @@ A sample of guidance checked against real sources or setup attempts.
 
 ## Limitations
 
-- The library covers 5 apps, not 100.
+- The library covers 4 apps, not 100, and two of them read "Not rated". It no longer shows one app per kind of hard.
 - No real provider review was submitted, so approval waits are sourced, not tested.
 - Live guides depend on public docs; partner-only docs stay Uncertain.
 - The optional browser agent runs locally only and is off in the live app.

@@ -1,0 +1,355 @@
+{
+  "schemaVersion": 1,
+  "slug": "notion",
+  "appName": "Notion",
+  "domain": "notion.com",
+  "mode": "library",
+  "archetype": "unknown",
+  "difficulty": 2,
+  "asOf": "2026-10-29T18:55:46.232Z",
+  "coverage": "full",
+  "verdict": {
+    "summary": {
+      "id": "verdict.summary",
+      "text": "Setting up OAuth for Notion involves several clear steps, including creating a public connection in the Developer portal, configuring redirect URIs and scopes, and following a standard OAuth authorization and token exchange flow.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.notion.com/guides/get-started/authorization",
+          "quote": "Navigate to the Developer portal and create a new public connection. Fill out the form with your connection details, including your redirect URI(s) under the OAuth configuration section and the connection’s installation scope — either Any workspace or Selected workspaces only. This can’t be changed after creation. The redirect URI is the URI your users will be redirected to after authorizing the public connection. To learn more, read OAuth’s description of redirect URIs.",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:16.635Z"
+        }
+      ]
+    },
+    "nextStepId": "steps.0",
+    "topBlockerId": null
+  },
+  "milestones": {
+    "firstTest": {
+      "effort": {
+        "id": "milestones.firstTest.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      },
+      "wait": {
+        "id": "milestones.firstTest.wait",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    },
+    "production": {
+      "effort": {
+        "id": "milestones.production.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      },
+      "wait": {
+        "id": "milestones.production.wait",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    }
+  },
+  "requirements": [
+    {
+      "id": "requirements.0",
+      "text": "Not found in the fetched sources.",
+      "label": "uncertain",
+      "sources": []
+    }
+  ],
+  "scopes": [],
+  "steps": [
+    {
+      "id": "steps.0",
+      "title": "Create a new public connection in the Developer portal",
+      "detail": {
+        "id": "steps.0.detail",
+        "text": "The developer must navigate to the Notion Developer portal and create a new public connection, filling out the connection details including redirect URI(s) and installation scope.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.notion.com/guides/get-started/authorization",
+            "quote": "Navigate to the Developer portal and create a new public connection. Fill out the form with your connection details, including your redirect URI(s) under the OAuth configuration section and the connection’s installation scope — either Any workspace or Selected workspaces only.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:55:16.635Z"
+          }
+        ]
+      },
+      "actor": "human",
+      "effort": {
+        "id": "steps.0.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    },
+    {
+      "id": "steps.1",
+      "title": "Access the connection’s authorization URL",
+      "detail": {
+        "id": "steps.1.detail",
+        "text": "After creating the public connection, the developer retrieves the authorization URL from the Developer portal to use in the OAuth flow.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.notion.com/guides/get-started/authorization",
+            "quote": "After creating a public connection in the Developer portal, access the connection’s secrets in the Configuration tab. Similarly to the internal connections, these values should be protected and should never be included in source code or version control. The Authorization URL field populates after a public connection is submitted for review",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:55:16.635Z"
+          }
+        ]
+      },
+      "actor": "human",
+      "effort": {
+        "id": "steps.1.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    },
+    {
+      "id": "steps.2",
+      "title": "Navigate the user to the authorization URL",
+      "detail": {
+        "id": "steps.2.detail",
+        "text": "The developer must direct the user to the connection’s authorization URL to initiate the OAuth flow.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.notion.com/guides/get-started/authorization",
+            "quote": "Navigate the user to the connection’s authorization URL. This URL is provided in the Developer portal.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:55:16.635Z"
+          }
+        ]
+      },
+      "actor": "agent_assist",
+      "effort": {
+        "id": "steps.2.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    },
+    {
+      "id": "steps.3",
+      "title": "Handle user authorization and redirect",
+      "detail": {
+        "id": "steps.3.detail",
+        "text": "After the user authorizes access, Notion redirects the user to the specified redirect URI with a temporary authorization code in the query string.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.notion.com/guides/get-started/authorization",
+            "quote": "After the user selects which workspace pages to share, Notion redirects the user to the connection’s redirect URI and includes a code query parameter. The redirect URI is the one you specified in your Developer portal.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:55:16.635Z"
+          }
+        ]
+      },
+      "actor": "agent",
+      "effort": {
+        "id": "steps.3.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    },
+    {
+      "id": "steps.4",
+      "title": "Exchange authorization code for access token",
+      "detail": {
+        "id": "steps.4.detail",
+        "text": "The developer’s backend makes a POST request to Notion’s /v1/oauth/token endpoint with the authorization code, client credentials, and redirect URI to obtain an access token and refresh token.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.notion.com/guides/get-started/authorization",
+            "quote": "Make a POST request to create an access token, which exchanges the temporary code for an access token.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:55:16.635Z"
+          }
+        ]
+      },
+      "actor": "agent",
+      "effort": {
+        "id": "steps.4.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    },
+    {
+      "id": "steps.5",
+      "title": "Store the access token for future API requests",
+      "detail": {
+        "id": "steps.5.detail",
+        "text": "The developer must securely store the received access token to use in subsequent API requests to Notion.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.notion.com/guides/get-started/authorization",
+            "quote": "Store the access token for future API requests. View the API reference docs to learn about available endpoints.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:55:16.635Z"
+          }
+        ]
+      },
+      "actor": "agent",
+      "effort": {
+        "id": "steps.5.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    }
+  ],
+  "blockers": [],
+  "limits": [
+    {
+      "id": "limits.0",
+      "text": "Each Notion API connection has a rate limit of 600 requests per minute for Business and Enterprise workspaces, and 180 requests per minute for all other plans.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.notion.com/reference/request-limits",
+          "quote": "Each connection has a fixed budget of requests per 60-second window, based on the workspace’s plan:\n| Workspace plan | Limit |\n --- |\n| Business and Enterprise | 600 requests per minute (an average of 10 per second) |\n| All other plans | 180 requests per minute (an average of 3 per second) |",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:16.636Z"
+        }
+      ]
+    },
+    {
+      "id": "limits.1",
+      "text": "A separate per-workspace rate limit is shared across all connections and is scaled to the workspace’s plan.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.notion.com/reference/request-limits",
+          "quote": "A separate limit is shared across all of the workspace’s connections and scaled to the workspace’s plan. Because it’s shared, requests can be rate limited even when each individual connection is within its per-connection limit.",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:16.636Z"
+        }
+      ]
+    },
+    {
+      "id": "limits.2",
+      "text": "Querying a data source has a separate limit of about 3 requests per second per connection.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.notion.com/reference/request-limits",
+          "quote": "Querying a data source has a separate limit of about 3 requests per second per connection.",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:16.636Z"
+        }
+      ]
+    },
+    {
+      "id": "limits.3",
+      "text": "A single request payload can contain a maximum of 1000 block elements and must not exceed 500KB in size.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.notion.com/reference/request-limits",
+          "quote": "Note that in addition to the property limits below, payloads have a maximum size of 1000 block elements and 500KB overall.",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:16.636Z"
+        }
+      ]
+    },
+    {
+      "id": "limits.4",
+      "text": "Rich text content and URLs in Notion API requests are limited to 2000 characters each.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.notion.com/reference/request-limits",
+          "quote": "| Rich text object | text.content | 2000 characters |\n| Rich text object | text.link.url | 2000 characters |",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:16.636Z"
+        }
+      ]
+    },
+    {
+      "id": "limits.5",
+      "text": "Arrays of all block types, including rich text objects, are limited to 100 elements per request.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.notion.com/reference/request-limits",
+          "quote": "| Any array of all block types, including rich text objects | 100 elements |",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:16.636Z"
+        }
+      ]
+    },
+    {
+      "id": "limits.6",
+      "text": "A relation property can add or set up to 100 related pages in a single request.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.notion.com/reference/request-limits",
+          "quote": "| Any relation | 100 related pages |",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:16.636Z"
+        }
+      ]
+    },
+    {
+      "id": "limits.7",
+      "text": "A multi-select property can have up to 100 options in a single request.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.notion.com/reference/request-limits",
+          "quote": "| Any multi-select | 100 options |",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:16.636Z"
+        }
+      ]
+    },
+    {
+      "id": "limits.8",
+      "text": "A people property can include up to 100 users in a single request.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.notion.com/reference/request-limits",
+          "quote": "| Any people | 100 users |",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:16.636Z"
+        }
+      ]
+    },
+    {
+      "id": "limits.9",
+      "text": "Email and phone number fields are limited to 200 characters each.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.notion.com/reference/request-limits",
+          "quote": "| Any email | 200 characters |\n| Any phone number | 200 characters |",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:16.636Z"
+        }
+      ]
+    }
+  ],
+  "conflicts": [],
+  "difficultyBreakdown": {
+    "reviewGate": 0,
+    "approvalWait": 2,
+    "prerequisites": 0,
+    "hiddenLimits": 1,
+    "total": 3,
+    "score": 2
+  }
+}

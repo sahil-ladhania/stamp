@@ -1,0 +1,460 @@
+{
+  "schemaVersion": 1,
+  "slug": "hubspot",
+  "appName": "HubSpot",
+  "domain": "hubspot.com",
+  "mode": "library",
+  "archetype": "hidden_limits",
+  "difficulty": 5,
+  "asOf": "2026-10-29T18:55:10.420Z",
+  "coverage": "full",
+  "verdict": {
+    "summary": {
+      "id": "verdict.summary",
+      "text": "Setting up OAuth for HubSpot requires creating an app, configuring OAuth settings and scopes, building the authorization URL, and handling token exchanges, with clear documentation and monitoring tools provided, but installation can fail if a user lacks access to features tied to conditionally required scopes.",
+      "label": "uncertain",
+      "sources": []
+    },
+    "nextStepId": "steps.0",
+    "topBlockerId": "blockers.0"
+  },
+  "milestones": {
+    "firstTest": {
+      "effort": {
+        "id": "milestones.firstTest.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      },
+      "wait": {
+        "id": "milestones.firstTest.wait",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    },
+    "production": {
+      "effort": {
+        "id": "milestones.production.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      },
+      "wait": {
+        "id": "milestones.production.wait",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    }
+  },
+  "requirements": [
+    {
+      "id": "requirements.0",
+      "text": "Users installing apps in their HubSpot account must either be a Super Admin or have HubSpot Marketplace Access permissions.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/oauth/working-with-oauth",
+          "quote": "Users installing apps in their HubSpot account must either be a Super Admin or have HubSpot Marketplace Access permissions.",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:54:52.015Z"
+        }
+      ]
+    }
+  ],
+  "scopes": [
+    {
+      "id": "scopes.0",
+      "name": "crm.objects.contacts.read",
+      "reason": {
+        "id": "scopes.0.reason",
+        "text": "The crm.objects.contacts.read scope allows an app to view all contacts in the user's HubSpot account, regardless of the user's own contact permissions.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/oauth/working-with-oauth",
+            "quote": "if a user has permissions to view only owned contacts but authorizes a request for the crm.objects.contacts.read scope, the resulting access token can view all contacts in the account and not only those owned by the authorizing user.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:54:52.015Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scopes.1",
+      "name": "crm.objects.contacts.write",
+      "reason": {
+        "id": "scopes.1.reason",
+        "text": "The crm.objects.contacts.write scope allows an app to create contacts in the user's HubSpot account.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/overview",
+            "quote": "For example, if your app required access to create contacts, you’d need to include the crm.objects.contacts.write.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:54:52.015Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scopes.2",
+      "name": "crm.objects.custom.read",
+      "reason": {
+        "id": "scopes.2.reason",
+        "text": "The crm.objects.custom.read scope allows an app to fetch custom object data, which is only available to Enterprise HubSpot accounts, and can be requested as an optional scope.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/scopes",
+            "quote": "if you want your app to be able to fetch custom object data (which is only available to Enterprise HubSpot accounts), you could add the crm.objects.custom.read scope as an optional scope.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:54:52.015Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scopes.3",
+      "name": "developer.webhooks_journal.read",
+      "reason": {
+        "id": "scopes.3.reason",
+        "text": "The developer.webhooks_journal.read scope allows an app to read webhook journal data for managing app configuration.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/overview",
+            "quote": "scope=developer.webhooks_journal.read developer.webhooks_journal.subscriptions.read developer.webhooks_journal.subscriptions.write developer.webhooks_journal.snapshots.read developer.webhooks_journal.snapshots.write",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:54:52.015Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scopes.4",
+      "name": "developer.webhooks_journal.subscriptions.read",
+      "reason": {
+        "id": "scopes.4.reason",
+        "text": "The developer.webhooks_journal.subscriptions.read scope allows an app to read webhook journal subscription data.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/overview",
+            "quote": "scope=developer.webhooks_journal.read developer.webhooks_journal.subscriptions.read developer.webhooks_journal.subscriptions.write developer.webhooks_journal.snapshots.read developer.webhooks_journal.snapshots.write",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:54:52.015Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scopes.5",
+      "name": "developer.webhooks_journal.subscriptions.write",
+      "reason": {
+        "id": "scopes.5.reason",
+        "text": "The developer.webhooks_journal.subscriptions.write scope allows an app to manage (write) webhook journal subscriptions.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/overview",
+            "quote": "scope=developer.webhooks_journal.read developer.webhooks_journal.subscriptions.read developer.webhooks_journal.subscriptions.write developer.webhooks_journal.snapshots.read developer.webhooks_journal.snapshots.write",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:54:52.015Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scopes.6",
+      "name": "developer.webhooks_journal.snapshots.read",
+      "reason": {
+        "id": "scopes.6.reason",
+        "text": "The developer.webhooks_journal.snapshots.read scope allows an app to read webhook journal snapshots.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/overview",
+            "quote": "scope=developer.webhooks_journal.read developer.webhooks_journal.subscriptions.read developer.webhooks_journal.subscriptions.write developer.webhooks_journal.snapshots.read developer.webhooks_journal.snapshots.write",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:54:52.015Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scopes.7",
+      "name": "developer.webhooks_journal.snapshots.write",
+      "reason": {
+        "id": "scopes.7.reason",
+        "text": "The developer.webhooks_journal.snapshots.write scope allows an app to write webhook journal snapshots.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/overview",
+            "quote": "scope=developer.webhooks_journal.read developer.webhooks_journal.subscriptions.read developer.webhooks_journal.subscriptions.write developer.webhooks_journal.snapshots.read developer.webhooks_journal.snapshots.write",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:54:52.015Z"
+          }
+        ]
+      }
+    }
+  ],
+  "steps": [
+    {
+      "id": "steps.0",
+      "title": "Create a new app in HubSpot",
+      "detail": {
+        "id": "steps.0.detail",
+        "text": "The developer must create a new app in HubSpot to begin the OAuth setup process.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/oauth/working-with-oauth",
+            "quote": "Create a new app. After creating the app, you’ll be able to find the app’s client ID and client secret on the Auth page of your app settings.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:54:52.015Z"
+          }
+        ]
+      },
+      "actor": "human",
+      "effort": {
+        "id": "steps.0.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    },
+    {
+      "id": "steps.1",
+      "title": "Configure OAuth settings and scopes",
+      "detail": {
+        "id": "steps.1.detail",
+        "text": "The developer configures OAuth settings, including required, optional, and conditionally required scopes, in the app's Auth settings or configuration file.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/oauth/working-with-oauth",
+            "quote": "OAuth requires you to set scopes, or permissions, for your app. Each scope provides access to a set of HubSpot API endpoints and allows users to grant your app access to specific tools in their HubSpot account. You can review your app’s current scopes in the development settings in your HubSpot account",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:54:52.015Z"
+          }
+        ]
+      },
+      "actor": "human",
+      "effort": {
+        "id": "steps.1.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    },
+    {
+      "id": "steps.2",
+      "title": "Build the authorization URL",
+      "detail": {
+        "id": "steps.2.detail",
+        "text": "The developer builds an authorization URL using the client ID, redirect URI, and required scopes.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/oauth/working-with-oauth",
+            "quote": "Use the client ID along with the query parameters and scopes outlined below in steps 2 and 3, to build your authorization URL.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:54:52.015Z"
+          }
+        ]
+      },
+      "actor": "human",
+      "effort": {
+        "id": "steps.2.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    },
+    {
+      "id": "steps.3",
+      "title": "Send users to the authorization URL",
+      "detail": {
+        "id": "steps.3.detail",
+        "text": "The developer sends users to the authorization URL so they can select their account and grant access to the app.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/oauth/working-with-oauth",
+            "quote": "Send users installing your app to the authorization URL, where they’ll be presented with a screen that allows them to select their account and grant access to your integration.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:54:52.015Z"
+          }
+        ]
+      },
+      "actor": "human",
+      "effort": {
+        "id": "steps.3.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    },
+    {
+      "id": "steps.4",
+      "title": "Handle redirect and receive authorization code",
+      "detail": {
+        "id": "steps.4.detail",
+        "text": "After the user grants access, the app receives a redirect with a code query parameter appended to the redirect URI.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/oauth/working-with-oauth",
+            "quote": "After granting access, they’ll be redirected back to your application via a redirect_uri, which will have a code query parameter appended to it.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:54:52.015Z"
+          }
+        ]
+      },
+      "actor": "agent",
+      "effort": {
+        "id": "steps.4.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    },
+    {
+      "id": "steps.5",
+      "title": "Exchange authorization code for tokens",
+      "detail": {
+        "id": "steps.5.detail",
+        "text": "The app makes an API request to /oauth/v3/token with the code, redirect URI, client ID, and client secret to obtain an access token and refresh token.",
+        "label": "uncertain",
+        "sources": []
+      },
+      "actor": "agent",
+      "effort": {
+        "id": "steps.5.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    },
+    {
+      "id": "steps.6",
+      "title": "Use the access token for API calls",
+      "detail": {
+        "id": "steps.6.detail",
+        "text": "The app uses the access token to authenticate API calls for the HubSpot account.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/oauth/working-with-oauth",
+            "quote": "Use the access_token to authenticate any API calls made for that HubSpot account.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:54:52.015Z"
+          }
+        ]
+      },
+      "actor": "agent",
+      "effort": {
+        "id": "steps.6.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    },
+    {
+      "id": "steps.7",
+      "title": "Refresh the access token when expired",
+      "detail": {
+        "id": "steps.7.detail",
+        "text": "Once the access token expires, the app uses the refresh token to generate a new access token.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/oauth/working-with-oauth",
+            "quote": "Once the access_token expires, use the refresh_token to generate a new access_token. Learn more about how to refresh an access token.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:54:52.015Z"
+          }
+        ]
+      },
+      "actor": "agent",
+      "effort": {
+        "id": "steps.7.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    }
+  ],
+  "blockers": [
+    {
+      "id": "blockers.0",
+      "symptom": {
+        "id": "blockers.0.symptom",
+        "text": "The app installation fails if a conditionally required scope is included in the install URL and the user does not have access to the associated feature.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/scopes",
+            "quote": "If a conditionally required scope is present in your app install URL and a user without access to the associated feature attempts to install your app using that URL, the installation will fail.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:54:52.015Z"
+          }
+        ]
+      },
+      "cause": {
+        "id": "blockers.0.cause",
+        "text": "The user does not have access to the feature associated with the conditionally required scope included in the install URL.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/scopes",
+            "quote": "If a conditionally required scope is present in your app install URL and a user without access to the associated feature attempts to install your app using that URL, the installation will fail.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:54:52.015Z"
+          }
+        ]
+      },
+      "fix": {
+        "id": "blockers.0.fix",
+        "text": "Provide separate install URLs for users with and without access to features requiring conditionally required scopes, omitting the scope for users without access.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/scopes",
+            "quote": "you could offer two install URLs to your users: one install URL could include the conditionally required scope in the scope query parameter for users with access to a feature, while another install URL omits that scope in the scope query parameter for users without access.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:54:52.015Z"
+          }
+        ]
+      },
+      "contact": null
+    }
+  ],
+  "limits": [
+    {
+      "id": "limits.0",
+      "text": "If you distribute your app as private, you can install it in a maximum of 10 accounts at a time.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/overview",
+          "quote": "private: used if you only want to install your app in a specific set of allowlisted accounts. If you choose this option, you can install your app in a maximum of 10 accounts at a time.",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:54:52.015Z"
+        }
+      ]
+    }
+  ],
+  "conflicts": [],
+  "difficultyBreakdown": {
+    "reviewGate": 2,
+    "approvalWait": 3,
+    "prerequisites": 2,
+    "hiddenLimits": 1,
+    "total": 8,
+    "score": 5
+  }
+}
