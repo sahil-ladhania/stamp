@@ -15,6 +15,7 @@ export const SECTION_INSTRUCTIONS: Record<SectionId, string> = {
   scopes: [
     "Section: scopes. List the OAuth scopes or permissions an app can request.",
     'Output {"scopes": [...]}. Each has: name (exactly as written in the excerpts) and reason (a claim saying what the scope allows).',
+    "A scope is a single string the provider defines for an app to request. It is not a role, a header, a placeholder, an example value or a half-written pattern, and it is not a permission of an administrator API. The quote must contain the name.",
     "Use an empty list when no scopes are described.",
   ].join("\n"),
   requirements: [
@@ -27,12 +28,13 @@ export const SECTION_INSTRUCTIONS: Record<SectionId, string> = {
     "Use an empty list when no problems are described.",
   ].join("\n"),
   milestones: [
-    "Section: milestones. Say what it takes to reach two milestones.",
-    "Output four claims, each a claim or null: firstTestEffort (what it takes to make a first test call), firstTestWait (how long to wait before that works), productionEffort (what it takes to go to production) and productionWait (how long approval or review takes before production). Use null for anything the excerpts do not state.",
+    "Section: milestones. Say how long it takes to reach two milestones.",
+    "Output four claims, each a claim or null: firstTestEffort (how long it takes to make a first test call), firstTestWait (how long to wait before that works), productionEffort (how long it takes to prepare for production) and productionWait (how long approval or review takes before production). The quote must be the sentence that states the time, with a number of minutes, hours, days, weeks or months. Use null for anything the excerpts do not give a time for; never describe work instead of giving a time. The text you write is replaced by the time found in the quote.",
   ].join("\n"),
   gates: [
     "Section: gates. Fill in the facts behind the difficulty rating. Each fact needs a claim as evidence, or stays unknown.",
     "authMethod: oauth (the app supports OAuth), both (OAuth and API keys), api_key_only (API keys only, no OAuth) or unknown; authEvidence: the claim that backs it.",
+    "A review gate is a review or approval of the developer's app by the provider, the company that runs the platform. An administrator or organisation owner approving apps for their own workspace or organisation is not a review gate. Use none only when a page says no review is needed; otherwise use unknown.",
     "reviewGate: unknown; none (no review needed); optional_listing (review only for an optional marketplace listing); required_to_scale (review needed to go past test accounts or install caps); security_assessment (a security assessment or audit is required); partner_vetting (the developer must become a vetted partner). reviewGateEvidence: the claim that backs it.",
     "approvalWait: unknown, none (no approval step) or range. For a range give approvalWaitMinDays and approvalWaitMaxDays as whole days (a week is 7 days; use null for both otherwise) and approvalWaitEvidence: the claim that states it.",
     "prerequisites: one claim for each distinct prerequisite before setup can start. hiddenLimits: one claim for each cap or limit that applies only after launch. enterprisePlanEvidence: a claim if an enterprise or other special plan is required, else null.",
@@ -48,6 +50,7 @@ export const SECTION_INSTRUCTIONS: Record<SectionId, string> = {
   ].join("\n"),
   verdict: [
     "Section: verdict. Summarise how hard it is to set up OAuth for this app and what blocks it.",
-    "Output summary (one claim backed by an excerpt, or null), nextStepIndex (the position, starting at 0, of the step to do first in the numbered steps below, or null) and topBlockerIndex (the position of the most important blocker in the numbered blockers below, or null).",
+    "Output summary (one claim backed by an excerpt, or null), nextStepIndex (the position, starting at 0, of the step to do first in the numbered steps below, or null) and topBlockerIndex (always null; code chooses the top blocker).",
+    "Never state that something is absent or not needed unless an excerpt says so in those words.",
   ].join("\n"),
 };

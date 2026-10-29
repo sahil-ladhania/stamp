@@ -14,6 +14,7 @@ import {
 } from "@stamp/schema";
 import type { AppIdentity, Drafts } from "../state.js";
 import { claimLookup } from "./claim-lookup.js";
+import { pickTopBlockerId } from "./top-blocker.js";
 import {
   buildBlockers,
   buildLimits,
@@ -54,7 +55,7 @@ export function assembleGuide(input: AssembleInput): Guide {
     coverage: input.partial ? "partial" : "full",
     verdict: buildVerdict(drafts, resolve, {
       steps: steps.length,
-      blockers: blockers.length,
+      topBlockerId: pickTopBlockerId(blockers),
     }),
     milestones: buildMilestones(drafts, resolve),
     requirements: buildRequirements(drafts, resolve),

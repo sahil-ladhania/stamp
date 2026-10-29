@@ -1,6 +1,6 @@
 /**
  * File: assemble-verdict.test.ts
- * Purpose: Tests the verdict's step and blocker pointers: a position with nothing behind it becomes null.
+ * Purpose: Tests the verdict's pointers: the next step by position (nothing behind a position gives null) and the top blocker, which code chooses whatever the model says.
  * Exports: (none)
  * Used by: vitest
  */
@@ -25,7 +25,7 @@ const verdict = (over: Partial<typeof VERDICT_OUTPUT>) =>
   ).verdict;
 
 describe("verdict pointers", () => {
-  it("points at the step and blocker by position", () => {
+  it("points at the step by position and at the top blocker chosen by code", () => {
     expect(verdict({})).toMatchObject({
       nextStepId: "steps.0",
       topBlockerId: "blockers.0",
@@ -36,13 +36,18 @@ describe("verdict pointers", () => {
     ["past the end", 5],
     ["negative", -1],
     ["missing", null],
-  ])("is null for a position that is %s", (_name, index) => {
-    expect(
-      verdict({
-        nextStepIndex: index as never,
-        topBlockerIndex: index as never,
-      }),
-    ).toMatchObject({ nextStepId: null, topBlockerId: null });
+  ])("has no next step for a position that is %s", (_name, index) => {
+    expect(verdict({ nextStepIndex: index as never })).toMatchObject({
+      nextStepId: null,
+    });
+  });
+
+  it("ignores the model's blocker pick: the top blocker comes from code", () => {
+    for (const index of [5, -1, null, 0]) {
+      expect(verdict({ topBlockerIndex: index as never }).topBlockerId).toBe(
+        "blockers.0",
+      );
+    }
   });
 
   it("is null when there are no steps or blockers to point at", () => {

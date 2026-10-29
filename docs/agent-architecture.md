@@ -240,7 +240,12 @@ Time caps per stage (seconds). A stage also gets less when the run is running la
 - Every claim whose URL was not fetched in this run is dropped; the URLs of the rest are rewritten to the fetched page's own. A gates fact whose evidence is dropped becomes unknown.
 - One call may take 25 seconds, and none starts with under 5 seconds left in the stage's window; skipped sections make the run partial.
 - `NOT_OAUTH` needs all of: the gates call says API keys only, its quote is found word for word on an official page, and neither the steps nor the scopes section found anything. `NO_PUBLIC_DOCS` when every section answered unknown; `INTERNAL` when every section failed.
-- A retry pass redoes only the sections verify reported, and the verdict if steps or blockers were redone.
+- Code decides the shape of what the model returned (`extract/sanitize.ts`), so a prompt cannot let a wrong shape through:
+  - **Milestones** are durations or unknown: code reads the time out of the quote (`extract/duration-text.ts`, "5 to 7 business days", "up to 6 weeks"; number words become digits) and writes the text; a quote that states no time leaves the field unknown, whatever prose the model wrote.
+  - **Scopes** are kept only when `extract/scope-checks.ts` agrees: the quote holds the name, it is not a placeholder, half name or bare host, it has no spaces unless the page is official, and the page is not an administration page (a path segment `admin`, `admins` or `administration`), which describes a different surface from an app's own scopes.
+  - **The review gate** is unknown unless its quote has a review, approval, assessment, listing, vetting or verification word (or the gate is `none`); the prompt defines a gate as review by the provider, not an administrator approving apps for their own organisation.
+- The top blocker is chosen in code, not by the model (`guide/top-blocker.ts`): each blocker's words give it a kind, approval before setup before limit; an error message is never the top blocker; among equals a Sourced official blocker wins, then the earlier one. With none that qualifies there is no top blocker.
+- A retry pass redoes only the sections verify reported, the gates when the review gate is unknown, and the verdict if steps or blockers were redone.
 - Each model call logs its tier, model, section, tokens and duration; the stage logs one `extract summary` line with a row per section.
 
 **5 Verify** (`nodes/verify.ts`, `verify/`; code, plus one batched fast-model support check that can only downgrade, see D24)

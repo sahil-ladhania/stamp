@@ -17,6 +17,7 @@ import { hasContent } from "./has-content.js";
 import { sanitizeSection } from "./sanitize.js";
 
 const ok = claim(OAUTH_URL, QUOTES.secret);
+const approval = claim(OAUTH_URL, QUOTES.approval);
 const wait = claim(REVIEW_URL, QUOTES.review);
 const stray = claim("https://evil.example.com/p", "Anything at all here");
 const unknown: SectionOutput<"gates"> = {
@@ -36,7 +37,7 @@ const full: SectionOutput<"gates"> = {
   authMethod: "oauth",
   authEvidence: ok,
   reviewGate: "required_to_scale",
-  reviewGateEvidence: ok,
+  reviewGateEvidence: approval,
   approvalWait: "range",
   approvalWaitMinDays: 5,
   approvalWaitMaxDays: 7,
