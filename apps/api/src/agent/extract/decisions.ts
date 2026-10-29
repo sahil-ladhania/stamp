@@ -9,7 +9,7 @@ import { makeFailure, type AgentFailure } from "../agent-failure.js";
 import { matchQuote } from "../evidence/quote-match.js";
 import type { PageRecord } from "../page-record.js";
 import type { Drafts } from "../state.js";
-import type { DraftSectionId, SectionOutput } from "./sections.js";
+import type { DraftSectionId, SectionId, SectionOutput } from "./sections.js";
 
 type Gates = SectionOutput<"gates"> | null;
 
@@ -70,7 +70,7 @@ export function endOfExtract(
   return makeFailure(STAGE, allFailed ? "INTERNAL" : "NO_PUBLIC_DOCS");
 }
 
-/** Sections a retry pass can redo: the ones verify reports on. */
+/** Draft sections a retry pass can redo: the ones verify reports on. The gates are redone when the review gate is unknown. */
 export const RETRYABLE_SECTIONS: readonly DraftSectionId[] = [
   "steps",
   "scopes",
@@ -84,14 +84,14 @@ export const RETRYABLE_SECTIONS: readonly DraftSectionId[] = [
  * into the steps and blockers by position, so it is stale when either list was replaced.
  */
 export function retrySections(missing: readonly string[]): {
-  sections: DraftSectionId[];
+  sections: SectionId[];
   redoVerdict: boolean;
 } {
-  const sections = RETRYABLE_SECTIONS.filter((section) =>
+  const drafts = RETRYABLE_SECTIONS.filter((section) =>
     missing.includes(section),
   );
   return {
-    sections,
-    redoVerdict: sections.includes("steps") || sections.includes("blockers"),
+    sections: missing.includes("reviewGate") ? [...drafts, "gates"] : drafts,
+    redoVerdict: drafts.includes("steps") || drafts.includes("blockers"),
   };
 }
