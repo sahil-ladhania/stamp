@@ -9,6 +9,7 @@ import { logger } from "../../lib/logger.js";
 import { searchWeb } from "../../lib/tavily.js";
 import { createHarness } from "../../test-support/graph-harness.js";
 import { hit } from "../../test-support/node-fixtures.js";
+import type { SearchResult } from "../search-result.js";
 import { ok, state, urlsOf } from "../../test-support/search-helpers.js";
 import {
   SEARCH_CONCURRENCY,
@@ -127,5 +128,40 @@ describe("searchNode first pass", () => {
     });
     await searchNode(state(), h.config);
     expect(peak).toBe(SEARCH_CONCURRENCY);
+  });
+});
+
+describe("searchNode result topics", () => {
+  it("records every topic whose query returned a result, once", async () => {
+    tavily.mockResolvedValue(ok("https://docs.acme.com/shared"));
+    const update = await searchNode(state(), createHarness().config);
+    const results = update.searchResults as SearchResult[];
+    const [only] = results;
+    expect(results).toHaveLength(1);
+    expect([...(only?.topics ?? [])].sort()).toEqual(
+      [
+        "approvalWait",
+        "authType",
+        "limits",
+        "review",
+        "scopes",
+        "setup",
+      ].sort(),
+    );
+  });
+
+  it("gives each result the topic of the query that found it", async () => {
+    tavily.mockImplementation((query: string) =>
+      Promise.resolve(
+        query === state().queries[1]?.text
+          ? ok("https://docs.acme.com/scopes-only")
+          : ok(),
+      ),
+    );
+    const update = await searchNode(state(), createHarness().config);
+    expect((update.searchResults as SearchResult[])[0]).toMatchObject({
+      url: "https://docs.acme.com/scopes-only",
+      topics: [state().queries[1]?.topic],
+    });
   });
 });

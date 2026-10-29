@@ -10,15 +10,21 @@ pnpm --filter api eval -- --set tuning
 
 That prints the cost estimate and stops. It makes no calls and spends nothing. To run the batch, add `--confirm`.
 
-| Option                                | What it does                                                             |
-| ------------------------------------- | ------------------------------------------------------------------------ |
-| `--set tuning` / `holdout` / `<slug>` | Which apps to run. Tuning is 6 apps, holdout is 4                        |
-| `--confirm`                           | Actually runs the batch. Without it, only the estimate is printed        |
-| `--parallel 1\|2`                     | Runs at a time. Default and maximum is 2                                 |
-| `--allow-holdout`                     | Needed for any holdout app. Run the holdout set once, after the last fix |
-| `--out <dir>`                         | Output folder. Default is `evals/runs/<timestamp>/`                      |
+| Option                                | What it does                                                                                                  |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `--set tuning` / `holdout` / `<slug>` | Which apps to run. Tuning is 6 apps, holdout is 4                                                             |
+| `--confirm`                           | Actually runs the batch. Without it, only the estimate is printed                                             |
+| `--parallel 1\|2`                     | Runs at a time. Default and maximum is 2                                                                      |
+| `--repeat 1\|2\|3`                    | Runs the whole selection that many times, one after another, to show how much results vary. Never for holdout |
+| `--allow-holdout`                     | Needed for any holdout app. Run the holdout set once, after the last fix                                      |
+| `--out <dir>`                         | Output folder. Default is `evals/runs/<timestamp>/`                                                           |
 
-Limits: at most 12 runs per batch, at most 2 in parallel.
+Limits: at most 12 runs per repetition, at most 3 repetitions, at most 2 in parallel. One estimate and one `--confirm` cover all repetitions.
+
+## Repeating and re-scoring
+
+- `--repeat 3` writes `rep-1/`, `rep-2/`, `rep-3/` (each a full run folder) and a top-level `scorecard.md` that shows every success metric as a mean with its lowest and highest, each app's verdicts per repetition, and how many verdicts changed between repetitions. A target of zero has to hold in every repetition, so read the highest.
+- `pnpm --filter api eval:rescore -- <run folder>` scores a saved run again with the current golden set and scorer, writes `rescored.scorecard.md` beside it and costs nothing. Use it whenever the golden set or a scoring rule changes, so a before and after table never compares two different rulers. It reads runs saved before newer fields existed.
 
 ## What a run does and does not touch
 

@@ -15,6 +15,7 @@ const MODELS = { fast: "gpt-4.1-mini", strong: "gpt-4.1" };
 const args = (selector: string, over = {}) => ({
   selector,
   parallel: 2,
+  repeat: 1,
   confirm: false,
   allowHoldout: false,
   out: null,
@@ -35,8 +36,8 @@ describe("planBatch", () => {
     const text = plan.lines.join("\n");
     expect(text).toContain("Runs: 6 (at most 12 per batch), 2 at a time");
     expect(text).toContain("Models: fast gpt-4.1-mini, strong gpt-4.1");
-    expect(text).toMatch(/about \$1\.05 .*up to \$2\.09/);
-    expect(text).toContain("66 Tavily credits (up to 132)");
+    expect(text).toMatch(/about \$1\.04 .*up to \$2\.08/);
+    expect(text).toContain("60 Tavily credits (up to 120)");
     expect(text).toContain(pricing.typicalRun.basis);
     expect(text).toContain("no guide is saved to the database");
   });
@@ -59,7 +60,7 @@ describe("planBatch", () => {
     expect(text).toContain(
       "dollars unknown: no price for mystery in evals/pricing.json",
     );
-    expect(text).toContain("11 Tavily credits");
+    expect(text).toContain("10 Tavily credits");
   });
 
   it("refuses a batch of more than 12 runs", () => {
@@ -97,5 +98,44 @@ describe("planBatch", () => {
     expect(() => planBatch(args("nope"), all, pricing, MODELS)).toThrow(
       /Unknown golden "nope"/,
     );
+  });
+});
+
+describe("planBatch with --repeat", () => {
+  it("multiplies the runs, credits and cost by the repeats, and says so", () => {
+    const one = planBatch(args("tuning"), all, pricing, MODELS);
+    const three = planBatch(
+      args("tuning", { repeat: 3 }),
+      all,
+      pricing,
+      MODELS,
+    );
+    expect(three.estimate.runs).toBe(18);
+    expect(three.estimate.credits).toBe(one.estimate.credits * 3);
+    expect(three.estimate.totalUsd).toBeCloseTo(one.estimate.totalUsd! * 3, 6);
+    const text = three.lines.join("\n");
+    expect(text).toContain("Runs: 6 per repetition, 3 repetitions = 18");
+    expect(text).toContain("at most 12 per repetition");
+    expect(text).toContain("180 Tavily credits (up to 360)");
+  });
+
+  it("keeps the 12-run limit for each repetition, not for the whole command", () => {
+    const eleven = all
+      .slice(0, 10)
+      .map((g, i) => ({ ...g, slug: `a${i}`, set: "tuning" as const }));
+    expect(() =>
+      planBatch(args("tuning", { repeat: 3 }), eleven, pricing, MODELS),
+    ).not.toThrow();
+  });
+
+  it("refuses --repeat for the holdout set: it is run once", () => {
+    expect(() =>
+      planBatch(
+        args("holdout", { allowHoldout: true, repeat: 2 }),
+        all,
+        pricing,
+        MODELS,
+      ),
+    ).toThrow(/holdout .* once/i);
   });
 });

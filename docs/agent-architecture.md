@@ -72,7 +72,7 @@ The state passes from stage to stage (`apps/api/src/agent/state.ts`).
 | `typed`, `slug` | What the user typed; the run's slug | Run input |
 | `app` | Name, domain, slug | Stage 0 |
 | `queries` | Planned searches | Stage 1 |
-| `searchResults` | URLs with tier, no duplicates | Stage 2 |
+| `searchResults` | URLs with tier, no duplicates; each also lists the topics of the planned queries that found it | Stage 2 |
 | `pages` | URL, tier, text, hash; no duplicates | Stage 3 |
 | `drafts` | Per section: drafted claims, unknown, or failed with a reason | Stage 4 |
 | `gates` | Auth method, review gate, approval wait and the prerequisites and limits behind the score, each with the claim that backs it | Stage 4 |
@@ -278,7 +278,7 @@ One JSON object per line (`lib/logger.ts`); info goes to stdout, warnings and er
 
 | Message | From | Fields worth reading |
 | --- | --- | --- |
-| `resolve summary` | stage 0 | `decision` (`official`, `ambiguous`, `none`), top 5 `candidates` with `domain`, `match`, `score`, `hits`. This is the data the ambiguity thresholds are tuned against |
+| `resolve summary` | stage 0 | `decision` (`official`, `ambiguous`, `none`), top 5 `candidates` with `domain`, `match`, `score`, `hits`, and `resolveHits`, the `url` and `title` of every hit the decision was made from (no page text). This is the data the ambiguity thresholds are tuned against |
 | `search summary` | stage 2 | `queries`, `failedQueries`, `results`, `byTier`, `retryPass` |
 | `pages loaded` | stage 3 | pages from the network and from the cache |
 | `extract summary` | stage 4 | one row per section: status, duration, tokens |

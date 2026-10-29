@@ -5,17 +5,32 @@
  * Used by: vitest
  */
 import { describe, expect, it } from "vitest";
-import { MAX_PARALLEL, parseArgs } from "./cli-args.js";
+import { MAX_PARALLEL, MAX_REPEAT, parseArgs } from "./cli-args.js";
 
 describe("parseArgs", () => {
   it("reads the set and defaults to a dry run with two in parallel", () => {
     expect(parseArgs(["--set", "tuning"])).toEqual({
       selector: "tuning",
       parallel: 2,
+      repeat: 1,
       confirm: false,
       allowHoldout: false,
       out: null,
     });
+  });
+
+  it("reads --repeat from 1 to 3 and nothing else", () => {
+    expect(parseArgs(["--set", "tuning", "--repeat", "3"]).repeat).toBe(3);
+    expect(MAX_REPEAT).toBe(3);
+    expect(() => parseArgs(["--set", "tuning", "--repeat", "4"])).toThrow(
+      /at most 3/,
+    );
+    expect(() => parseArgs(["--set", "tuning", "--repeat", "0"])).toThrow(
+      /whole number from 1/,
+    );
+    expect(() => parseArgs(["--set", "tuning", "--repeat", "many"])).toThrow(
+      /whole number from 1/,
+    );
   });
 
   it("accepts --set=value and an app slug", () => {

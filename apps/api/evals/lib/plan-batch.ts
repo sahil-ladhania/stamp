@@ -25,6 +25,13 @@ function estimateLine(estimate: BatchEstimate): string {
   return `Estimate: about ${usd(estimate.totalUsd)} (up to ${usd(estimate.highUsd)} if runs cost double), ${credits}.`;
 }
 
+function runsLine(apps: number, args: CliArgs): string {
+  if (args.repeat === 1) {
+    return `Runs: ${apps} (at most ${MAX_RUNS_PER_BATCH} per batch), ${args.parallel} at a time`;
+  }
+  return `Runs: ${apps} per repetition, ${args.repeat} repetitions = ${apps * args.repeat} (at most ${MAX_RUNS_PER_BATCH} per repetition), ${args.parallel} at a time`;
+}
+
 function priceSources(models: readonly string[], pricing: Pricing): string {
   const urls = models.flatMap(
     (model) => pricing.models[model]?.source.url ?? [],
@@ -54,11 +61,17 @@ export function planBatch(
       "The holdout set needs --allow-holdout. Run it once, after the last fix, and never tune on its results.",
     );
   }
-  const estimate = estimateBatch(goldens.length, models, pricing);
+  if (holdout && args.repeat > 1) {
+    throw new Error(
+      "The holdout set is run once: --repeat is not allowed for it.",
+    );
+  }
+  const runs = goldens.length * args.repeat;
+  const estimate = estimateBatch(runs, models, pricing);
   const lines = [
     `Eval batch: ${args.selector}${holdout ? " (HOLDOUT: run once, do not tune on it)" : ""}`,
     `Apps: ${goldens.map((golden) => golden.slug).join(", ")}`,
-    `Runs: ${goldens.length} (at most ${MAX_RUNS_PER_BATCH} per batch), ${args.parallel} at a time`,
+    runsLine(goldens.length, args),
     `Models: fast ${models.fast}, strong ${models.strong}`,
     estimateLine(estimate),
     `Basis: ${estimate.basis}`,

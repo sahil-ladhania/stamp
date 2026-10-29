@@ -14,7 +14,7 @@ import { loadPricing } from "./lib/cost.js";
 import { loadGolden } from "./lib/golden.js";
 import { tapLogs } from "./lib/log-tap.js";
 import { planBatch } from "./lib/plan-batch.js";
-import { runBatch } from "./lib/run-batch.js";
+import { runRepeats } from "./lib/run-repeats.js";
 import { runOne } from "./lib/run-one.js";
 
 const RUNS_DIR = fileURLToPath(new URL("./runs/", import.meta.url));
@@ -51,9 +51,10 @@ async function main(): Promise<void> {
   const outDir = args.out ?? join(RUNS_DIR, runFolder(new Date()));
   const tap = tapLogs();
   try {
-    const result = await runBatch({
+    const result = await runRepeats({
       goldens: plan.goldens,
       parallel: args.parallel,
+      repeat: args.repeat,
       outDir,
       pricing,
       label: args.selector,

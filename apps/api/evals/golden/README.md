@@ -8,18 +8,18 @@ Hand-researched answers for 10 apps, taken from official docs only. The eval har
 
 ## File format
 
-| Field                | Holds                                                                                                                                                 |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `product`            | The product the guide must describe, with a source                                                                                                    |
-| `docs`               | Official domains and path hints for that product                                                                                                      |
-| `oauthAppCreation`   | Where a developer creates the OAuth app                                                                                                               |
-| `reviewGate`         | `value` in the code's vocabulary (`none`, `optional_listing`, `required_to_scale`, `security_assessment`, `partner_vetting`), `alsoAccept`, `trigger` |
-| `approvalWait`       | `kind` (`range`, `none`, `unknown`), days, the wording the provider uses, how the days were derived                                                   |
-| `testBeforeApproval` | Whether a developer can test first, and how                                                                                                           |
-| `scopes`             | 3 to 6 real names, a `namePattern` for what a real scope looks like, `knownFake` names seen in earlier runs                                           |
-| `blockers`           | 2 or more known blockers, each with `kind` (`approval`, `setup`, `limit`) and `keywords` for relevance checks                                         |
-| `avoidProducts`      | Sibling products to reject: `hard` counts as a wrong-product source, `soft` is flagged for a manual look                                              |
-| `notes`              | Judgment calls for the reviewer                                                                                                                       |
+| Field                | Holds                                                                                                                                                                    |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `product`            | The product the guide must describe, with a source                                                                                                                       |
+| `docs`               | Official domains and path hints for that product, and optional `urlAliases` for a page the agent sees under an old URL that redirects to a golden page (checked by hand) |
+| `oauthAppCreation`   | Where a developer creates the OAuth app                                                                                                                                  |
+| `reviewGate`         | `value` in the code's vocabulary (`none`, `optional_listing`, `required_to_scale`, `security_assessment`, `partner_vetting`), `alsoAccept`, `trigger`                    |
+| `approvalWait`       | `kind` (`range`, `none`, `unknown`), days, the wording the provider uses, how the days were derived                                                                      |
+| `testBeforeApproval` | Whether a developer can test first, and how                                                                                                                              |
+| `scopes`             | 3 to 6 real names, a `namePattern` for what a real scope looks like, `knownFake` names seen in earlier runs                                                              |
+| `blockers`           | 2 or more known blockers, each with `kind` (`approval`, `setup`, `limit`) and `keywords` for relevance checks                                                            |
+| `avoidProducts`      | Sibling products to reject: `hard` counts as a wrong-product source, `soft` is flagged for a manual look                                                                 |
+| `notes`              | Judgment calls for the reviewer                                                                                                                                          |
 
 Rule for every field: at most 2 accepted values, the primary plus one alternate (`alsoAccept` holds at most one gate, `alsoValid` at most one wait).
 

@@ -13,5 +13,7 @@ export const SearchResultSchema = z.strictObject({
   title: z.string().optional(),
   /** Tavily's relevance score, used to order results within a tier. */
   score: z.number().optional(),
+  /** The planned topics whose queries returned this URL; absent when the result did not come from a planned query. */
+  topics: z.array(z.string()).optional(),
 });
 export type SearchResult = z.infer<typeof SearchResultSchema>;

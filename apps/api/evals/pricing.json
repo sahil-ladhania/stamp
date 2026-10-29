@@ -26,19 +26,19 @@
     }
   },
   "typicalRun": {
-    "basis": "The one real run in api.log (Notion, 2026-10-28, status done, 30 s, one retry). Replace with the mean of the first tuning batch once it exists.",
+    "basis": "The mean of the six runs of the first tuning baseline (2026-10-29, pipeline unchanged since). Replace it with the mean of a later batch whenever the pipeline changes cost.",
     "usage": {
       "fastCalls": 1,
       "fastInputTokens": 381,
-      "fastOutputTokens": 64,
-      "strongCalls": 10,
-      "strongInputTokens": 35961,
-      "strongOutputTokens": 1774,
-      "totalTokens": 38180,
-      "tavilySearchCalls": 10,
-      "tavilyExtractCalls": 2,
-      "tavilyCredits": 11,
-      "pagesFetched": 6,
+      "fastOutputTokens": 63,
+      "strongCalls": 9,
+      "strongInputTokens": 31309,
+      "strongOutputTokens": 3799,
+      "totalTokens": 35551,
+      "tavilySearchCalls": 9,
+      "tavilyExtractCalls": 1,
+      "tavilyCredits": 10,
+      "pagesFetched": 4,
       "pageCacheHits": 0
     }
   },

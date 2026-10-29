@@ -27,6 +27,13 @@ export type Summary = {
   totalTokens: number;
   totalPages: number;
   totalRetries: number;
+  /** Sourced and Tested claims, and the ones on good pages. */
+  sourcedClaims: number;
+  goodClaims: number;
+  goodShare: number;
+  goldenTotal: number;
+  goldenInResults: number;
+  goldenFetched: number;
 };
 
 const sum = (values: readonly number[]): number =>
@@ -55,6 +62,8 @@ export function summarize(scores: readonly AppScore[]): Summary {
   const topBlocker = { pass: 0, fail: 0, manual: 0, none: 0 };
   for (const score of scores) topBlocker[score.topBlocker.verdict] += 1;
   const total = totalCost(scores);
+  const sourcedClaims = sum(scores.map((s) => s.claimQuality.sourced));
+  const goodClaims = sum(scores.map((s) => s.claimQuality.good));
   const p95 = percentile(
     scores.map((score) => score.durationMs),
     95,
@@ -85,6 +94,12 @@ export function summarize(scores: readonly AppScore[]): Summary {
     totalTokens: sum(scores.map((s) => s.tokens)),
     totalPages: sum(scores.map((s) => s.pagesHeld)),
     totalRetries: sum(scores.map((s) => s.retries)),
+    sourcedClaims,
+    goodClaims,
+    goodShare: sourcedClaims === 0 ? 0 : goodClaims / sourcedClaims,
+    goldenTotal: sum(scores.map((s) => s.goldenPages.total)),
+    goldenInResults: sum(scores.map((s) => s.goldenPages.inResults)),
+    goldenFetched: sum(scores.map((s) => s.goldenPages.fetched)),
   };
 }
 

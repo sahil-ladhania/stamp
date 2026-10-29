@@ -39,6 +39,11 @@ describe("renderScorecard", () => {
     expect(card).toContain("evals/runs/2026-10-29T10-00-00Z");
   });
 
+  it("explains the two compound columns", () => {
+    expect(card).toContain("On good pages:");
+    expect(card).toContain("Golden pages: read / found by the search / cited");
+  });
+
   it("has one row per app and a totals row, with one column per metric", () => {
     const header = lines.find((line) => line.startsWith("| App |")) ?? "";
     const columns = header.split("|").filter((cell) => cell.trim() !== "");
@@ -59,6 +64,8 @@ describe("renderScorecard", () => {
       "Contradictions",
       "Coverage",
       "Uncertain",
+      "On good pages",
+      "Golden pages",
       "Tokens",
       "Credits",
       "Cost",
@@ -85,6 +92,11 @@ describe("renderScorecard", () => {
     expect(row("gmail")).toContain("pass");
     expect(row("gmail-broken")).toContain("wrong (none)");
     expect(row("gmail-broken")).toContain("n/a");
+  });
+
+  it("shows the claims on good pages and the golden pages read, found and cited", () => {
+    expect(row("gmail")).toMatch(/\| \d+\/\d+ \| 1\/2\/6 \|/);
+    expect(row("gmail-failed")).toContain("| 0/0 | 0/0/6 |");
   });
 
   it("names the failure code of a failed run", () => {

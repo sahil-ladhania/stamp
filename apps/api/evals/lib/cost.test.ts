@@ -75,11 +75,11 @@ describe("estimateBatch", () => {
   it("scales the typical run by the number of runs, with a high case", () => {
     const one = estimateBatch(1, MODELS, pricing);
     const six = estimateBatch(6, MODELS, pricing);
-    expect(one.perRunUsd).toBeCloseTo(0.17437, 4);
+    expect(one.perRunUsd).toBeCloseTo(0.17326, 4);
     expect(six.totalUsd).toBeCloseTo(one.perRunUsd! * 6, 6);
     expect(six.highUsd).toBeCloseTo(six.totalUsd! * pricing.highFactor, 6);
-    expect(six.credits).toBe(66);
-    expect(six.highCredits).toBe(66 * pricing.highFactor);
+    expect(six.credits).toBe(60);
+    expect(six.highCredits).toBe(60 * pricing.highFactor);
   });
 
   it("leaves dollar figures null and names the model when a price is unknown", () => {
@@ -91,6 +91,6 @@ describe("estimateBatch", () => {
     expect(estimate.totalUsd).toBeNull();
     expect(estimate.highUsd).toBeNull();
     expect(estimate.missingPrices).toEqual(["mystery"]);
-    expect(estimate.credits).toBe(22);
+    expect(estimate.credits).toBe(20);
   });
 });

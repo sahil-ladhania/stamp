@@ -79,11 +79,13 @@ describe("runOne", () => {
     };
     const capture = await runOne(golden, { tap, runner, models: MODELS });
     tap.stop();
-    expect(capture.gates).toEqual({
+    expect(capture.gates).toMatchObject({
       reviewGate: "required_to_scale",
       reviewGateTier: "official",
+      reviewGateEvidence: { quote: expect.any(String) },
       approvalWait: { minDays: 5, maxDays: 7 },
       approvalWaitTier: "official",
+      approvalWaitEvidence: { quote: expect.any(String) },
     });
   });
 
@@ -105,8 +107,10 @@ describe("runOne", () => {
     expect(capture.gates).toEqual({
       reviewGate: "unknown",
       reviewGateTier: null,
+      reviewGateEvidence: null,
       approvalWait: "unknown",
       approvalWaitTier: null,
+      approvalWaitEvidence: null,
     });
     expect(capture.outcome).toEqual({ ok: true, status: "partial" });
   });

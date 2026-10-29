@@ -68,3 +68,20 @@ describe("buildJobs retry pass", () => {
     ).toHaveLength(2);
   });
 });
+
+describe("buildJobs topics", () => {
+  it("tags each first-pass job with the topic of its query, the two open ones included", () => {
+    const jobs = buildJobs(app, planned, []);
+    expect(jobs.map((job) => job.topic)).toEqual([
+      ...planned.map((q) => q.topic),
+      "review",
+      "approvalWait",
+    ]);
+  });
+
+  it("tags each retry job with the topic of its retry query", () => {
+    const jobs = buildJobs(app, planned, ["scopes"]);
+    expect(jobs.length).toBeGreaterThan(0);
+    expect(jobs.every((job) => typeof job.topic === "string")).toBe(true);
+  });
+});

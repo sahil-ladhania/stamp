@@ -8,10 +8,12 @@ import type { Claim, EvidenceLabel, Guide } from "@stamp/schema";
 import { collectClaims, countLabels } from "../../src/agent/label-counts.js";
 import type { Golden } from "../lib/golden.js";
 import type { AppScore, GateCapture, RunCapture } from "../lib/types.js";
+import { scoreClaimQuality } from "./claim-quality.js";
 import { findContradictions } from "./contradictions.js";
 import { scoreCoverage } from "./coverage.js";
 import { durationShape } from "./duration.js";
 import { describeWait, scoreGate, scoreWait } from "./gate.js";
+import { scoreGoldenRecall } from "./golden-recall.js";
 import { classifyScope, scoreScopes } from "./scopes.js";
 import { scoreSources } from "./sources.js";
 import { scoreTopBlocker, type BlockerInput } from "./top-blocker.js";
@@ -22,8 +24,10 @@ export const WITHIN_BUDGET_MS = 120_000;
 const NO_GATES: GateCapture = {
   reviewGate: "unknown",
   reviewGateTier: null,
+  reviewGateEvidence: null,
   approvalWait: "unknown",
   approvalWaitTier: null,
+  approvalWaitEvidence: null,
 };
 
 const MILESTONE_FIELDS = [
@@ -137,5 +141,11 @@ export function scoreApp(
       wait: gates.approvalWait,
       guide,
     }),
+    claimQuality: scoreClaimQuality(claims, golden),
+    goldenPages: scoreGoldenRecall(
+      capture.searchResults.map((result) => result.url),
+      capture.pages.map((page) => page.url),
+      golden,
+    ),
   };
 }

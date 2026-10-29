@@ -12,7 +12,17 @@
   },
   "docs": {
     "domains": ["docs.slack.dev", "api.slack.com"],
-    "pathHints": ["/authentication/", "/app-management/", "/slack-marketplace/", "/reference/scopes", "/apis/web-api/"]
+    "pathHints": ["/authentication/", "/app-management/", "/slack-marketplace/", "/reference/scopes", "/apis/web-api/"],
+    "urlAliases": [
+      {
+        "seenAs": "https://api.slack.com/slack-marketplace/review-guide",
+        "golden": "https://docs.slack.dev/slack-marketplace/slack-marketplace-review-guide/"
+      },
+      {
+        "seenAs": "https://api.slack.com/authentication/oauth-v2",
+        "golden": "https://docs.slack.dev/authentication/installing-with-oauth/"
+      }
+    ]
   },
   "oauthAppCreation": {
     "where": "api.slack.com/apps (the app settings page): create an app, then add scopes and redirect URLs under OAuth & Permissions",
@@ -153,6 +163,7 @@
   "notes": [
     "Judgment call for your review: optional_listing vs required_to_scale. Slack says commercial apps should be listed, and unlisted commercial apps are throttled on two methods, but unlisted install works. Both labels are accepted.",
     "Slack docs moved from api.slack.com to docs.slack.dev. Both are official.",
-    "The legacy hint api.slack.com/docs/oauth was added after the first baseline run. It was not in the golden set approved on 2026-10-29."
+    "The legacy hint api.slack.com/docs/oauth was added after the first baseline run. It was not in the golden set approved on 2026-10-29.",
+    "The two urlAliases were added for PR 1: the agent only sees the old api.slack.com host, which redirects to the golden docs.slack.dev pages (checked by following the redirects on 2026-10-29). They only affect the retrieval metrics. They were not in the golden set approved on 2026-10-29."
   ]
 }

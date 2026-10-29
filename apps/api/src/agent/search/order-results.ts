@@ -15,26 +15,35 @@ const TIER_RANK: Record<SourceTier, number> = {
   forum: 2,
 };
 
-/** Tier each hit against the official domain and drop repeats of the same URL, keeping the first. */
+/** A hit with the topic of the planned query that returned it, when there is one. */
+export type TaggedHit = SearchHit & { topic?: string };
+
+/**
+ * Tier each hit against the official domain and drop repeats of the same URL, keeping the first.
+ * A repeat still adds its query's topic to the kept result, so a result lists every topic that found it.
+ */
 export function toSearchResults(
-  hits: SearchHit[],
+  hits: TaggedHit[],
   domain: string,
 ): SearchResult[] {
-  const seen = new Set<string>();
-  const results: SearchResult[] = [];
+  const byUrl = new Map<string, SearchResult>();
   for (const hit of hits) {
-    if (seen.has(hit.url)) {
+    const kept = byUrl.get(hit.url);
+    if (kept) {
+      if (hit.topic !== undefined && !kept.topics?.includes(hit.topic)) {
+        kept.topics = [...(kept.topics ?? []), hit.topic];
+      }
       continue;
     }
-    seen.add(hit.url);
-    results.push({
+    byUrl.set(hit.url, {
       url: hit.url,
       tier: sourceTier(hit.url, domain),
       ...(hit.title === "" ? {} : { title: hit.title }),
       score: hit.score,
+      ...(hit.topic === undefined ? {} : { topics: [hit.topic] }),
     });
   }
-  return results;
+  return [...byUrl.values()];
 }
 
 /** Official before third party before forum; within a tier, higher score first. Equal results keep their order. */
