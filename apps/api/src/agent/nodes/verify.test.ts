@@ -135,20 +135,38 @@ describe("verifyNode", () => {
     );
   });
 
-  it("reports no missing section when steps and scopes have a Sourced claim", async () => {
-    expect((await verify()).update.missingSections).toEqual([]);
+  it("reports no missing section when the gate is known and steps, scopes and blockers have a Sourced claim", async () => {
+    expect(
+      (await verify({ gates: GATES_OUTPUT })).update.missingSections,
+    ).toEqual([]);
+  });
+
+  it("reports the review gate as missing when there are no gates or its evidence did not verify, which triggers the retry", async () => {
+    expect((await verify()).update.missingSections).toEqual(["reviewGate"]);
+    const bad = {
+      ...GATES_OUTPUT,
+      reviewGateEvidence: claim(REVIEW_URL, FAKE),
+    };
+    expect((await verify({ gates: bad })).update.missingSections).toEqual([
+      "reviewGate",
+    ]);
   });
 
   it("reports steps as missing when none of its quotes matched, which triggers the retry", async () => {
     expect(
-      (await verify({ drafts: withDrafts({ steps: steps(FAKE) }) })).update
-        .missingSections,
+      (
+        await verify({
+          drafts: withDrafts({ steps: steps(FAKE) }),
+          gates: GATES_OUTPUT,
+        })
+      ).update.missingSections,
     ).toEqual(["steps"]);
   });
 
   it("reports a section that was not found at all as missing", async () => {
     const { update } = await verify({
       drafts: withDrafts({ scopes: { status: "unknown" } }),
+      gates: GATES_OUTPUT,
     });
     expect(update.missingSections).toEqual(["scopes"]);
   });
@@ -190,7 +208,12 @@ describe("verifyNode", () => {
   it("verifies nothing and emits no claim event when nothing was drafted", async () => {
     const { h, update } = await verify({ drafts: {} });
     expect(update.claims).toEqual([]);
-    expect(update.missingSections).toEqual(["steps", "scopes"]);
+    expect(update.missingSections).toEqual([
+      "reviewGate",
+      "steps",
+      "scopes",
+      "blockers",
+    ]);
     expect(h.events.some((e) => e.type.startsWith("claim."))).toBe(false);
   });
 });

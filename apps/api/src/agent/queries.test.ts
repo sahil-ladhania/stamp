@@ -181,10 +181,10 @@ describe("retryQueries", () => {
     }
   });
 
-  it("makes at most two queries", () => {
+  it("makes at most three queries", () => {
     expect(
       retryQueries(NAME, ["steps", "scopes", "limits", "blockers"]),
-    ).toHaveLength(2);
+    ).toHaveLength(3);
   });
 
   it("makes one query when two missing sections give the same one", () => {

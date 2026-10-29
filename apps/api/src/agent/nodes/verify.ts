@@ -11,6 +11,7 @@ import { indexPages } from "../extract/sanitize.js";
 import { claimSlots } from "../guide/claim-slots.js";
 import { stageNode } from "../stage-node.js";
 import { claimEvents } from "../verify/claim-events.js";
+import { toGateFacts } from "../scoring/gate-facts.js";
 import { missingSections } from "../verify/missing-sections.js";
 import { verifyClaims } from "../verify/verify-claims.js";
 import { confirmConflicts } from "../verify/verify-conflicts.js";
@@ -33,7 +34,9 @@ export const verifyNode = stageNode("verify", async (state, config) => {
   )) {
     await emit(config, event);
   }
-  const missing = missingSections(verified.claims);
+  const missing = missingSections(verified.claims, {
+    gateKnown: toGateFacts(gates?.gates ?? null).reviewGate !== "unknown",
+  });
   logger.info("verify summary", {
     runId: getDeps(config).runId,
     claims: verified.claims.length,

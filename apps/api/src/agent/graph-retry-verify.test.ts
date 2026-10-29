@@ -1,12 +1,13 @@
 /**
  * File: graph-retry-verify.test.ts
- * Purpose: Tests the retry edge driven by the real verify stage: a section with no matched quote sends the run back to search once, and no more.
+ * Purpose: Tests the retry edge driven by the real verify stage: a section with no matched quote, or an unknown review gate, sends the run back to search once, and no more.
  * Exports: (none)
  * Used by: vitest
  */
 import { describe, expect, it, vi } from "vitest";
 import { logger } from "../lib/logger.js";
 import { OAUTH_URL, PAGES, claim } from "../test-support/extract-fixtures.js";
+import { GATES_OUTPUT } from "../test-support/extract-replies.js";
 import { createHarness, recorded } from "../test-support/graph-harness.js";
 import { DRAFTS, drafted, withDrafts } from "../test-support/guide-fixtures.js";
 import { APP } from "../test-support/node-fixtures.js";
@@ -31,7 +32,10 @@ function rig(first: typeof DRAFTS, second: typeof DRAFTS) {
   const search = recorded("search");
   const probe = recorded("probe");
   const extract = stageNode("extract", (state) =>
-    Promise.resolve({ drafts: state.retryCount === 0 ? first : second }),
+    Promise.resolve({
+      drafts: state.retryCount === 0 ? first : second,
+      gates: GATES_OUTPUT,
+    }),
   );
   const nodes = {
     resolve: stageNode("resolve", () => Promise.resolve({ app: APP })),

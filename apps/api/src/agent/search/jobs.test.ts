@@ -66,10 +66,16 @@ describe("buildJobs retry pass", () => {
     }
   });
 
-  it("makes at most two searches however many sections are missing", () => {
+  it("makes at most three searches however many sections are missing", () => {
     expect(
-      buildJobs(app, planned, ["steps", "scopes", "limits", "blockers"]),
-    ).toHaveLength(2);
+      buildJobs(app, planned, [
+        "reviewGate",
+        "steps",
+        "scopes",
+        "limits",
+        "blockers",
+      ]),
+    ).toHaveLength(3);
   });
 });
 
