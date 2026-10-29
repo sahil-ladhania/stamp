@@ -5,7 +5,7 @@
 - MySQL with Prisma 7. Five tables: `guides`, `runs`, `page_cache`, `verification_log`, `claim_reports`.
 - A whole guide is stored as one JSON column. Zod validates it; the app always reads it as one unit.
 - The `runs` table doubles as the per-app lock, using a nullable unique column.
-- Library guides are seeded from JSON files into `guides`, so there is one read path.
+- Library guides are seeded from the JSON files in `apps/api/library/` into `guides`, so there is one read path. A code check runs before a file is exported or seeded.
 
 ---
 
@@ -145,7 +145,7 @@ erDiagram
 | `difficulty`, `archetype` copied out of JSON | Home page sorts and filters without parsing JSON | Must be kept in sync on save |
 | Lock via `runs.activeSlug` unique | MySQL allows many NULLs in a unique column, so only one active run per app can exist | Stale locks (over 3 minutes) are cleared in code |
 | URL hash as page key | MySQL index size limits rule out long URLs as keys | Needs one hash step |
-| Library seeded into `guides` | One read path for library and live guides | Re-seed after editing a library file |
+| Library seeded into `guides` | One read path for library and live guides | Re-export, re-check and re-seed after a library file changes |
 
 ---
 

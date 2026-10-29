@@ -14,6 +14,8 @@
     "test": "vitest run",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
+    "db:seed": "tsx scripts/db-seed.ts",
+    "library:export": "tsx scripts/library-export.ts",
     "smoke:live": "tsx scripts/smoke-live.ts",
     "capture:fixtures": "tsx scripts/capture-fixtures.ts",
     "eval": "tsx evals/cli.ts",

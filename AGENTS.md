@@ -52,6 +52,8 @@ Instructions for every AI coding agent working in this repo (Cursor, Claude Code
 | Run one workspace | `pnpm --filter api dev` |
 | Add a dependency | `pnpm --filter <workspace> add <pkg>` |
 | Migrate the database | `pnpm --filter api db:migrate` |
+| Export saved guides into the library (checked, never edited) | `pnpm --filter api library:export -- --run <eval run folder> --apps github,hubspot` |
+| Check the library files without a database | `pnpm --filter api db:seed -- --dry-run` |
 | Seed library guides | `pnpm --filter api db:seed` |
 | Eval reliability (prints the cost estimate; add `--confirm` to run, `--repeat 3` to see the spread) | `pnpm --filter api eval -- --set tuning` |
 | Score a saved eval run again with the current golden set (free) | `pnpm --filter api eval:rescore -- <run folder>` |
