@@ -1,7 +1,7 @@
 /**
  * File: GuideHeader.tsx
  * Purpose: Top of a guide: the app as the title with Copy link beside it, the headline cut to a few lines with its label, and
- *          one quiet line of facts: library or live, the as-of date and how many claims are confirmed.
+ *          one quiet line of facts: library or live, the as-of date and how many claims are sourced.
  * Exports: GuideHeader
  * Used by: components/guide/GuideView.tsx
  */
@@ -11,7 +11,7 @@ import { ClaimEvidence } from "@/components/evidence/ClaimEvidence";
 import { AppIdentity } from "@/components/shared/AppIdentity";
 import { ClampedText } from "@/components/shared/ClampedText";
 import type { Guide } from "@/types/guide-model";
-import { confirmedSummary } from "@/utils/confirmed-summary";
+import { claimSummary } from "@/utils/claim-summary";
 import { formatAsOf } from "@/utils/format-date";
 import { CopyLinkButton } from "./CopyLinkButton";
 
@@ -39,7 +39,7 @@ export function GuideHeader({ guide }: { guide: Guide }): ReactElement {
         <span aria-hidden>·</span>
         <span>As of {formatAsOf(guide.asOf)}</span>
         <span aria-hidden>·</span>
-        <span>{confirmedSummary(guide.claims).text}</span>
+        <span>{claimSummary(guide.claims).text}</span>
       </p>
     </header>
   );

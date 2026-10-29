@@ -20,6 +20,8 @@ type VerdictProps = {
   guide: Guide;
   /** `compact` is the hero poster: difficulty, first test, production and top blocker. `full` shows every row. */
   variant?: "full" | "compact";
+  /** False leaves out the app name, for a page that already shows it. The header keeps the stamp mark. */
+  hasIdentity?: boolean;
   /** Where a row's full version lives. Return null for a row with no link. */
   detailHref?: (row: VerdictRowData) => string | null;
   /** The row to highlight, when a question beside the card points at it. */
@@ -29,17 +31,26 @@ type VerdictProps = {
 
 const COMPACT_ROWS: readonly VerdictRowId[] = ["firstTest", "production", "topBlocker"];
 
-export function Verdict({ guide, variant = "full", detailHref, highlighted = null, className }: VerdictProps): ReactElement {
+export function Verdict({ guide, variant = "full", hasIdentity = true, detailHref, highlighted = null, className }: VerdictProps): ReactElement {
   const rows = getVerdictRows(guide).filter((row) => variant === "full" || COMPACT_ROWS.includes(row.id));
   const isFull = variant === "full";
 
   return (
     <article aria-label={`Verdict for ${guide.appName}`} className={cn("rounded-md border border-ink bg-card", className)}>
-      <header className="flex items-start justify-between gap-4 border-b border-rule p-4 tablet:p-6">
-        <div className="flex min-w-0 flex-col gap-1">
-          <AppIdentity name={guide.appName} slug={guide.slug} size="md" />
-          <p className="text-small text-ink-muted">Verdict</p>
-        </div>
+      <header
+        className={cn(
+          "flex items-start justify-between gap-4 border-b border-rule",
+          hasIdentity ? "p-4 tablet:p-6" : "px-4 py-3 tablet:px-6",
+        )}
+      >
+        {hasIdentity ? (
+          <div className="flex min-w-0 flex-col gap-1">
+            <AppIdentity name={guide.appName} slug={guide.slug} size="md" />
+            <p className="text-small text-ink-muted">Verdict</p>
+          </div>
+        ) : (
+          <p className="pt-1 text-small text-ink-muted">Verdict</p>
+        )}
         <StampMark score={guide.difficulty.score} />
       </header>
       <dl className="flex flex-col divide-y divide-rule">

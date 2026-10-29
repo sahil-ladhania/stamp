@@ -1,62 +1,65 @@
 /**
  * File: RunScreen.tsx
- * Purpose: The Live run screen for one run: follows the stream, derives the view, and composes the header, the
- *          "Did you mean" panel, the budget strip, the stage list and the trace. The page keys it on the run id.
+ * Purpose: The Live run screen for one run: follows the stream, works out the phase, and composes the sticky header, the notice for a run
+ *          that did not finish, the result card, and the merged timeline. The page keys it on the run id.
  * Exports: RunScreen
  * Used by: pages/RunPage.tsx
  */
 import type { ReactElement } from "react";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
-import { useRunClock } from "@/hooks/useRunClock";
+import { useFollowScroll } from "@/hooks/useFollowScroll";
+import { useRunResult } from "@/hooks/useRunResult";
 import { useRunStream } from "@/hooks/useRunStream";
 import { useStartRun } from "@/hooks/useStartRun";
-import { resolveAppName } from "@/utils/app-name";
+import type { ApiError } from "@/lib/api-error";
+import { resolveRunAppName } from "@/utils/app-name";
 import { getApiErrorMessage } from "@/utils/error-messages";
+import { getRunPhase } from "@/utils/run-phase";
+import { buildStageGroups } from "@/utils/run-groups";
+import type { RunOutcome } from "@/utils/run-view";
 import { AmbiguousOptions } from "./AmbiguousOptions";
-import { BudgetStrip } from "./BudgetStrip";
-import {
-  getRunCopy,
-  getRunStatusLine,
-  getStreamFailureCopy,
-} from "./run-copy";
-import { RunActions } from "./RunActions";
+import { JumpToLatest } from "./JumpToLatest";
 import { RunHeader } from "./RunHeader";
-import { StageTimeline } from "./StageTimeline";
-import { TracePanel } from "./TracePanel";
+import { RunMeters } from "./RunMeters";
+import { RunNotice } from "./RunNotice";
+import { RunResultCard } from "./RunResultCard";
+import { getRunTitle, getStageLine } from "./run-copy";
+import { getErrorNotice, getStreamFailureNotice, type RunNoticeCopy } from "./run-error-copy";
+import { TraceTimeline } from "./TraceTimeline";
 
 type RunScreenProps = {
   runId: string;
-  /** What the visitor typed (`?app=`). The slug is the fallback. */
+  /** What the visitor typed (`?app=`). */
   appParam: string | null;
   /** Follows the run again, for a stream that failed. */
   onReconnect: () => void;
 };
 
-export function RunScreen({
-  runId,
-  appParam,
-  onReconnect,
-}: RunScreenProps): ReactElement {
-  const { snapshot, view, connection, error } = useRunStream(runId);
+/** A run error, or a stream that failed before any terminal event. A finished run has neither. */
+function getNotice(outcome: RunOutcome, error: ApiError | null): RunNoticeCopy | null {
+  if (outcome.kind === "error") return getErrorNotice(outcome.code, outcome.stage, outcome.options.length > 0);
+  if (outcome.kind === "running" && error) return getStreamFailureNotice(error);
+  return null;
+}
+
+export function RunScreen({ runId, appParam, onReconnect }: RunScreenProps): ReactElement {
+  const { snapshot, view, events, connection, error } = useRunStream(runId);
   const { start, isPending, error: startError } = useStartRun();
   const { outcome } = view;
 
-  const isRunning = outcome.kind === "running" && error === null;
-  const isSummaryOnly =
-    error !== null || (outcome.kind !== "running" && view.trace.length === 0);
-  const appName = resolveAppName(appParam, snapshot?.slug ?? null);
-  const elapsedMs = useRunClock(snapshot, isRunning);
-  const copy = error
-    ? getStreamFailureCopy(error)
-    : getRunCopy(view, { appName, elapsedMs, isSummaryOnly });
-  const statusLine = getRunStatusLine({
-    isRunning,
-    isConnecting: connection === "connecting",
-    currentStageName: view.currentStage?.name ?? null,
-    heading: copy.heading,
-  });
-  useDocumentTitle(copy.heading);
+  const phase = getRunPhase({ outcome, error, connection, hasEvents: events.length > 0 });
+  const isRunning = phase === "connecting" || phase === "running";
+  const hasTrace = events.length > 0;
+  const savedSlug = outcome.kind === "done" ? outcome.slug : null;
+  const { guide, isLoading: isGuideLoading } = useRunResult(savedSlug);
+  const appName = resolveRunAppName({ guideName: guide?.appName ?? null, typed: appParam, slug: snapshot?.slug ?? null });
+  const notice = getNotice(outcome, error);
+  const groups = buildStageGroups(view.stages, events);
+  const { endRef, hasUnseen, jumpToLatest } = useFollowScroll(isRunning, events.length);
+
+  const stage = view.currentStage?.stage ?? (outcome.kind === "error" ? outcome.stage : null);
+  useDocumentTitle(getRunTitle(phase, appName, notice?.title ?? null));
 
   // The slug is what the API normalises, so it is the safest name to research again.
   const retryApp = appParam?.trim() || snapshot?.slug || null;
@@ -65,52 +68,55 @@ export function RunScreen({
   }
 
   return (
-    <PageContainer className="flex flex-col gap-8 py-12">
+    <>
       <RunHeader
-        copy={copy}
-        appSlug={snapshot?.slug ?? null}
-        statusLine={statusLine}
-        isRunning={isRunning}
-        actions={
-          <RunActions
-            actions={copy.actions}
-            isPending={isPending}
-            onNewRun={startNewRun}
-            onReconnect={onReconnect}
-          />
+        appName={appName}
+        slug={snapshot?.slug ?? null}
+        phase={phase}
+        stageLine={getStageLine({ phase, stage })}
+        meters={
+          phase === "not-found" ? null : (
+            <RunMeters snapshot={snapshot} isRunning={isRunning} pagesRead={view.pagesRead} retries={view.retries} />
+          )
         }
       />
-      {outcome.kind === "error" && outcome.code === "AMBIGUOUS_APP" && (
-        <AmbiguousOptions
-          options={outcome.options}
-          isPending={isPending}
-          onChoose={(domain) => void start(domain)}
-        />
-      )}
-      {startError && (
-        <p role="alert" className="text-small text-ink">
-          {getApiErrorMessage(startError)}
-        </p>
-      )}
-      {connection === "reconnecting" && (
-        <p role="status" className="text-small text-ink-muted">
-          Connection lost. Reconnecting.
-        </p>
-      )}
-      {!isSummaryOnly && (
-        <>
-          <BudgetStrip
-            elapsedMs={elapsedMs}
-            pagesRead={view.pagesRead}
-            retries={view.retries}
-            isRunning={isRunning}
+      <PageContainer className="flex flex-col gap-8 py-8">
+        {notice && (
+          <RunNotice notice={notice} isPending={isPending} onNewRun={startNewRun} onReconnect={onReconnect}>
+            {outcome.kind === "error" && outcome.options.length > 0 && (
+              <AmbiguousOptions options={outcome.options} isPending={isPending} onChoose={(domain) => void start(domain)} />
+            )}
+          </RunNotice>
+        )}
+        {startError && (
+          <p role="alert" className="text-small text-ink">
+            {getApiErrorMessage(startError)}
+          </p>
+        )}
+        {connection === "reconnecting" && (
+          <p role="status" className="text-small text-ink-muted">
+            Connection lost. Reconnecting.
+          </p>
+        )}
+        {savedSlug && (
+          <RunResultCard
+            slug={savedSlug}
+            isPartial={phase === "partial"}
+            guide={guide}
+            isGuideLoading={isGuideLoading}
+            snapshot={snapshot}
+            downgradedIds={events.flatMap((event) => (event.type === "claim.downgraded" ? [event.claimId] : []))}
+            hasTrace={hasTrace}
+            isPending={isPending}
+            onNewRun={startNewRun}
           />
-          <div className="grid gap-8 desktop:grid-cols-12 desktop:items-start">
-            <StageTimeline stages={view.stages} className="desktop:col-span-4" />
-            <TracePanel trace={view.trace} className="desktop:col-span-8" />
-          </div>
-        </>
-      )}
-    </PageContainer>
+        )}
+        {phase !== "not-found" && (hasTrace || isRunning) && (
+          <TraceTimeline groups={groups} isLive={isRunning} hasEvents={hasTrace} />
+        )}
+        <div ref={endRef} aria-hidden />
+      </PageContainer>
+      {isRunning && hasUnseen && <JumpToLatest onClick={jumpToLatest} />}
+    </>
   );
 }
