@@ -62,7 +62,10 @@ export function planBatch(
       `A batch is at most ${MAX_RUNS_PER_BATCH} runs; this one would run ${goldens.length}.`,
     );
   }
-  const holdout = goldens.some((golden) => golden.set === "holdout");
+  // The fresh set (apps researched after the holdout was spent) is held to the same rule as the holdout.
+  const holdout = goldens.some(
+    (golden) => golden.set === "holdout" || golden.set === "fresh",
+  );
   if (holdout && !args.allowHoldout) {
     throw new Error(
       "The holdout set needs --allow-holdout. Run it once, after the last fix, and never tune on its results.",

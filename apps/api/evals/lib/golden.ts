@@ -66,7 +66,7 @@ const WaitSchema = z
 
 export const GoldenSchema = z.strictObject({
   slug: z.string().min(1),
-  set: z.enum(["tuning", "holdout"]),
+  set: z.enum(["tuning", "holdout", "fresh"]),
   typedNames: z.array(z.string().min(1)).min(1),
   researchedOn: z.string().min(1),
   product: z.strictObject({ name: z.string().min(1), source: Source }),
@@ -161,19 +161,19 @@ export async function loadGolden(dir: string = GOLDEN_DIR): Promise<Golden[]> {
   return all;
 }
 
-/** "tuning" or "holdout" picks a whole set; anything else must be a golden slug. */
+/** "tuning", "holdout" or "fresh" picks a whole set; anything else must be a golden slug. */
 export function selectGolden(
   all: readonly Golden[],
   selector: string,
 ): Golden[] {
-  if (selector === "tuning" || selector === "holdout") {
+  if (selector === "tuning" || selector === "holdout" || selector === "fresh") {
     return all.filter((golden) => golden.set === selector);
   }
   const one = all.find((golden) => golden.slug === selector);
   if (!one) {
     const known = all.map((golden) => golden.slug).join(", ");
     throw new Error(
-      `Unknown golden "${selector}". Use tuning, holdout or one of: ${known}`,
+      `Unknown golden "${selector}". Use tuning, holdout, fresh or one of: ${known}`,
     );
   }
   return [one];

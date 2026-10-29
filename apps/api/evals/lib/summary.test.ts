@@ -92,6 +92,15 @@ describe("targetFor", () => {
     });
   });
 
+  it("gives the fresh set of three apps a gate target of 2", () => {
+    expect(targetFor("fresh", 3)).toEqual({
+      gate: 2,
+      scopeApps: null,
+      topBlocker: null,
+    });
+    expect(targetFor("fresh", 2)).toBeNull();
+  });
+
   it("gives no target for a single app or a partial set", () => {
     expect(targetFor("tuning", 1)).toBeNull();
   });

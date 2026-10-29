@@ -118,7 +118,7 @@ export type ScoreStatus = "done" | "partial" | "failed";
 /** One app's scores: every number in scorecard.md comes from here. */
 export type AppScore = {
   slug: string;
-  set: "tuning" | "holdout";
+  set: "tuning" | "holdout" | "fresh";
   status: ScoreStatus;
   failureCode: string | null;
   durationMs: number;

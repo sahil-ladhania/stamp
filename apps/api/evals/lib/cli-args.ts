@@ -11,7 +11,7 @@ export const MAX_PARALLEL = 2;
 export const MAX_REPEAT = 3;
 
 export const USAGE =
-  "Usage: pnpm --filter api eval -- --set tuning|holdout|<slug> [--parallel 1|2] [--repeat 1|2|3] [--confirm] [--allow-holdout] [--out <dir>]";
+  "Usage: pnpm --filter api eval -- --set tuning|holdout|fresh|<slug> [--parallel 1|2] [--repeat 1|2|3] [--confirm] [--allow-holdout] [--out <dir>]";
 
 export type CliArgs = {
   selector: string;

@@ -4,6 +4,7 @@ Hand-researched answers for 10 apps, taken from official docs only. The eval har
 
 - Tuning set (6): gmail, microsoft, hubspot, github, slack, notion. Used while fixing.
 - Holdout set (4): zoom, dropbox, asana, calendly. Run once at the end. Never tune on it.
+- Fresh set (3): pipedrive, xero, discord. Researched after the holdout was spent and after the last code change, then run once with `--set fresh --allow-holdout`. No stage was tuned on them and no fixture was built from them.
 - Researched on 2026-10-29. Provider docs change, so every fact carries its URL and a verbatim quote.
 
 ## File format
@@ -27,7 +28,7 @@ Rule for every field: at most 2 accepted values, the primary plus one alternate 
 
 ## What was checked
 
-- Every `{url, quote}` pair was fetched live and the quote found on the page, ignoring whitespace (148 of 148).
+- Every `{url, quote}` pair was fetched live and the quote found on the page, ignoring whitespace (148 of 148 for the first ten apps, 42 of 42 for the fresh three). Xero's documentation pages need script to render, so those quotes were checked on the text the agent's own page fetcher returns.
 - This proves the quote exists on that page. It does not prove the quote supports the claim next to it. That is the part to review by hand.
 - Notion has no scope strings, so its `scopes` hold capability names.
 - Dropbox scope names come from Dropbox's own API spec repository because the dropbox.com scope reference needs script to render.

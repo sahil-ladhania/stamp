@@ -64,7 +64,7 @@ describe("METRICS", () => {
 describe("targets", () => {
   const target = (
     name: string,
-    set: "tuning" | "holdout" | undefined,
+    set: "tuning" | "holdout" | "fresh" | undefined,
     apps: number,
   ) => byName(name).target({ set, apps });
 
