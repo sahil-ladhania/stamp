@@ -8,11 +8,15 @@ import type { Archetype } from "@stamp/schema";
 import type { GateFacts } from "./difficulty.js";
 
 /**
- * First match wins:
+ * An unverified review gate is unknown, whatever else is known: a kind of hard that rests on a gate nobody
+ * confirmed would be a guess, and the web app shows "Not rated" for it. Otherwise the first match wins:
  * partner vetting, enterprise plan, security assessment, hidden limits, required review,
- * then instant when a gate was verified as none or optional. With no verified facts it is unknown.
+ * then instant when a gate was verified as none or optional.
  */
 export function classifyArchetype(facts: GateFacts): Archetype {
+  if (facts.reviewGate === "unknown") {
+    return "unknown";
+  }
   if (facts.reviewGate === "partner_vetting") {
     return "partner_gated";
   }

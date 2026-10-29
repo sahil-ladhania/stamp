@@ -10,8 +10,8 @@ import { normalizeText } from "../../utils/normalize-text.js";
 const MAX_NAME_CHARS = 120;
 const PLACEHOLDER =
   /[<>{}[\]*]|^\.+$|^(?:your|my|example|sample|test|placeholder)(?:[_.:-]|$)|(?:^|[_.:-])(?:xxx+|placeholder|example|scope_?name(?:_here)?)$/i;
-/** A name that stops on a separator is half of a template ("session:role:"). */
-const UNFINISHED = /[:_-]$/;
+/** A name that stops on a separator is half of a template ("session:role:"); one that starts with a slash is a piece of a URL ("/.default"). */
+const UNFINISHED = /[:_-]$|^\//;
 const BARE_HOST =
   /^[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:com|org|net|io|dev|co|app)$/i;
 /** A path segment that names an admin surface: an organisation's administration, not an app's own permissions. */

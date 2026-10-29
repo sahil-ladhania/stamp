@@ -10,6 +10,7 @@ import type { ReactElement } from "react";
 import { AppIdentity } from "@/components/shared/AppIdentity";
 import { cn } from "@/lib/utils";
 import type { Guide } from "@/types/guide-model";
+import { isRated } from "@/utils/difficulty-rating";
 import { getVerdictRows, type VerdictRow as VerdictRowData, type VerdictRowId } from "@/utils/verdict";
 import { DifficultyRow } from "./DifficultyRow";
 import { KindRow } from "./KindRow";
@@ -53,10 +54,10 @@ export function Verdict({ guide, variant = "full", hasIdentity = true, detailHre
         ) : (
           <p className="pt-1 text-small text-ink-muted">Verdict</p>
         )}
-        <StampMark score={guide.difficulty.score} />
+        <StampMark score={guide.difficulty.score} isRated={isRated(guide.archetype)} />
       </header>
       <dl className="flex flex-col divide-y divide-rule">
-        {variant === "full" && <DifficultyRow difficulty={guide.difficulty} isHighlighted={highlighted === "difficulty"} />}
+        {variant === "full" && <DifficultyRow difficulty={guide.difficulty} isHighlighted={highlighted === "difficulty"} isRated={isRated(guide.archetype)} />}
         {variant !== "compact" && (
           <KindRow
             archetype={guide.archetype}

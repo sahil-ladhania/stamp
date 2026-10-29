@@ -45,9 +45,13 @@ describe("classifyArchetype", () => {
     expect(
       kind({ reviewGate: "security_assessment", needsEnterprisePlan: true }),
     ).toBe("enterprise");
-    expect(kind({ needsEnterprisePlan: true, hiddenLimits: 2 })).toBe(
-      "enterprise",
-    );
+    expect(
+      kind({
+        reviewGate: "none",
+        needsEnterprisePlan: true,
+        hiddenLimits: 2,
+      }),
+    ).toBe("enterprise");
   });
 
   it("puts a security assessment above hidden limits", () => {
@@ -61,9 +65,6 @@ describe("classifyArchetype", () => {
       "hidden_limits",
     );
     expect(kind({ reviewGate: "none", hiddenLimits: 1 })).toBe("hidden_limits");
-    expect(kind({ reviewGate: "unknown", hiddenLimits: 1 })).toBe(
-      "hidden_limits",
-    );
   });
 
   it("calls a required listing without limits a review", () => {
@@ -73,6 +74,17 @@ describe("classifyArchetype", () => {
   it("calls an optional listing or no gate instant", () => {
     expect(kind({ reviewGate: "optional_listing" })).toBe("instant");
     expect(kind({ reviewGate: "none", prerequisites: 2 })).toBe("instant");
+  });
+
+  it("is unknown whenever the review gate is unknown, however much else is known", () => {
+    expect(kind({ hiddenLimits: 1 })).toBe("unknown");
+    expect(kind({ needsEnterprisePlan: true })).toBe("unknown");
+    expect(
+      kind({ prerequisites: 3, hiddenLimits: 2, needsEnterprisePlan: true }),
+    ).toBe("unknown");
+    expect(
+      kind({ approvalWait: { minDays: 5, maxDays: 7 }, hiddenLimits: 1 }),
+    ).toBe("unknown");
   });
 
   it("is unknown when nothing was verified", () => {
