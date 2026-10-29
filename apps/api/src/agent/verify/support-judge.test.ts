@@ -52,7 +52,9 @@ const options = {
   runId: "run_1",
 };
 
-beforeEach(() => model.mockReset());
+beforeEach(() => {
+  model.mockReset();
+});
 
 describe("what the check asks about", () => {
   it("is every Sourced claim, with its quote and page, and nothing already Uncertain", () => {

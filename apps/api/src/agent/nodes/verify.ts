@@ -16,10 +16,12 @@ import { claimEvents } from "../verify/claim-events.js";
 import { toGateFacts } from "../scoring/gate-facts.js";
 import { missingSections } from "../verify/missing-sections.js";
 import { applyToGates, gateItems } from "../verify/gate-judge.js";
+import { judgeWithMemory } from "../verify/judge-memory.js";
 import {
   applyToClaims,
   claimItems,
-  runJudge,
+  reasonOf,
+  type Verdict,
 } from "../verify/support-judge.js";
 import { verifyClaims } from "../verify/verify-claims.js";
 import { confirmConflicts } from "../verify/verify-conflicts.js";
@@ -48,8 +50,8 @@ export const verifyNode = stageNode("verify", async (state, config) => {
   // The support check runs on what code left Sourced, so it can only take labels away. If it cannot run,
   // the labels stay as the code set them and the guide is partial.
   const deps = getDeps(config);
-  const verdicts = state.app
-    ? await runJudge(
+  const judged = state.app
+    ? await judgeWithMemory(
         state.app,
         [
           ...claimItems(byCode, titleOf),
@@ -66,8 +68,10 @@ export const verifyNode = stageNode("verify", async (state, config) => {
           usage: deps.usage,
           runId: deps.runId,
         },
+        state.supportVerdicts,
       )
-    : new Map();
+    : { verdicts: new Map<string, Verdict>(), memory: state.supportVerdicts };
+  const verdicts = judged?.verdicts ?? null;
   const verified = verdicts ? applyToClaims(byCode, verdicts) : byCode;
   const gates =
     verdicts && gatesByCode
@@ -93,6 +97,10 @@ export const verifyNode = stageNode("verify", async (state, config) => {
       (o, i) => o.downgrade !== null && byCode.outcomes[i]?.downgrade === null,
     ).length,
     supportCheck: verdicts === null ? "skipped" : "done",
+    // The items the support check removed a label from (ids only), so its precision can be read from the logs.
+    judgeRemoved: [...(verdicts ?? [])]
+      .filter(([, verdict]) => reasonOf(verdict) !== null)
+      .map(([id]) => id),
     // Where a review gate is lost, step by step: as drafted, after the quote and official-page checks, after the support check.
     reviewGate: {
       drafted: toGateFacts(state.gates).reviewGate,
@@ -107,6 +115,8 @@ export const verifyNode = stageNode("verify", async (state, config) => {
     missingSections: missing,
     gates: gates?.gates ?? null,
     checks: [...verified.checks, ...conflicts.checks, ...(gates?.checks ?? [])],
-    ...(verdicts === null ? { partial: true } : {}),
+    ...(judged === null
+      ? { partial: true }
+      : { supportVerdicts: judged.memory }),
   };
 });
