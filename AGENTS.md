@@ -56,6 +56,7 @@ Instructions for every AI coding agent working in this repo (Cursor, Claude Code
 | Check the library files without a database | `pnpm --filter api db:seed -- --dry-run` |
 | Seed library guides | `pnpm --filter api db:seed` |
 | Eval reliability (prints the cost estimate; add `--confirm` to run, `--repeat 3` to see the spread) | `pnpm --filter api eval -- --set tuning` |
+| Resolve only, over the stress list (prints the cost first; add `--confirm` to run; `--replay <run folder>` decides again from saved hits, free) | `pnpm --filter api eval:resolve` |
 | Score a saved eval run again with the current golden set (free) | `pnpm --filter api eval:rescore -- <run folder>` |
 
 Use pnpm only. Never use npm or yarn.

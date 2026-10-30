@@ -19,7 +19,8 @@
     "smoke:live": "tsx scripts/smoke-live.ts",
     "capture:fixtures": "tsx scripts/capture-fixtures.ts",
     "eval": "tsx evals/cli.ts",
-    "eval:rescore": "tsx evals/rescore.ts"
+    "eval:rescore": "tsx evals/rescore.ts",
+    "eval:resolve": "tsx evals/resolve/cli.ts"
   },
   "keywords": [],
   "author": "",
