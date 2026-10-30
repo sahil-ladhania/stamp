@@ -133,7 +133,7 @@ Time caps per stage (seconds). A stage also gets less when the run is running la
 
 | Stage | First pass | Retry pass |
 | --- | --- | --- |
-| 0 Resolve | 6 | |
+| 0 Resolve | 6, plus 3 for a retry or a second look | |
 | 1 Plan | 6 | |
 | 2 Search | 8 | 6 |
 | 3 Fetch | 12 | 8 |
@@ -207,13 +207,14 @@ Time caps per stage (seconds). A stage also gets less when the run is running la
 ## 10. Stages 0 to 8 in detail
 
 **0 Resolve** (`nodes/resolve.ts`, code only)
-- A typed domain or URL gives the official domain directly (`developers.notion.com` becomes `notion.com`), with no product phrase. There is no search and no "did you mean".
-- A name runs one search, `<name> API developer documentation`, for 8 results.
-- Hits are grouped by registrable domain. Forums, aggregators and code hosts are skipped unless the name is the site's own (`resolve/denylist.ts`). Each domain scores its search positions, a bonus for docs-looking pages, and a bonus for how well its brand label matches the name (equal, contained, or only in a page title).
+- A typed domain or URL gives the official domain directly (`developers.notion.com` becomes `notion.com`), with no product phrase. There is no search and no "did you mean". A host on a documentation platform (`pipedrive.readme.io`, `acme.gitbook.io`) is not a domain: its label next to the platform is read as the app's name and looked up like a typed name.
+- A name runs one search, `<name> API developer documentation`, for 8 results (`resolve/resolve-search.ts`). A failed search is tried once more before the run ends `INTERNAL`. **A second look**: when the first answer is thin (nothing decided, a question, or a winner with no documentation page), one more search, `<name> developer portal`, is made and its hits are merged with the first; the decision is made again on both. A clear answer on documentation pages makes no second search. The retry and the second look get at most 3 seconds each, and a failed second look keeps the first answer.
+- Hits are grouped by registrable domain. Forums, aggregators and code hosts are skipped unless the name is the site's own, or the hit is a documentation page that names the app (`developers.facebook.com` for Instagram) (`resolve/denylist.ts`). Each domain scores its search positions, a bonus for docs-looking pages, and a bonus for how well its brand label matches the name (equal, contained, or only mentioned). A hit mentions the name when the name is in its title, its address, or the first 200 characters of its snippet (names are compared with letters of any script). A name found only by a mention counts only when the domain has a documentation page, so a directory entry is not a candidate. An exact label with no documentation page counts as a mention only, when another brand's documentation page names the app (a video page on `youtube.com` against `developers.google.com`).
 - A domain whose brand label equals the app's name scores 4.5 for that, so it beats a domain that only mentions the app in a page title, however good that domain's search positions and docs host. `AMBIGUOUS_APP` when two or more candidates with different brand labels match the name and the runner-up scores at least 60% of the leader, **or** when any other brand that matches the name, even only in a page title, scores at least 90% of the leader (a close call is the person's to settle, not the search positions'). The options are `{name, domain}`, up to 3. `NO_PUBLIC_DOCS` when nothing matches the name.
 - The weights (`SCORE_WEIGHTS`) and the thresholds (`RESOLVE_TUNING`) are defaults to tune against live searches.
 - **Identity** (`resolve/identity.ts`). The app identity is `{appName, domain, slug, domains, product}`. `domain` is the best-scoring domain: the guide's domain and the only one the probe may contact. `domains` lists every official domain, the primary first (`resolve/official-domains.ts`): other candidates with the same brand label that had a docs-looking hit (`slack.com` and `slack.dev`), at most 3, never a shared hosting domain such as `github.io`, and none when the winner matched the name only by a page title (Gmail on `google.com`). `product` is the longest phrase that starts with the app's name and appears in the titles of at least two official, non-forum hits (`resolve/product-phrase.ts`): "Gmail API", "Microsoft Graph". It reads only the part of a title before the site name, ends at stop words and marks, and never ends on a generic word such as "docs" or "developers", so most apps get none and search by name as before.
-- Limits: a name with no Latin letters needs a typed domain. The phrase comes from page titles, so a product that no two official titles share is not found.
+- When no candidate matches the name, but every hit is a documentation page on one site (a rebrand: "Twitter" finds only `docs.x.com` and `developer.x.com`), the run ends `AMBIGUOUS_APP` with that one site as the only option. The person decides; Resolve never picks it.
+- Limits: the phrase comes from page titles, so a product that no two official titles share is not found.
 
 **1 Plan** (`nodes/plan.ts`, fast model, prompt in `prompts/plan.ts`)
 - The model returns one search query for each of 6 topics (setup, scopes, review, limits, auth type, approval wait), or `null` for "unknown". It is told never to state facts about the app.

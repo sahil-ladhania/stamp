@@ -8,14 +8,9 @@ import {
   domainLabel,
   registrableDomain,
 } from "../../utils/registrable-domain.js";
-import {
-  looksLikeDocs,
-  parseHit,
-  rankCandidates,
-  type Candidate,
-  type ResolveHit,
-} from "./candidates.js";
+import { rankCandidates, type Candidate } from "./candidates.js";
 import { decideOfficial, type Decision } from "./decide.js";
+import { looksLikeDocs, parseHit, type ResolveHit } from "./hit-evidence.js";
 import { SHARED_HOSTING_DOMAINS } from "./denylist.js";
 import { deriveIdentity, type Derived } from "./identity.js";
 import { displayName } from "./typed-input.js";

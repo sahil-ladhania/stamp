@@ -1,7 +1,7 @@
 /**
  * File: candidates.ts
  * Purpose: Scores the domains in a name search by how likely each is the app's official site.
- * Exports: rankCandidates, labelMatch, looksLikeDocs, parseHit, SCORE_WEIGHTS, SNIPPET_WINDOW, Candidate, Match, ResolveHit
+ * Exports: rankCandidates, labelMatch, SCORE_WEIGHTS, Candidate, Match; re-exports looksLikeDocs, parseHit, SNIPPET_WINDOW, ResolveHit from hit-evidence.ts
  * Used by: agent/resolve/decide.ts, agent/nodes/resolve.ts
  */
 import { textKey } from "../../utils/name-key.js";
@@ -9,17 +9,18 @@ import {
   domainLabel,
   registrableDomain,
 } from "../../utils/registrable-domain.js";
-import { DENY_DOMAINS, DOCS_HOST_LABELS, DOCS_PATH_HINT } from "./denylist.js";
+import { DENY_DOMAINS } from "./denylist.js";
+import {
+  MIN_LATIN_NAME_LENGTH,
+  SNIPPET_WINDOW,
+  looksLikeDocs,
+  mentionsName,
+  minKeyLength,
+  parseHit,
+  type ResolveHit,
+} from "./hit-evidence.js";
 
-export type ResolveHit = {
-  url: string;
-  title: string;
-  /** The start of the page text the search returned, when it returned any. */
-  snippet?: string;
-};
-
-/** How much of a snippet is read for the app's name: the start, where a page says what it is about. */
-export const SNIPPET_WINDOW = 200;
+export { SNIPPET_WINDOW, looksLikeDocs, parseHit, type ResolveHit };
 
 /** How the app's name relates to a domain: its brand label equals/contains it, or only a page (its title, address or start) mentions it. */
 export type Match = "exact" | "partial" | "title" | "none";
@@ -45,7 +46,7 @@ export const SCORE_WEIGHTS = {
   docsHintPerHit: 0.5,
   docsHintCap: 1,
   /** Shortest name or label that may partly match the other ("art" must not match "smart"). */
-  minPartialLength: 4,
+  minPartialLength: MIN_LATIN_NAME_LENGTH,
 } as const;
 
 /** Exact when the keys are equal; partial when one contains the other and is long enough to mean something. */
@@ -74,46 +75,6 @@ type Group = {
   titleMatch: boolean;
   hits: number;
 };
-
-export function parseHit(url: string): URL | null {
-  try {
-    const parsed = new URL(url);
-    return parsed.protocol === "http:" || parsed.protocol === "https:"
-      ? parsed
-      : null;
-  } catch {
-    return null;
-  }
-}
-
-/** True for a documentation page: a docs-looking host label (docs., developers.) or path (/docs/, /api/). */
-export function looksLikeDocs(parsed: URL): boolean {
-  const first = parsed.hostname.replace(/^www\./, "").split(".")[0] ?? "";
-  return DOCS_HOST_LABELS.has(first) || DOCS_PATH_HINT.test(parsed.pathname);
-}
-
-/** The shortest name key that may match a page: four characters of Latin text, two of a script like Chinese, where two is a word. */
-function minKeyLength(key: string): number {
-  return /[^\p{ASCII}]/u.test(key) ? 2 : SCORE_WEIGHTS.minPartialLength;
-}
-
-function decodedPath(parsed: URL): string {
-  try {
-    return decodeURIComponent(parsed.pathname);
-  } catch {
-    return parsed.pathname;
-  }
-}
-
-/** A hit names the app when its title, its address or the start of its text holds the name. */
-function mentionsName(parsed: URL, hit: ResolveHit, key: string): boolean {
-  const texts = [
-    hit.title,
-    decodedPath(parsed),
-    (hit.snippet ?? "").slice(0, SNIPPET_WINDOW),
-  ];
-  return texts.some((text) => textKey(text).includes(key));
-}
 
 /**
  * Domains from the search hits, best first. Hits on denied sites are ignored unless the app's name is the
