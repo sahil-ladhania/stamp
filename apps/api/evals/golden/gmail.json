@@ -167,14 +167,14 @@
       "severity": "hard",
       "hostPathHints": ["docs.cloud.google.com/contact-center", "cloud.google.com/contact-center"],
       "why": "A different Google product with its own Gmail OAuth setup page",
-      "evidence": "Stored gmail guide cited it in 11 of 39 claims (docs/walkthrough/08b-trust-real-cases.md, case 1)"
+      "evidence": "Stored gmail guide cited it in 11 of 39 claims"
     },
     {
       "name": "Google Workspace add-ons",
       "severity": "hard",
       "hostPathHints": ["developers.google.com/workspace/add-ons"],
       "why": "Add-on scopes are not what a standalone Gmail API app requests",
-      "evidence": "Stored gmail guide listed add-on scope descriptions as its scopes (08b, case 2)"
+      "evidence": "Stored gmail guide listed add-on scope descriptions as its scopes"
     }
   ],
   "notes": [

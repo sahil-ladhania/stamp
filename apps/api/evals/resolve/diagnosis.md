@@ -19,7 +19,7 @@ Typed domains and URLs make no search and cannot fail. A search error is **not**
 
 ## 2. The Spotify run
 
-- `api.log` (repo root, last written 29 Oct) holds no Spotify run, and the API on :3000 writes its log to the terminal it was started in, which I cannot read. **The failing run's `resolve summary` line (hits, candidates, decision) is what would settle it.**
+- `api.log` (repo root, last written 29 Oct) holds no Spotify run. **The failing run's `resolve summary` line (hits, candidates, decision) is what would settle it.**
 - Not reproduced: Resolve on "Spotify" decided `official spotify.com` in 6 of 6 searches. The hits varied from 2 to 8, always including `developer.spotify.com`.
 - The rules above give one way to end at stage 0 in about 4 s with this name: the search returned no hit that matched `spotify`. That needs an odd result set, and Resolve makes one search and never looks again.
 - One more possibility I cannot rule out: the API on :3000 runs from this working tree with `tsx watch`, and I switched branches under it several times today, so a run could have used code from a branch in between.

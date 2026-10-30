@@ -35,7 +35,7 @@ pnpm --filter api eval:rescore -- apps/api/evals/runs/<run folder>
 
 ## 3. Every batch we ran
 
-Run folders are in `apps/api/evals/runs/` (git-ignored; they hold full traces). Credits are Tavily credits from the run ledger; the Tavily dashboard read about 25 higher.
+Run folders are in `apps/api/evals/runs/` (git-ignored; they hold full traces). The three final scorecards are in [docs/evals](evals/README.md): tuning `18-54-14Z`, holdout `19-09-54Z`, and fresh holdout `21-42-08Z`. Credits are Tavily credits from the run ledger; the Tavily dashboard read about 25 higher.
 
 | Folder (2026-10-29)                                                                                  | What it measured                                                   | Runs   | Credits |
 | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ------ | ------- |
