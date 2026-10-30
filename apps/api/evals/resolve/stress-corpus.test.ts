@@ -27,14 +27,17 @@ const entries = JSON.parse(
 ) as Entry[];
 
 /** Where a provider's outcome differs from the run of 2026-10-30. Each fix adds the providers it changed. */
-const CHANGED: Record<string, ResolveRecord["outcome"]> = {};
+const CHANGED: Record<string, ResolveRecord["outcome"]> = {
+  // Fix E: a directory page is no candidate, so QuickBooks is no longer a question.
+  QuickBooks: "ok",
+  // Fix C: an exact label with no documentation page loses to another brand's documentation that names the app.
+  YouTube: "ok",
+};
 
-/** Fix A: the providers whose first answer is thin, so Resolve searches once more (9 of 32 searches: +9 credits on a full run). */
+/** Fix A: the providers whose first answer is thin, so Resolve searches once more (7 of 32 searches: +7 credits on a full run). */
 const LOOK_AGAIN = [
   "Box",
-  "QuickBooks",
   "Instagram",
-  "YouTube",
   "LinkedIn",
   "Twitter",
   "Basecamp",

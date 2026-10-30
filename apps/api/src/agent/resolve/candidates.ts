@@ -127,14 +127,21 @@ export function rankCandidates(name: string, hits: ResolveHit[]): Candidate[] {
     groups.set(domain, group);
   });
 
-  return [...groups.values()]
+  const all = [...groups.values()];
+  // A rival is another brand's documentation that names the app only in its page titles (developers.google.com for
+  // YouTube). A domain whose label holds the name (mercuryapp.io for Mercury) is a second brand, left to the "did you mean" rule.
+  const hasDocsRival = (group: Group): boolean =>
+    all.some(
+      (other) =>
+        other !== group &&
+        other.docs > 0 &&
+        other.labelMatch === "none" &&
+        other.titleMatch,
+    );
+
+  return all
     .map((group): Candidate => {
-      const match: Match =
-        group.labelMatch !== "none"
-          ? group.labelMatch
-          : group.titleMatch
-            ? "title"
-            : "none";
+      const match = matchOf(group, hasDocsRival(group));
       const bonus = match === "none" ? 0 : SCORE_WEIGHTS[match];
       return {
         domain: group.domain,
@@ -146,4 +153,18 @@ export function rankCandidates(name: string, hits: ResolveHit[]): Candidate[] {
       };
     })
     .sort((a, b) => b.score - a.score || a.domain.localeCompare(b.domain));
+}
+
+/**
+ * How a domain matches the name. A name found only in a page title counts only when the domain has a documentation page:
+ * a directory or a blog that happens to say the name is not an official site. An exact label counts in full unless it
+ * has no documentation page while a rival that names the app does (youtube.com, whose one hit is a video, against
+ * developers.google.com): then it counts as a title match only.
+ */
+function matchOf(group: Group, hasDocsRival: boolean): Match {
+  if (group.labelMatch === "exact" && group.docs === 0 && hasDocsRival) {
+    return "title";
+  }
+  if (group.labelMatch !== "none") return group.labelMatch;
+  return group.titleMatch && group.docs > 0 ? "title" : "none";
 }
