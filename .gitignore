@@ -50,6 +50,7 @@ docs/*
 !docs/design-decisions.md
 !docs/features.md
 !docs/tech-stack.md
+!docs/deployment.md
 
 # Local eval scorecards
 docs/evals/

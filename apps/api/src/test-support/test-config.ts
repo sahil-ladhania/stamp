@@ -8,6 +8,7 @@ import type { EnvConfig } from "../config.js";
 
 export const testConfig: EnvConfig = {
   DATABASE_URL: "mysql://test:test@localhost:3306/stamp_test",
+  DB_SSL_CA: undefined,
   OPENAI_API_KEY: "test-openai-key",
   OPENAI_MODEL_FAST: "test-fast",
   OPENAI_MODEL_STRONG: "test-strong",

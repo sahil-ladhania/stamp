@@ -1,6 +1,6 @@
 /**
  * File: health.ts
- * Purpose: Liveness handler for Railway and local health checks.
+ * Purpose: Liveness handler for the host's health check (Render) and local checks.
  * Exports: getHealth
  * Used by: routes/health.ts
  */

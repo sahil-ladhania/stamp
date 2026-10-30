@@ -118,4 +118,29 @@ describe("rate limiting", () => {
       (await postRun(url, { "X-Forwarded-For": "2.2.2.2" })).status,
     ).not.toBe(429);
   });
+
+  it("counts the address the one trusted proxy added, so a made-up first address cannot dodge the limit", async () => {
+    const url = await start({ TRUST_PROXY_HOPS: 1 });
+    // The proxy appends the real client address on the right; a client can only invent what is on the left.
+    await postRun(url, { "X-Forwarded-For": "8.8.8.1, 5.5.5.5" });
+    await postRun(url, { "X-Forwarded-For": "8.8.8.2, 5.5.5.5" });
+    const limited = await postRun(url, {
+      "X-Forwarded-For": "8.8.8.3, 5.5.5.5",
+    });
+    expect(limited.status).toBe(429);
+    const other = await postRun(url, { "X-Forwarded-For": "8.8.8.1, 6.6.6.6" });
+    expect(other.status).not.toBe(429);
+  });
+
+  it("with two trusted proxies the client is the second address from the right", async () => {
+    const url = await start({ TRUST_PROXY_HOPS: 2 });
+    await postRun(url, { "X-Forwarded-For": "7.7.7.7, 10.0.0.1" });
+    await postRun(url, { "X-Forwarded-For": "7.7.7.7, 10.0.0.2" });
+    expect(
+      (await postRun(url, { "X-Forwarded-For": "7.7.7.7, 10.0.0.3" })).status,
+    ).toBe(429);
+    expect(
+      (await postRun(url, { "X-Forwarded-For": "7.7.7.8, 10.0.0.3" })).status,
+    ).not.toBe(429);
+  });
 });

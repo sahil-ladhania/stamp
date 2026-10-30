@@ -5,7 +5,7 @@
  * Used by: vitest
  */
 import { describe, expect, it } from "vitest";
-import { loadConfig } from "./config.js";
+import { getDatabaseConfig, loadConfig } from "./config.js";
 
 const validEnv = {
   DATABASE_URL: "mysql://localhost/stamp",
@@ -51,6 +51,20 @@ describe("loadConfig", () => {
   it("rejects a missing DATABASE_URL", () => {
     const { DATABASE_URL: _removed, ...rest } = validEnv;
     expect(() => loadConfig(rest)).toThrow();
+  });
+});
+
+describe("loadConfig DB_SSL_CA", () => {
+  it("is optional, and an empty value counts as unset", () => {
+    expect(loadConfig(validEnv).DB_SSL_CA).toBeUndefined();
+    expect(
+      loadConfig({ ...validEnv, DB_SSL_CA: "  " }).DB_SSL_CA,
+    ).toBeUndefined();
+  });
+
+  it("keeps the PEM text as given", () => {
+    const pem = "-----BEGIN CERTIFICATE-----\nabc\n-----END CERTIFICATE-----";
+    expect(loadConfig({ ...validEnv, DB_SSL_CA: pem }).DB_SSL_CA).toBe(pem);
   });
 });
 
@@ -103,5 +117,30 @@ describe("loadConfig AGENT_MODE", () => {
   it("rejects an unknown AGENT_MODE everywhere", () => {
     expect(() => loadConfig({ ...validEnv, AGENT_MODE: "mock" })).toThrow();
     expect(() => loadConfig({ ...validEnv, AGENT_MODE: "" })).toThrow();
+  });
+});
+
+describe("getDatabaseConfig", () => {
+  it("needs only DATABASE_URL, so the seed runs without the server settings", () => {
+    expect(getDatabaseConfig({ DATABASE_URL: "mysql://u:p@h/db" })).toEqual({
+      DATABASE_URL: "mysql://u:p@h/db",
+      DB_SSL_CA: undefined,
+    });
+  });
+
+  it("passes DB_SSL_CA through and ignores every other variable", () => {
+    const config = getDatabaseConfig({
+      DATABASE_URL: "mysql://u:p@h/db",
+      DB_SSL_CA: "pem",
+      PATH: "/bin",
+    });
+    expect(config).toEqual({
+      DATABASE_URL: "mysql://u:p@h/db",
+      DB_SSL_CA: "pem",
+    });
+  });
+
+  it("throws when DATABASE_URL is missing", () => {
+    expect(() => getDatabaseConfig({})).toThrow();
   });
 });

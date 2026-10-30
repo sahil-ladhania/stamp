@@ -1,7 +1,7 @@
 /**
  * File: config.ts
  * Purpose: Zod-validated environment configuration for the API process.
- * Exports: EnvSchema, loadConfig, getConfig, requireRealAgentConfig, EnvConfig, RealAgentConfig
+ * Exports: EnvSchema, DatabaseEnvSchema, loadConfig, getConfig, getDatabaseConfig, requireRealAgentConfig, EnvConfig, DatabaseConfig, RealAgentConfig
  * Used by: lib/server.ts, lib/prisma.ts, app.ts, middleware, agent
  */
 import { z } from "zod";
@@ -18,6 +18,8 @@ const OptionalText = z
 // A plain object, not a strictObject: real process.env carries unrelated keys (PATH, HOME).
 const BaseEnvSchema = z.object({
   DATABASE_URL: z.string().min(1),
+  // The PEM text of the CA that signed the database's certificate (Aiven uses its own). Only used when DATABASE_URL has `?ssl-mode=`.
+  DB_SSL_CA: OptionalText,
   // Required when AGENT_MODE is "real" (see EnvSchema); the stub agent needs none of them.
   OPENAI_API_KEY: OptionalText,
   OPENAI_MODEL_FAST: OptionalText,
@@ -32,7 +34,7 @@ const BaseEnvSchema = z.object({
   // Per-IP limit on POST /api/runs and POST /api/guides/:slug/reports (set by env, not code).
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(10),
   RATE_LIMIT_WINDOW_SECONDS: z.coerce.number().int().positive().default(60),
-  // Reverse proxies in front of the API (Railway: 1), so req.ip is the real client.
+  // Reverse proxies in front of the API (Render: 1), so req.ip is the real client.
   TRUST_PROXY_HOPS: z.coerce.number().int().nonnegative().default(0),
   NODE_ENV: z.string().optional(),
   // "stub" replays scripted test data; "real" runs the research agent. See EnvSchema for the default.
@@ -101,6 +103,20 @@ let cached: EnvConfig | undefined;
 export function getConfig(): EnvConfig {
   cached ??= loadConfig();
   return cached;
+}
+
+/** The database settings alone, so a script that only needs the database (the seed) does not need the whole server config. */
+export const DatabaseEnvSchema = BaseEnvSchema.pick({
+  DATABASE_URL: true,
+  DB_SSL_CA: true,
+});
+export type DatabaseConfig = z.infer<typeof DatabaseEnvSchema>;
+
+/** Parses only DATABASE_URL and DB_SSL_CA from process env; throws if DATABASE_URL is missing. */
+export function getDatabaseConfig(
+  source: Record<string, string | undefined> = process.env,
+): DatabaseConfig {
+  return DatabaseEnvSchema.parse(source);
 }
 
 export type RealAgentConfig = Record<(typeof REAL_MODE_KEYS)[number], string>;
