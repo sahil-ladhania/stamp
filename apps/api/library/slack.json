@@ -1,0 +1,462 @@
+{
+  "schemaVersion": 1,
+  "slug": "slack",
+  "appName": "Slack",
+  "domain": "slack.dev",
+  "mode": "library",
+  "archetype": "hidden_limits",
+  "difficulty": 3,
+  "asOf": "2026-10-29T18:55:41.884Z",
+  "coverage": "full",
+  "verdict": {
+    "summary": {
+      "id": "verdict.summary",
+      "text": "Setting up OAuth for Slack involves several steps, including requesting scopes, waiting for user approval, and exchanging a temporary authorization code for an access token, but changes to scopes require review and approval before they work in production.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://docs.slack.dev/slack-marketplace/slack-marketplace-review-guide",
+          "quote": "Additionally, any updates you make in your app that may be affected by your Slack app configuration (such as scope changes or updated redirect URIs) will not work until you have submitted and published the changes. You will also need to manually update your OAuth urls to include any new scopes after approval. If you try to make changes to your live app, it can break your app's experience for users; e.g., if you update your app’s install link to add new scopes that were not previously reviewed, your app will show customers an error and they will not be able to install it.",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:33.744Z"
+        }
+      ]
+    },
+    "nextStepId": "steps.0",
+    "topBlockerId": "blockers.0"
+  },
+  "milestones": {
+    "firstTest": {
+      "effort": {
+        "id": "milestones.firstTest.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      },
+      "wait": {
+        "id": "milestones.firstTest.wait",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    },
+    "production": {
+      "effort": {
+        "id": "milestones.production.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      },
+      "wait": {
+        "id": "milestones.production.wait",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    }
+  },
+  "requirements": [
+    {
+      "id": "requirements.0",
+      "text": "You must create a Slack app and install it to your development workspace before building an app with the @slack/oauth package.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://docs.slack.dev/tools/node-slack-sdk/oauth",
+          "quote": "Before building an app, you'll need to create a Slack app and install it to your development workspace.",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:19.303Z"
+        }
+      ]
+    },
+    {
+      "id": "requirements.1",
+      "text": "You need to obtain the Client ID and Client Secret from the Basic Information section of your Slack app configuration.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://docs.slack.dev/tools/node-slack-sdk/oauth",
+          "quote": "You'll also need to copy the Client ID and Client Secret given to you by Slack under the Basic Information of your app configuration.",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:19.303Z"
+        }
+      ]
+    }
+  ],
+  "scopes": [
+    {
+      "id": "scopes.0",
+      "name": "channels:read",
+      "reason": {
+        "id": "scopes.0.reason",
+        "text": "The channels:read scope allows an app to read channel information in a Slack workspace.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://docs.slack.dev/tools/node-slack-sdk/oauth",
+            "quote": "scopes: ['channels:read'],",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:55:19.303Z"
+          }
+        ]
+      }
+    }
+  ],
+  "steps": [
+    {
+      "id": "steps.0",
+      "title": "Create a Slack app",
+      "detail": {
+        "id": "steps.0.detail",
+        "text": "The developer must create a Slack app and install it to their development workspace.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://docs.slack.dev/tools/node-slack-sdk/oauth",
+            "quote": "Before building an app, you'll need to create a Slack app and install it to your development workspace.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:55:19.303Z"
+          }
+        ]
+      },
+      "actor": "human",
+      "effort": {
+        "id": "steps.0.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    },
+    {
+      "id": "steps.1",
+      "title": "Copy Client ID and Client Secret",
+      "detail": {
+        "id": "steps.1.detail",
+        "text": "The developer needs to copy the Client ID and Client Secret from the app's Basic Information page in the Slack app configuration.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://docs.slack.dev/tools/node-slack-sdk/oauth",
+            "quote": "You'll also need to copy the Client ID and Client Secret given to you by Slack under the Basic Information of your app configuration.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:55:19.303Z"
+          }
+        ]
+      },
+      "actor": "human",
+      "effort": {
+        "id": "steps.1.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    },
+    {
+      "id": "steps.2",
+      "title": "Install the @slack/oauth package",
+      "detail": {
+        "id": "steps.2.detail",
+        "text": "Install the @slack/oauth package to set up the OAuth flow for Slack apps.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://docs.slack.dev/tools/node-slack-sdk/oauth",
+            "quote": "$ npm install @slack/oauth",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:55:19.303Z"
+          }
+        ]
+      },
+      "actor": "human",
+      "effort": {
+        "id": "steps.2.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    },
+    {
+      "id": "steps.3",
+      "title": "Initialize the InstallProvider with credentials",
+      "detail": {
+        "id": "steps.3.detail",
+        "text": "Set up the InstallProvider class with the clientId, clientSecret, and stateSecret for OAuth configuration.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://docs.slack.dev/tools/node-slack-sdk/oauth",
+            "quote": "At a minimum, InstallProvider takes a clientId and clientSecret (both which can be obtained under the Basic Information of your app configuration). InstallProvider also requires a stateSecret, which is used to encode the generated state, and later used to decode that same state to verify it wasn't tampered with during the OAuth flow.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:55:19.303Z"
+          }
+        ]
+      },
+      "actor": "human",
+      "effort": {
+        "id": "steps.3.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    },
+    {
+      "id": "steps.4",
+      "title": "Set up the OAuth install path and redirect URL",
+      "detail": {
+        "id": "steps.4.detail",
+        "text": "Configure your app to handle the OAuth install path and specify the redirect URL for Slack to send users after authorization.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://docs.slack.dev/tools/node-slack-sdk/oauth",
+            "quote": "You can either set the redirect URL in the app’s OAuth and Permissions page or pass a redirectUri when calling installProvider.handleInstallPath.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:55:19.303Z"
+          }
+        ]
+      },
+      "actor": "human",
+      "effort": {
+        "id": "steps.4.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    },
+    {
+      "id": "steps.5",
+      "title": "Handle the OAuth redirect and exchange code for tokens",
+      "detail": {
+        "id": "steps.5.detail",
+        "text": "Your HTTP server should handle requests to the redirect URL by calling installProvider.handleCallback to complete the OAuth flow and obtain access tokens.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://docs.slack.dev/tools/node-slack-sdk/oauth",
+            "quote": "Your HTTP server should handle requests to this redirect URL by calling the installProvider.handleCallback() method.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:55:19.303Z"
+          }
+        ]
+      },
+      "actor": "human",
+      "effort": {
+        "id": "steps.5.effort",
+        "text": "Not found in the fetched sources.",
+        "label": "uncertain",
+        "sources": []
+      }
+    }
+  ],
+  "blockers": [
+    {
+      "id": "blockers.0",
+      "symptom": {
+        "id": "blockers.0.symptom",
+        "text": "If you update your app’s install link to add new scopes that were not previously reviewed, your app will show customers an error and they will not be able to install it.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://docs.slack.dev/slack-marketplace/slack-marketplace-review-guide",
+            "quote": "if you update your app’s install link to add new scopes that were not previously reviewed, your app will show customers an error and they will not be able to install it.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:55:33.744Z"
+          }
+        ]
+      },
+      "cause": {
+        "id": "blockers.0.cause",
+        "text": "The app's install link includes scopes that have not been reviewed or approved by Slack.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://docs.slack.dev/slack-marketplace/slack-marketplace-review-guide",
+            "quote": "if you update your app’s install link to add new scopes that were not previously reviewed, your app will show customers an error and they will not be able to install it.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:55:33.744Z"
+          }
+        ]
+      },
+      "fix": {
+        "id": "blockers.0.fix",
+        "text": "Submit and publish changes to your app configuration, including new scopes, for review and approval before updating the install link.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://docs.slack.dev/slack-marketplace/slack-marketplace-review-guide",
+            "quote": "any updates you make in your app that may be affected by your Slack app configuration (such as scope changes or updated redirect URIs) will not work until you have submitted and published the changes. You will also need to manually update your OAuth urls to include any new scopes after approval.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:55:33.744Z"
+          }
+        ]
+      },
+      "contact": {
+        "id": "blockers.0.contact",
+        "text": "Contact Slack app review team for issues related to scope approval and app installation errors.",
+        "label": "sourced",
+        "sources": [
+          {
+            "url": "https://docs.slack.dev/slack-marketplace/slack-marketplace-review-guide",
+            "quote": "If we find any failures in this first part of the review, we’ll return your submission with that feedback.",
+            "tier": "official",
+            "retrievedAt": "2026-10-29T18:55:33.744Z"
+          }
+        ]
+      }
+    }
+  ],
+  "limits": [
+    {
+      "id": "limits.0",
+      "text": "Slack Web API methods have rate limits applied per method, per workspace, and per app, with tiers ranging from at least 1 to 100+ requests per minute depending on the method.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://docs.slack.dev/apis/web-api/rate-limits",
+          "quote": "| Web API Tier 1 | 1+ per minute | Access tier 1 methods infrequently. A small amount of burst behavior is tolerated. |\n| Web API Tier 2 | 20+ per minute | Most methods allow at least 20 requests per minute, while allowing for occasional bursts of more requests. |\n| Web API Tier 3 | 50+ per minute | Tier 3 methods allow a larger number of requests and are typically attached to methods with paginating collections of conversations or users. Sporadic bursts are welcome. |\n| Web API Tier 4 | 100+ per minute | Enjoy a large request quota for Tier 4 methods, including generous burst behavior. |",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:19.303Z"
+        }
+      ]
+    },
+    {
+      "id": "limits.1",
+      "text": "Posting messages via the Web API or Real Time Messaging API is limited to 1 message per second, with short bursts above this allowed.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://docs.slack.dev/apis/web-api/rate-limits",
+          "quote": "| Posting messages | 1 per second | Short bursts >1 allowed. If you attempt bursts, there is no guarantee that messages will be stored or displayed to users. If the burst exceeds available limits, users will see an error message indicating that some messages from your app are not being displayed. |",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:19.303Z"
+        }
+      ]
+    },
+    {
+      "id": "limits.2",
+      "text": "Incoming webhooks are limited to 1 request per second, with short bursts above this allowed.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://docs.slack.dev/apis/web-api/rate-limits",
+          "quote": "| Incoming webhooks | 1 per second | Short bursts >1 allowed. |",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:19.303Z"
+        }
+      ]
+    },
+    {
+      "id": "limits.3",
+      "text": "Events API event deliveries are limited to 30,000 deliveries per workspace/team per app per 60 minutes, with larger bursts sometimes allowed.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://docs.slack.dev/apis/web-api/rate-limits",
+          "quote": "| Events API events | 30,000 deliveries per workspace/team per app per 60 minutes | Larger bursts are sometimes allowed. |",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:19.303Z"
+        }
+      ]
+    },
+    {
+      "id": "limits.4",
+      "text": "Workflow triggers using event triggers are limited to 10,000 per hour.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://docs.slack.dev/apis/web-api/rate-limits",
+          "quote": "| Workflow triggers: event triggers | 10,000 per hour |",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:19.303Z"
+        }
+      ]
+    },
+    {
+      "id": "limits.5",
+      "text": "Workflow triggers using webhook triggers are limited to 10 per minute.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://docs.slack.dev/apis/web-api/rate-limits",
+          "quote": "| Workflow triggers: webhook triggers | 10 per minute |",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:19.303Z"
+        }
+      ]
+    },
+    {
+      "id": "limits.6",
+      "text": "Workflow steps using AI summary are limited to 150 requests per minute at the team level, with a burst of 300 requests allowed; per workflow, the limit is 1 request per hour, with a burst of 10 requests allowed.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://docs.slack.dev/apis/web-api/rate-limits",
+          "quote": "| Workflow steps: AI summary | At the overall team level: 150 requests per minute, and a burst of 300 requests is allowed; per workflow: 1 request per hour, and a burst of 10 requests is allowed |",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:19.303Z"
+        }
+      ]
+    },
+    {
+      "id": "limits.7",
+      "text": "AI Generate step is limited to 100 requests per day per workflow, 10 requests per hour per workflow for workflows with a message trigger, and 50 requests per day for prompt test runs.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://docs.slack.dev/apis/web-api/rate-limits",
+          "quote": "| AI Generate step |  100 requests per day per workflow   10 requests per hour per workflow for workflows with a message trigger   50 requests per day for prompt test runs |",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:19.303Z"
+        }
+      ]
+    },
+    {
+      "id": "limits.8",
+      "text": "Updating a user's profile with users.profile.set is limited to 10 updates per minute per user per token, and a single token may only set 30 user profiles per minute.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://docs.slack.dev/apis/web-api/rate-limits",
+          "quote": "A token may update a single user's profile no more than 10 times per minute. And a single token may only set 30 user profiles per minute. Some burst behavior is allowed.",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:19.303Z"
+        }
+      ]
+    },
+    {
+      "id": "limits.9",
+      "text": "Obtaining websocket URLs via rtm.start and rtm.connect is limited to no more than 1 request per minute, with some burst behavior allowed.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://docs.slack.dev/apis/web-api/rate-limits",
+          "quote": "Limit requests to these methods to no more than 1 per minute, with some bursting behavior allowed.",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:19.303Z"
+        }
+      ]
+    },
+    {
+      "id": "limits.10",
+      "text": "The message server will disconnect any client that sends a message longer than 16 kilobytes, and clients should limit messages sent to channels to 4000 characters.",
+      "label": "sourced",
+      "sources": [
+        {
+          "url": "https://docs.slack.dev/apis/web-api/rate-limits",
+          "quote": "The message server will disconnect any client that sends a message longer than 16 kilobytes. This includes all parts of the message, including JSON syntax, not just the message text. Clients should limit messages sent to channels to 4000 characters, which will always be under 16k bytes even with a message comprised solely of non-BMP Unicode characters at 4 bytes each.",
+          "tier": "official",
+          "retrievedAt": "2026-10-29T18:55:19.303Z"
+        }
+      ]
+    }
+  ],
+  "conflicts": [],
+  "difficultyBreakdown": {
+    "reviewGate": 1,
+    "approvalWait": 2,
+    "prerequisites": 1,
+    "hiddenLimits": 1,
+    "total": 5,
+    "score": 3
+  }
+}

@@ -5,7 +5,7 @@
  * Used by: vitest
  */
 import { describe, expect, it } from "vitest";
-import { isRealScope } from "./scope-checks.js";
+import { isRealScope, looksLikeScopeName } from "./scope-checks.js";
 
 const page = (
   url: string,
@@ -131,5 +131,37 @@ describe("isRealScope", () => {
   it("rejects an empty or very long name", () => {
     expect(isRealScope("", "x", DOCS)).toBe(false);
     expect(isRealScope("a".repeat(200), "a".repeat(200), DOCS)).toBe(false);
+  });
+});
+
+describe("looksLikeScopeName", () => {
+  it.each(["chat:write", "crm.objects.contacts.read", "User.Read", "repo"])(
+    "accepts %s without any page text",
+    (name) => {
+      expect(looksLikeScopeName(name, DOCS)).toBe(true);
+    },
+  );
+
+  it.each([
+    "/.default",
+    "your_scope",
+    "user:",
+    "mail.google.com",
+    "",
+    "<scope>",
+  ])("rejects %j, whatever the page says", (name) => {
+    expect(looksLikeScopeName(name, DOCS)).toBe(false);
+  });
+
+  it("applies the official-page and admin-page rules to the page it is given", () => {
+    const blog = page("https://blog.example.net/p", "third_party");
+    expect(looksLikeScopeName("Read content", DOCS)).toBe(true);
+    expect(looksLikeScopeName("Read content", blog)).toBe(false);
+    expect(
+      looksLikeScopeName(
+        "chat:write",
+        page("https://docs.example.com/admin/x"),
+      ),
+    ).toBe(false);
   });
 });
