@@ -105,7 +105,12 @@ describe("resolveNode when two brands are a close call", () => {
       ],
     });
     expect(update.app).toBeUndefined();
-    expect(trace(h.events)).toEqual(["stage.started:0", "search.query"]);
+    // A question is a thin answer, so the node looked a second time before asking.
+    expect(trace(h.events)).toEqual([
+      "stage.started:0",
+      "search.query",
+      "search.query",
+    ]);
   });
 });
 

@@ -47,7 +47,7 @@ describe("renderReport", () => {
     const report = renderReport(await records(), "Heading");
     expect(report).toContain("# Heading");
     expect(report).toContain(
-      "3 providers, 2 searched, 2 Tavily credits reported.",
+      "3 providers, 2 searched, 3 Tavily credits reported. 1 looked a second time; 0 would look again",
     );
     expect(report).toContain("| ok | 1 |");
     expect(report).toContain("| wrong_domain | 1 |");

@@ -11,18 +11,18 @@ import { makeFailure } from "../agent-failure.js";
 import { getDeps } from "../deps.js";
 import { emit } from "../emit.js";
 import { callTimeoutMs } from "../node-timing.js";
-import { resolveFromHits } from "../resolve/resolve-from-hits.js";
+import {
+  RESOLVE_MAX_RESULTS,
+  RESOLVE_QUERY,
+  resolveWithSearch,
+} from "../resolve/resolve-search.js";
 import { parseTyped } from "../resolve/typed-input.js";
 import { stageNode } from "../stage-node.js";
 
-export const RESOLVE_MAX_RESULTS = 8;
+export { RESOLVE_MAX_RESULTS, RESOLVE_QUERY };
 
-/**
- * The one search that finds an app's official site from its name. It carries no generic OAuth words: "OAuth"
- * in it returned Google's own OAuth pages for Gmail (none titled "Gmail", so no domain matched the name).
- */
-export const RESOLVE_QUERY = (name: string): string =>
-  `${name} API developer documentation`;
+/** A retry or a second look gets at most this long, so a thin first answer cannot use up the run's time. */
+const AGAIN_TIMEOUT_MS = 3_000;
 
 export const resolveNode = stageNode("resolve", async (state, config) => {
   const typed = parseTyped(state.typed);
@@ -49,17 +49,28 @@ export const resolveNode = stageNode("resolve", async (state, config) => {
   }
 
   const deps = getDeps(config);
-  const query = RESOLVE_QUERY(typed.name);
-  await emit(config, { type: "search.query", query });
-  let hits;
+  const emitted = new Set<string>();
+  let searched;
   try {
-    ({ hits } = await searchWeb(query, {
-      timeoutMs: callTimeoutMs(config, "resolve"),
-      maxResults: RESOLVE_MAX_RESULTS,
-      signal: config.signal,
-      usage: deps.usage,
-      runId: deps.runId,
-    }));
+    searched = await resolveWithSearch(
+      typed.name,
+      async (query, attempt) => {
+        if (!emitted.has(query)) {
+          emitted.add(query);
+          await emit(config, { type: "search.query", query });
+        }
+        const room = callTimeoutMs(config, "resolve");
+        return searchWeb(query, {
+          timeoutMs:
+            attempt === "first" ? room : Math.min(room, AGAIN_TIMEOUT_MS),
+          maxResults: RESOLVE_MAX_RESULTS,
+          signal: config.signal,
+          usage: deps.usage,
+          runId: deps.runId,
+        });
+      },
+      () => !config.signal?.aborted,
+    );
   } catch (err) {
     config.signal?.throwIfAborted();
     logger.error("resolve search failed", {
@@ -69,13 +80,17 @@ export const resolveNode = stageNode("resolve", async (state, config) => {
     return { failure: makeFailure(0, "INTERNAL") };
   }
 
-  const { candidates, decision, identity } = resolveFromHits(typed.name, hits);
+  const { hits, candidates, decision, identity } = searched;
   // The scores are what the ambiguity thresholds are tuned against; no page text is logged.
   logger.info("resolve summary", {
     runId: deps.runId,
     name: typed.name,
     decision: decision.kind,
     hits: hits.length,
+    // How many searches it took: a retry after a failed search, and a second look at a thin first answer.
+    queries: searched.queries,
+    retried: searched.retried,
+    lookedAgain: searched.lookedAgain,
     // URLs and titles only, no page text: what the resolve decision was made from, for tuning and for eval fixtures.
     resolveHits: hits.map(({ url, title }) => ({ url, title })),
     // What the search and the tiering will use: the official domains and the product phrase, or null.
