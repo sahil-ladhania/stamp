@@ -23,6 +23,7 @@ export function mapGuide(guide: WireGuide): Guide {
     slug: guide.slug,
     appName: guide.appName,
     domain: guide.domain,
+    product: guide.product ?? null,
     archetype: guide.archetype,
     mode: guide.mode,
     coverage: guide.coverage,

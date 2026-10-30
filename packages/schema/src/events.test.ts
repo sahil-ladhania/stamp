@@ -6,6 +6,7 @@
  */
 import { describe, expect, it } from "vitest";
 import {
+  AppResolvedEventSchema,
   ClaimDowngradedEventSchema,
   ClaimVerifiedEventSchema,
   PageFetchedEventSchema,
@@ -61,7 +62,11 @@ describe("RunStreamEventSchema", () => {
   });
 
   it("parses search.query", () => {
-    const event = { type: "search.query" as const, runId, query: "hubspot oauth" };
+    const event = {
+      type: "search.query" as const,
+      runId,
+      query: "hubspot oauth",
+    };
     expect(SearchQueryEventSchema.safeParse(event).success).toBe(true);
     expect(RunStreamEventSchema.safeParse(event).success).toBe(true);
   });
@@ -97,6 +102,39 @@ describe("RunStreamEventSchema", () => {
     };
     expect(ClaimDowngradedEventSchema.safeParse(event).success).toBe(true);
     expect(RunStreamEventSchema.safeParse(event).success).toBe(true);
+  });
+
+  it("parses app.resolved, with a product phrase or none", () => {
+    const base = {
+      type: "app.resolved" as const,
+      runId,
+      appName: "Gmail",
+      domain: "google.com",
+    };
+    expect(
+      AppResolvedEventSchema.safeParse({ ...base, product: "Gmail API" })
+        .success,
+    ).toBe(true);
+    expect(
+      RunStreamEventSchema.safeParse({ ...base, product: null }).success,
+    ).toBe(true);
+  });
+
+  it("rejects app.resolved without a domain or with an empty product", () => {
+    const base = {
+      type: "app.resolved",
+      runId,
+      appName: "Gmail",
+      product: null,
+    };
+    expect(AppResolvedEventSchema.safeParse(base).success).toBe(false);
+    expect(
+      AppResolvedEventSchema.safeParse({
+        ...base,
+        domain: "google.com",
+        product: "",
+      }).success,
+    ).toBe(false);
   });
 
   it("parses run.done", () => {

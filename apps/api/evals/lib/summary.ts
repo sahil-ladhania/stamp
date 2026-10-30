@@ -108,7 +108,7 @@ export function summarize(scores: readonly AppScore[]): Summary {
  * on tuning only. Null for a single app or a partial set, where a count target means nothing.
  */
 export function targetFor(
-  set: "tuning" | "holdout",
+  set: "tuning" | "holdout" | "fresh",
   apps: number,
 ): {
   gate: number;
@@ -119,5 +119,7 @@ export function targetFor(
     return { gate: 5, scopeApps: 5, topBlocker: 5 };
   if (set === "holdout" && apps === 4)
     return { gate: 3, scopeApps: null, topBlocker: null };
+  if (set === "fresh" && apps === 3)
+    return { gate: 2, scopeApps: null, topBlocker: null };
   return null;
 }

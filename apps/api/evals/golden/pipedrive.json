@@ -1,0 +1,177 @@
+{
+  "slug": "pipedrive",
+  "set": "fresh",
+  "typedNames": [
+    "Pipedrive"
+  ],
+  "researchedOn": "2026-10-29",
+  "product": {
+    "name": "Pipedrive API and Marketplace apps (OAuth 2.0)",
+    "source": {
+      "url": "https://pipedrive.readme.io/docs/marketplace-app-approval-process",
+      "quote": "Each new public app submitted to the Pipedrive Marketplace has to pass our approval process"
+    }
+  },
+  "docs": {
+    "domains": [
+      "pipedrive.readme.io",
+      "developers.pipedrive.com"
+    ],
+    "pathHints": [
+      "/docs/marketplace-",
+      "/docs/oauth",
+      "/docs/api/"
+    ]
+  },
+  "oauthAppCreation": {
+    "where": "Developer Hub, with a developer sandbox account: Create an app, then Create private app or Create public app",
+    "source": {
+      "url": "https://pipedrive.readme.io/docs/marketplace-registering-the-app",
+      "quote": "You must have a developer sandbox account for app creation to see Developer Hub."
+    }
+  },
+  "reviewGate": {
+    "value": "optional_listing",
+    "alsoAccept": [
+      "required_to_scale"
+    ],
+    "confidence": "medium",
+    "trigger": "Public apps listed in the Marketplace must pass the approval process. A private app can be shared with any company in Pipedrive through an unlisted installation link without it.",
+    "source": {
+      "url": "https://pipedrive.readme.io/docs/marketplace-app-approval-process",
+      "quote": "Each new public app submitted to the Pipedrive Marketplace has to pass our approval process"
+    },
+    "moreSources": [
+      {
+        "url": "https://pipedrive.readme.io/docs/marketplace-registering-a-private-app",
+        "quote": "Private apps, aka internal apps, enable you to share your integration with any user/company in Pipedrive via a direct, unlisted installation link."
+      }
+    ]
+  },
+  "approvalWait": {
+    "kind": "range",
+    "minDays": 0,
+    "maxDays": 30,
+    "stated": "Public app reviews may take up to 21 business days.",
+    "derivation": "21 business days is about 30 calendar days",
+    "confidence": "low",
+    "source": {
+      "url": "https://pipedrive.readme.io/docs/marketplace-app-approval-process",
+      "quote": "public app reviews may take up to 21 business days"
+    }
+  },
+  "testBeforeApproval": {
+    "possible": true,
+    "how": "Build and install a draft app in a developer sandbox account before submitting; private apps need no review at all",
+    "source": {
+      "url": "https://pipedrive.readme.io/docs/marketplace-registering-a-private-app",
+      "quote": "Installing and testing your draft app is an important step before making your private app live."
+    }
+  },
+  "scopes": {
+    "kind": "scope_strings",
+    "namePattern": "^(base|[a-z_-]+:(read|full))$",
+    "knownFake": [],
+    "real": [
+      {
+        "name": "base",
+        "source": {
+          "url": "https://pipedrive.readme.io/docs/marketplace-scopes-and-permissions-explanations",
+          "quote": "Read the settings of the authorized user and currencies in an account."
+        }
+      },
+      {
+        "name": "deals:read",
+        "source": {
+          "url": "https://pipedrive.readme.io/docs/marketplace-scopes-and-permissions-explanations",
+          "quote": "Read most of the data about deals and related entities"
+        }
+      },
+      {
+        "name": "deals:full",
+        "source": {
+          "url": "https://pipedrive.readme.io/docs/marketplace-scopes-and-permissions-explanations",
+          "quote": "Create, read, update and delete deals, its participants and followers"
+        }
+      },
+      {
+        "name": "mail:read",
+        "source": {
+          "url": "https://pipedrive.readme.io/docs/marketplace-scopes-and-permissions-explanations",
+          "quote": "Read mail threads and messages."
+        }
+      },
+      {
+        "name": "activities:read",
+        "source": {
+          "url": "https://pipedrive.readme.io/docs/marketplace-scopes-and-permissions-explanations",
+          "quote": "Read activities, its fields and types; all files and filters."
+        }
+      },
+      {
+        "name": "contacts:read",
+        "source": {
+          "url": "https://pipedrive.readme.io/docs/marketplace-scopes-and-permissions-explanations",
+          "quote": "Read the data about persons and organizations, their related fields and followers"
+        }
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "summary": "Public app reviews can take up to 21 business days",
+      "kind": "approval",
+      "keywords": [
+        "approval",
+        "review",
+        "21 business days"
+      ],
+      "source": {
+        "url": "https://pipedrive.readme.io/docs/marketplace-app-approval-process",
+        "quote": "public app reviews may take up to 21 business days"
+      }
+    },
+    {
+      "summary": "The review needs working test accounts and a contact for questions",
+      "kind": "approval",
+      "keywords": [
+        "test accounts",
+        "contact",
+        "approval"
+      ],
+      "source": {
+        "url": "https://pipedrive.readme.io/docs/marketplace-app-approval-process",
+        "quote": "Provide our team with fully functional and up-to-date test accounts that we will use to properly asses your app and its functionality with Pipedrive"
+      }
+    },
+    {
+      "summary": "App creation needs a developer sandbox account first",
+      "kind": "setup",
+      "keywords": [
+        "developer sandbox account",
+        "Developer Hub"
+      ],
+      "source": {
+        "url": "https://pipedrive.readme.io/docs/marketplace-registering-the-app",
+        "quote": "You must have a developer sandbox account for app creation to see Developer Hub."
+      }
+    },
+    {
+      "summary": "Only one OAuth callback URL is allowed per app",
+      "kind": "limit",
+      "keywords": [
+        "callback URL",
+        "one"
+      ],
+      "source": {
+        "url": "https://pipedrive.readme.io/docs/marketplace-registering-the-app",
+        "quote": "Please keep in mind that we allow only one callback URL per app."
+      }
+    }
+  ],
+  "avoidProducts": [],
+  "notes": [
+    "Researched after the holdout was spent and after the last code change; no stage was tuned on this app.",
+    "The 21-business-day figure is a banner on the approval page ('due to a surge in demand'), so it may not be the usual wait: confidence low."
+  ]
+}

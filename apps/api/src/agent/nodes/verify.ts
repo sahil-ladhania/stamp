@@ -19,6 +19,7 @@ import { applyToGates, gateItems } from "../verify/gate-judge.js";
 import {
   applyToClaims,
   claimItems,
+  reasonOf,
   runJudge,
 } from "../verify/support-judge.js";
 import { verifyClaims } from "../verify/verify-claims.js";
@@ -93,6 +94,10 @@ export const verifyNode = stageNode("verify", async (state, config) => {
       (o, i) => o.downgrade !== null && byCode.outcomes[i]?.downgrade === null,
     ).length,
     supportCheck: verdicts === null ? "skipped" : "done",
+    // The items the support check removed a label from (ids only), so its precision can be read from the logs.
+    judgeRemoved: [...(verdicts ?? [])]
+      .filter(([, verdict]) => reasonOf(verdict) !== null)
+      .map(([id]) => id),
     // Where a review gate is lost, step by step: as drafted, after the quote and official-page checks, after the support check.
     reviewGate: {
       drafted: toGateFacts(state.gates).reviewGate,

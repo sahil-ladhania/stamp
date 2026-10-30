@@ -33,6 +33,7 @@ const EVENT_TYPES: Record<RunStreamEventType, true> = {
   'run.snapshot': true,
   'stage.started': true,
   'stage.done': true,
+  'app.resolved': true,
   'search.query': true,
   'page.fetched': true,
   'claim.verified': true,
@@ -51,6 +52,8 @@ export function dispatchRunEvent(event: RunStreamEvent, handlers: RunStreamHandl
       return handlers['stage.started']?.(event)
     case 'stage.done':
       return handlers['stage.done']?.(event)
+    case 'app.resolved':
+      return handlers['app.resolved']?.(event)
     case 'search.query':
       return handlers['search.query']?.(event)
     case 'page.fetched':

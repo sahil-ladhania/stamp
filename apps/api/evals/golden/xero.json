@@ -1,0 +1,164 @@
+{
+  "slug": "xero",
+  "set": "fresh",
+  "typedNames": [
+    "Xero"
+  ],
+  "researchedOn": "2026-10-29",
+  "product": {
+    "name": "Xero API (OAuth 2.0 apps and the Xero App Store)",
+    "source": {
+      "url": "https://developer.xero.com/documentation/guides/oauth2/limits/",
+      "quote": "New apps default to the starter tier with 5 connections."
+    }
+  },
+  "docs": {
+    "domains": [
+      "developer.xero.com"
+    ],
+    "pathHints": [
+      "/documentation/guides/oauth2/",
+      "/documentation/xero-app-store/"
+    ]
+  },
+  "oauthAppCreation": {
+    "where": "The Xero developer portal: create an OAuth2 app with the Auth Code grant type, which gives a client ID and a client secret",
+    "source": {
+      "url": "https://developer.xero.com/documentation/guides/oauth2/auth-flow/",
+      "quote": "Your app is assigned a unique Client ID and you can then generate a Client Secret."
+    }
+  },
+  "reviewGate": {
+    "value": "required_to_scale",
+    "alsoAccept": [
+      "security_assessment"
+    ],
+    "confidence": "medium",
+    "trigger": "A new app is capped at 5 connections; more connections need a paid tier, and certification (with a security assessment) is a prerequisite for the Plus tier and above and for listing on the App Store.",
+    "source": {
+      "url": "https://developer.xero.com/documentation/guides/oauth2/limits/",
+      "quote": "To be listed on the App Store, you will need to be in the Plus tier or above."
+    },
+    "moreSources": [
+      {
+        "url": "https://developer.xero.com/pricing",
+        "quote": "Security Assessment (initial and annual)"
+      },
+      {
+        "url": "https://developer.xero.com/documentation/guides/oauth2/limits/",
+        "quote": "There is no limit on connecting certified apps."
+      }
+    ]
+  },
+  "approvalWait": {
+    "kind": "unknown",
+    "stated": "The OAuth and pricing pages give no certification turnaround.",
+    "confidence": "low"
+  },
+  "testBeforeApproval": {
+    "possible": true,
+    "how": "A new app works immediately in the Starter tier, with up to 5 connections, before any certification",
+    "source": {
+      "url": "https://developer.xero.com/documentation/guides/oauth2/limits/",
+      "quote": "New apps default to the starter tier with 5 connections."
+    }
+  },
+  "scopes": {
+    "kind": "scope_strings",
+    "namePattern": "^[a-z_]+(\\.[a-z_]+)*$",
+    "knownFake": [],
+    "real": [
+      {
+        "name": "accounting.invoices",
+        "source": {
+          "url": "https://developer.xero.com/documentation/guides/oauth2/auth-flow/",
+          "quote": "accounting.invoices"
+        }
+      },
+      {
+        "name": "accounting.settings",
+        "source": {
+          "url": "https://developer.xero.com/documentation/guides/oauth2/auth-flow/",
+          "quote": "accounting.settings"
+        }
+      },
+      {
+        "name": "offline_access",
+        "source": {
+          "url": "https://developer.xero.com/documentation/guides/oauth2/auth-flow/",
+          "quote": "offline_access"
+        }
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "summary": "Each organisation can connect at most five uncertified apps",
+      "kind": "limit",
+      "keywords": [
+        "uncertified",
+        "five",
+        "organisation"
+      ],
+      "source": {
+        "url": "https://developer.xero.com/documentation/guides/oauth2/limits/",
+        "quote": "each organisation or practice is limited to connecting a maximum of five uncertified apps"
+      }
+    },
+    {
+      "summary": "New apps are capped at 5 connections until they move to a paid tier",
+      "kind": "limit",
+      "keywords": [
+        "starter",
+        "5 connections",
+        "tier"
+      ],
+      "source": {
+        "url": "https://developer.xero.com/documentation/guides/oauth2/limits/",
+        "quote": "New apps default to the starter tier with 5 connections."
+      }
+    },
+    {
+      "summary": "Listing on the Xero App Store needs the Plus tier or above",
+      "kind": "approval",
+      "keywords": [
+        "App Store",
+        "Plus tier",
+        "certification"
+      ],
+      "source": {
+        "url": "https://developer.xero.com/documentation/guides/oauth2/limits/",
+        "quote": "To be listed on the App Store, you will need to be in the Plus tier or above."
+      }
+    },
+    {
+      "summary": "Access tokens expire after 30 minutes and need a refresh token",
+      "kind": "setup",
+      "keywords": [
+        "access token",
+        "30 minutes",
+        "refresh token"
+      ],
+      "source": {
+        "url": "https://developer.xero.com/documentation/guides/oauth2/auth-flow/",
+        "quote": "Access tokens expire after 30 minutes."
+      }
+    }
+  ],
+  "avoidProducts": [
+    {
+      "name": "Xero Custom Connections",
+      "severity": "soft",
+      "hostPathHints": [
+        "/oauth2/custom-connections"
+      ],
+      "why": "A separate machine-to-machine flow for one organisation, not the standard OAuth app flow",
+      "evidence": "The OAuth guides list Custom Connections as its own page next to the standard authorization code flow."
+    }
+  ],
+  "notes": [
+    "Researched after the holdout was spent and after the last code change; no stage was tuned on this app.",
+    "Xero's documentation pages need script to render; quotes were checked on the text the agent's page fetcher returns.",
+    "Xero states no certification turnaround, so the wait is unknown."
+  ]
+}

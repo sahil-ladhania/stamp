@@ -7,7 +7,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { logger } from "../../lib/logger.js";
 import { searchWeb } from "../../lib/tavily.js";
-import { RUN_ERROR_MESSAGES } from "../../services/run-messages.js";
 import {
   createHarness,
   makeState,
@@ -50,7 +49,11 @@ describe("resolveNode with a typed domain or URL", () => {
       product: null,
     });
     expect(search).not.toHaveBeenCalled();
-    expect(trace(h.events)).toEqual(["stage.started:0", "stage.done:0"]);
+    expect(trace(h.events)).toEqual([
+      "stage.started:0",
+      "app.resolved",
+      "stage.done:0",
+    ]);
   });
 });
 
@@ -121,23 +124,6 @@ describe("resolveNode with an app name", () => {
 });
 
 describe("resolveNode when it cannot decide", () => {
-  it("ends the run with AMBIGUOUS_APP and the options when two apps match about equally", async () => {
-    const h = createHarness();
-    found("https://mercury.com/", "https://docs.mercuryapp.io/x");
-    const update = await resolveNode(makeState({ typed: "Mercury" }), h.config);
-    expect(update.failure).toEqual({
-      stage: 0,
-      code: "AMBIGUOUS_APP",
-      message: RUN_ERROR_MESSAGES.AMBIGUOUS_APP,
-      options: [
-        { name: "Mercury", domain: "mercury.com" },
-        { name: "Mercuryapp", domain: "mercuryapp.io" },
-      ],
-    });
-    expect(update.app).toBeUndefined();
-    expect(trace(h.events)).toEqual(["stage.started:0", "search.query"]);
-  });
-
   it("ends the run with NO_PUBLIC_DOCS when the search finds nothing", async () => {
     const h = createHarness();
     found();

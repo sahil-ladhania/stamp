@@ -83,6 +83,28 @@ describe("planBatch", () => {
     );
   });
 
+  it("treats the fresh set like the holdout: it needs the flag, runs once, and says so", () => {
+    expect(() => planBatch(args("fresh"), all, pricing, MODELS)).toThrow(
+      /--allow-holdout/,
+    );
+    expect(() =>
+      planBatch(
+        args("fresh", { allowHoldout: true, repeat: 2 }),
+        all,
+        pricing,
+        MODELS,
+      ),
+    ).toThrow(/once/i);
+    const plan = planBatch(
+      args("fresh", { allowHoldout: true }),
+      all,
+      pricing,
+      MODELS,
+    );
+    expect(plan.goldens).toHaveLength(3);
+    expect(plan.lines.join("\n")).toContain("HOLDOUT");
+  });
+
   it("plans the holdout set once the flag is given, and says it is the holdout", () => {
     const plan = planBatch(
       args("holdout", { allowHoldout: true }),

@@ -18,6 +18,7 @@ import { getApiErrorMessage } from "@/utils/error-messages";
 import { getRunPhase } from "@/utils/run-phase";
 import { buildStageGroups } from "@/utils/run-groups";
 import type { RunOutcome } from "@/utils/run-view";
+import { researchedAs } from "@/utils/researched-as";
 import { AmbiguousOptions } from "./AmbiguousOptions";
 import { JumpToLatest } from "./JumpToLatest";
 import { RunHeader } from "./RunHeader";
@@ -74,6 +75,7 @@ export function RunScreen({ runId, appParam, onReconnect }: RunScreenProps): Rea
         slug={snapshot?.slug ?? null}
         phase={phase}
         stageLine={getStageLine({ phase, stage })}
+        researchedAs={view.researched ? researchedAs(view.researched) : null}
         meters={
           phase === "not-found" ? null : (
             <RunMeters snapshot={snapshot} isRunning={isRunning} pagesRead={view.pagesRead} retries={view.retries} />

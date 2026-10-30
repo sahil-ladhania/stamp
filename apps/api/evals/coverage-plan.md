@@ -1,4 +1,4 @@
-# PR 6b: coverage plan (plan only, nothing is built)
+# PR 6b: coverage plan, and what happened when it was built
 
 Goal: read more of the pages that hold the answer (review gate, scope names) without lowering any trust metric. Evidence below is from the **tuning** runs only (`evals/runs/2026-10-29T18-11-45Z` to `18-54-14Z`), plus three one-credit page fetches of Gmail's scopes page. The holdout result was not used to choose any item here (see section 5).
 
@@ -84,3 +84,23 @@ Coverage targets (reported, not guards): review gate correct at least 3 of 6 (no
 ## 5. Not in this plan: the holdout's Dropbox failure
 
 The one holdout run (`19-09-54Z`) had Dropbox resolve to `hellosign.com` (Dropbox Sign), whose page titles matched the name (score 4.08), above `dropbox.com`, whose brand label is exactly the name (3.97). The identity then took the product phrase "Dropbox Sign API" from that domain, and every page read was another product's. The tuning data has no case where a title-only domain competes with an exact-label domain, so it neither shows nor tests this. It is a resolve-stage problem, separate from coverage, and any fix to it is informed by holdout data, which spends the holdout. I recommend a separate decision (C2) and not folding it into 6b.
+
+## 6. Outcome: the coverage changes were built, failed their guard rails and were reverted
+
+Built as planned and run once on the tuning set (`evals/runs/2026-10-29T21-32-26Z`, 66 credits), with markdown pages, the 8-page budget, the name guard, the gate-first retry and verdict reuse in the support check, against the final Stage 5 run:
+
+| Guard                                    | Stage 5 final                      | PR 6b run                          | Held?  |
+| ---------------------------------------- | ---------------------------------- | ---------------------------------- | ------ |
+| Wrong-product pages cited                | 0                                  | 2 (Gmail, Microsoft)               | **no** |
+| Contradictions with the golden set       | 1                                  | 10                                 | **no** |
+| Fake scopes                              | 1                                  | 3                                  | **no** |
+| Sourced claims on good pages             | 85%                                | 82%                                | **no** |
+| Wrong review gates                       | 0                                  | 0                                  | yes    |
+| Durations / within 120 s / p95 / cost    | 24 of 24 / 6 of 6 / 35.8 s / $0.21 | 24 of 24 / 6 of 6 / 38.2 s / $0.20 | yes    |
+| Gates that were correct (HubSpot, Slack) | 2                                  | 0 (both unknown)                   | **no** |
+
+Coverage moved a little (apps with at least 2 real scopes 2 to 4 of 6) and fell elsewhere (top blocker 4 to 1 of 6, review gate correct 2 to 1 of 6).
+
+**What the traces show.** One cause is certain: the verdict reuse locked in a pass-1 "accept" for Gmail's Google Cloud Contact Center claims (another product), which the old pass-2 batch used to remove; with the reuse they stayed Sourced (7 contradictions). So the "inconsistency" I set out to remove was the second look catching what the first missed; the reuse was less strict, not neutral. The other regressions (Microsoft reading an Azure AD B2C page, three fake scopes, two gates lost) came from the other four changes together, and one run cannot separate them. Gmail's scopes were not recovered: markdown surfaced `https://mail.google.com/`, which the golden file does not list, and none of the four it does list.
+
+**Decision (mine, under "must not lower any trust metric"):** keep the identity fixes, "Researched as", the name guard (it only removes reads) and the new `judgeRemoved` log line; revert markdown pages, the 8-page budget, the gate-first retry and the verdict reuse. The reverted code is kept at the git tag `experiment-coverage-6b`. Testing the four one at a time needs about four more tuning runs (about 260 credits), which this month's budget does not allow; the credits reset on 1 November.

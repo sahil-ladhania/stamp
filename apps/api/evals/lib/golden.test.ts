@@ -27,6 +27,14 @@ describe("golden files", () => {
     ]);
   });
 
+  it("holds three fresh apps, researched after the holdout was spent, that no stage was tuned on", () => {
+    expect(selectGolden(all, "fresh").map((g) => g.slug)).toEqual([
+      "discord",
+      "pipedrive",
+      "xero",
+    ]);
+  });
+
   it("names each file after its slug and keeps slugs unique", () => {
     expect(new Set(all.map((g) => g.slug)).size).toBe(all.length);
   });
@@ -105,7 +113,7 @@ describe("selectGolden", () => {
 
   it("names the choices when the selector is unknown", () => {
     expect(() => selectGolden(all, "nope")).toThrow(
-      /Use tuning, holdout or one of: .*gmail/,
+      /Use tuning, holdout, fresh or one of: .*gmail/,
     );
   });
 });

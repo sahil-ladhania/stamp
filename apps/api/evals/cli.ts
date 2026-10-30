@@ -1,6 +1,6 @@
 /**
  * File: cli.ts
- * Purpose: Entry for `pnpm --filter api eval -- --set tuning|holdout|<slug>`: prints the cost estimate and stops, unless --confirm is given, then runs the batch in-process and writes the scorecard.
+ * Purpose: Entry for `pnpm --filter api eval -- --set tuning|holdout|fresh|<slug>`: prints the cost estimate and stops, unless --confirm is given, then runs the batch in-process and writes the scorecard.
  * Exports: (none)
  * Used by: pnpm --filter api eval (by hand only; never run by tests or CI)
  */

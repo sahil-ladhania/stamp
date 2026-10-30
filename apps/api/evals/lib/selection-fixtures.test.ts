@@ -20,6 +20,14 @@ type Row = [
 ];
 
 /** The saved lists are from before the identity stage; the product phrases are what it later finds for these two apps. */
+const NAMES: Record<string, string> = {
+  github: "GitHub",
+  gmail: "Gmail",
+  hubspot: "HubSpot",
+  microsoft: "Microsoft",
+  notion: "Notion",
+  slack: "Slack",
+};
 const PRODUCT: Record<string, string | null> = {
   gmail: "Gmail API",
   microsoft: "Microsoft Graph",
@@ -62,6 +70,7 @@ function picks(
     allowance,
     held: new Set(),
     product: PRODUCT[slug] ?? null,
+    appName: NAMES[slug] ?? slug,
   });
   return {
     golden: picked.filter((p) =>

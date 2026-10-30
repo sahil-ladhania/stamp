@@ -16,7 +16,7 @@ export const t = (n: number) =>
 /** A third-party result whose title answers a topic, so it can take the reserved non-official slot. */
 export const reviewed = (n: number) => ({
   ...t(n),
-  title: "OAuth app review times",
+  title: "Acme OAuth app review times",
   topics: ["approvalWait"],
 });
 export const officials = (n: number) =>

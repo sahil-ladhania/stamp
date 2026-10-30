@@ -1,0 +1,163 @@
+{
+  "slug": "discord",
+  "set": "fresh",
+  "typedNames": [
+    "Discord"
+  ],
+  "researchedOn": "2026-10-29",
+  "product": {
+    "name": "Discord OAuth2 for apps and bots (Developer Portal)",
+    "source": {
+      "url": "https://docs.discord.com/developers/topics/oauth2",
+      "quote": "allows your app to add"
+    }
+  },
+  "docs": {
+    "domains": [
+      "docs.discord.com",
+      "discord.com"
+    ],
+    "pathHints": [
+      "/developers/topics/oauth2",
+      "/developers/events/gateway",
+      "/developers/"
+    ]
+  },
+  "oauthAppCreation": {
+    "where": "The Discord Developer Portal: create an application, then use its client ID and OAuth2 settings",
+    "source": {
+      "url": "https://docs.discord.com/developers/topics/oauth2",
+      "quote": "Developer Portal"
+    }
+  },
+  "reviewGate": {
+    "value": "required_to_scale",
+    "alsoAccept": [
+      "optional_listing"
+    ],
+    "confidence": "medium",
+    "trigger": "An app can be built and used without review; verification is required once an app is in 100 or more guilds, and privileged intents are approved after that verification.",
+    "source": {
+      "url": "https://docs.discord.com/developers/events/gateway",
+      "quote": "For verified apps (required for apps in 100+ guilds)"
+    }
+  },
+  "approvalWait": {
+    "kind": "unknown",
+    "stated": "The developer documentation states no verification turnaround.",
+    "confidence": "low"
+  },
+  "testBeforeApproval": {
+    "possible": true,
+    "how": "An unverified app works in fewer than 100 guilds, so it can be built and tested before verification",
+    "source": {
+      "url": "https://docs.discord.com/developers/events/gateway",
+      "quote": "For verified apps (required for apps in 100+ guilds)"
+    }
+  },
+  "scopes": {
+    "kind": "scope_strings",
+    "namePattern": "^[a-z_]+(\\.[a-z_]+)*$",
+    "knownFake": [],
+    "real": [
+      {
+        "name": "identify",
+        "source": {
+          "url": "https://docs.discord.com/developers/topics/oauth2",
+          "quote": "allows /users/@me without email"
+        }
+      },
+      {
+        "name": "email",
+        "source": {
+          "url": "https://docs.discord.com/developers/topics/oauth2",
+          "quote": "enables /users/@me to return an email"
+        }
+      },
+      {
+        "name": "guilds",
+        "source": {
+          "url": "https://docs.discord.com/developers/topics/oauth2",
+          "quote": "allows /users/@me/guilds to return basic information about all of a user\u2019s guilds"
+        }
+      },
+      {
+        "name": "guilds.join",
+        "source": {
+          "url": "https://docs.discord.com/developers/topics/oauth2",
+          "quote": "allows /guilds/{guild.id}/members/{user.id} to be used for joining users to a guild"
+        }
+      },
+      {
+        "name": "connections",
+        "source": {
+          "url": "https://docs.discord.com/developers/topics/oauth2",
+          "quote": "allows /users/@me/connections to return linked third-party accounts"
+        }
+      },
+      {
+        "name": "applications.commands",
+        "source": {
+          "url": "https://docs.discord.com/developers/topics/oauth2",
+          "quote": "allows your app to add commands to a guild - included by default with the bot scope"
+        }
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "summary": "Apps in 100 or more guilds must be verified",
+      "kind": "approval",
+      "keywords": [
+        "verified",
+        "100+ guilds",
+        "verification"
+      ],
+      "source": {
+        "url": "https://docs.discord.com/developers/events/gateway",
+        "quote": "For verified apps (required for apps in 100+ guilds)"
+      }
+    },
+    {
+      "summary": "Privileged intents can be requested only after the app is verified, in the Developer Portal",
+      "kind": "approval",
+      "keywords": [
+        "privileged intents",
+        "verified",
+        "Developer Portal"
+      ],
+      "source": {
+        "url": "https://docs.discord.com/developers/events/gateway",
+        "quote": "After your app is verified, you can request privileged intents within the app\u2019s settings within the Developer Portal."
+      }
+    },
+    {
+      "summary": "Adding a user to a guild with guilds.join needs the bot to already be in that guild",
+      "kind": "setup",
+      "keywords": [
+        "guilds.join",
+        "bot",
+        "guild"
+      ],
+      "source": {
+        "url": "https://docs.discord.com/developers/topics/oauth2",
+        "quote": "In order to add a user to a guild, your bot has to already belong to that guild."
+      }
+    }
+  ],
+  "avoidProducts": [
+    {
+      "name": "Discord end-user help center",
+      "severity": "soft",
+      "hostPathHints": [
+        "support.discord.com/hc"
+      ],
+      "why": "End-user help articles, not the developer API",
+      "evidence": "The developer documentation lives on docs.discord.com and discord.com/developers; support.discord.com is for users."
+    }
+  ],
+  "notes": [
+    "Researched after the holdout was spent and after the last code change; no stage was tuned on this app.",
+    "Discord's rules moved from a 100-server trigger to a user-count threshold for privileged intents; the gateway page still states 100+ guilds for verification."
+  ]
+}

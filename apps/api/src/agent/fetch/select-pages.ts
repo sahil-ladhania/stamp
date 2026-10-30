@@ -5,6 +5,7 @@
  * Used by: agent/nodes/fetch.ts, agent/fetch/load-pages.ts
  */
 import { hashUrl } from "../../utils/hash-url.js";
+import { nameKey } from "../../utils/name-key.js";
 import { canonicalKey, isEnglishVariant } from "../search/canonical-url.js";
 import type { SearchResult } from "../search-result.js";
 import { relevance, topicFit, type RelevanceContext } from "./relevance.js";
@@ -90,9 +91,18 @@ export function selectPages(
     allowance: number;
     held: ReadonlySet<string>;
     product?: string | null;
+    /** The app's name: a non-official page takes the reserved slot only if its title or address names the app or its product. */
+    appName?: string;
   },
 ): SearchResult[] {
   const context: RelevanceContext = { product: options.product ?? null };
+  const namesApp = (result: SearchResult): boolean => {
+    const keys = [options.appName, options.product ?? undefined]
+      .map((name) => nameKey(name ?? ""))
+      .filter((key) => key !== "");
+    const haystack = nameKey(`${result.title ?? ""} ${result.url}`);
+    return keys.length === 0 || keys.some((key) => haystack.includes(key));
+  };
   const seen = new Set(options.held);
   const seenPages = new Set<string>();
   const english = [...results].sort(
@@ -126,7 +136,8 @@ export function selectPages(
       ? other.filter(
           (result) =>
             topicFit(result) >= 2 &&
-            relevance(result, context) >= RESERVE_FLOOR,
+            relevance(result, context) >= RESERVE_FLOOR &&
+            namesApp(result),
         )
       : [];
   const reserved = reservable.slice(0, 1);

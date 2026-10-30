@@ -48,6 +48,7 @@ export function assembleGuide(input: AssembleInput): Guide {
     slug: app.slug,
     appName: app.appName,
     domain: app.domain,
+    ...(app.product ? { product: app.product } : {}),
     mode: "live",
     archetype: input.archetype,
     difficulty: input.difficulty.score,

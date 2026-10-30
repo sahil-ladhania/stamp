@@ -92,6 +92,8 @@ export type Guide = {
   slug: string
   appName: string
   domain: string
+  /** The product phrase the run searched for ("Gmail API"); absent for a guide made before it was kept, or when there was none. */
+  product?: string | null
   archetype: Archetype
   mode: GuideMode
   coverage: GuideCoverage

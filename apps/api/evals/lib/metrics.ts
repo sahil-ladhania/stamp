@@ -7,7 +7,7 @@
 import { targetFor, type Summary } from "./summary.js";
 
 export type MetricContext = {
-  set: "tuning" | "holdout" | undefined;
+  set: "tuning" | "holdout" | "fresh" | undefined;
   apps: number;
 };
 

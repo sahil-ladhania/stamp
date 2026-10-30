@@ -72,7 +72,7 @@ describe("parseArgs", () => {
   });
 
   it("explains how to use the command when --set is missing", () => {
-    expect(() => parseArgs([])).toThrow(/--set tuning\|holdout\|<slug>/);
+    expect(() => parseArgs([])).toThrow(/--set tuning\|holdout\|fresh\|<slug>/);
   });
 
   it("rejects a flag it does not know", () => {

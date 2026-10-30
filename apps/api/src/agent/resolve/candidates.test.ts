@@ -54,25 +54,25 @@ describe("rankCandidates", () => {
   it("adds a docs bonus for a docs-looking host and caps it at 1", () => {
     expect(
       rankCandidates("Acme", [hit("https://docs.acme.com/a")])[0]?.score,
-    ).toBe(1 + 0.5 + 3);
+    ).toBe(1 + 0.5 + SCORE_WEIGHTS.exact);
     const two = rankCandidates("Acme", [
       hit("https://docs.acme.com/a"),
       hit("https://developers.acme.com/b"),
     ]);
-    expect(two[0]?.score).toBe(1 + 0.5 + 1 + 3);
+    expect(two[0]?.score).toBe(1 + 0.5 + 1 + SCORE_WEIGHTS.exact);
     const three = rankCandidates("Acme", [
       hit("https://docs.acme.com/a"),
       hit("https://docs.acme.com/b"),
       hit("https://docs.acme.com/c"),
     ]);
-    expect(three[0]?.score).toBe(1 + 0.5 + 1 / 3 + 1 + 3);
+    expect(three[0]?.score).toBe(1 + 0.5 + 1 / 3 + 1 + SCORE_WEIGHTS.exact);
   });
 
   it("also treats a docs-looking path as a docs hint", () => {
     expect(
       rankCandidates("Acme", [hit("https://acme.com/developers/oauth")])[0]
         ?.score,
-    ).toBe(1 + 0.5 + 3);
+    ).toBe(1 + 0.5 + SCORE_WEIGHTS.exact);
   });
 
   it("weights earlier search positions higher", () => {
