@@ -2,14 +2,6 @@
 
 > Know what it takes to get your OAuth app stamped.
 
-| | |
-| --- | --- |
-| Live app | TODO: add Vercel URL |
-| Demo video | TODO: add Loom URL |
-| Time spent | TODO: add real hours (budget was 6-8) |
-
----
-
 ## TL;DR
 
 - **Problem:** before launch, developers cannot tell if OAuth app setup takes one hour or six weeks, or what will block approval.
@@ -231,17 +223,11 @@ A sample of guidance checked against real sources or setup attempts.
 
 | File | What it covers |
 | --- | --- |
-| [assignment.md](./docs/assignment.md) | The original brief |
 | [problem.md](./docs/problem.md) | The problem and who has it |
 | [solution.md](./docs/solution.md) | How Stamp solves it |
 | [product.md](./docs/product.md) | Positioning, metrics, roadmap |
-| [flow.md](./docs/flow.md) | The core user flow |
-| [features.md](./docs/features.md) | Must, Should, Could, Won't |
-| [design-decisions.md](./docs/design-decisions.md) | Every key decision and its trade-offs |
 | [product-architecture.md](./docs/product-architecture.md) | Apps, routes, data, caching |
 | [agent-architecture.md](./docs/agent-architecture.md) | The agent pipeline and labelling |
-| [api-design.md](./docs/api-design.md) | Endpoints, events, errors |
-| [db-schema-design.md](./docs/db-schema-design.md) | Tables and the Prisma schema |
+| [design-decisions.md](./docs/design-decisions.md) | Every key decision and its trade-offs |
+| [features.md](./docs/features.md) | Must, Should, Could, Won't |
 | [tech-stack.md](./docs/tech-stack.md) | Tools by layer |
-| [folder-structure.md](./docs/folder-structure.md) | Repo layout |
-| [design-system.md](./docs/design-system.md) | Colours, type, components |
