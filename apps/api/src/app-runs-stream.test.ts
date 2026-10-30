@@ -46,6 +46,21 @@ describe("GET /api/runs/:id/stream", () => {
     });
   });
 
+  it("sends the stream unbuffered and uncompressed, even to a client that accepts gzip and brotli", async () => {
+    app.agent.mockImplementation(scriptedAgent());
+    const id = await startedRunId(app.url());
+    const response = await fetch(`${app.url()}/api/runs/${id}/stream`, {
+      headers: { "Accept-Encoding": "gzip, deflate, br" },
+    });
+    expect(response.headers.get("content-encoding")).toBeNull();
+    expect(response.headers.get("cache-control")).toBe(
+      "no-cache, no-transform",
+    );
+    expect(response.headers.get("x-accel-buffering")).toBe("no");
+    expect(response.headers.get("content-length")).toBeNull();
+    await response.text();
+  });
+
   it("lets a client join mid-run: replay first, then the live remainder", async () => {
     let release: () => void = () => {};
     app.agent.mockImplementation(

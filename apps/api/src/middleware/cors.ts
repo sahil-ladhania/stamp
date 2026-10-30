@@ -12,7 +12,8 @@ const PREFLIGHT_MAX_AGE_SECONDS = 600;
 /** Allows GET and POST from one origin; exposes Retry-After so the web app can read rate limits. */
 export function corsMiddleware(webOrigin: string): RequestHandler {
   return cors({
-    origin: webOrigin,
+    // A browser's Origin has no trailing slash, so a pasted "https://app.example.com/" must still match.
+    origin: webOrigin.replace(/\/+$/, ""),
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
     exposedHeaders: ["Retry-After"],
