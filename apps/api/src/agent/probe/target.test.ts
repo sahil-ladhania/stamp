@@ -47,6 +47,12 @@ describe("checkTarget", () => {
     expect(reason("https://acme.com/a", "https://www.acme.com/")).toBe("ok");
   });
 
+  it("refuses a documentation platform host named after the app: it is official for reading, never for the probe", () => {
+    expect(reason("https://acme.readme.io/oauth/authorize", "acme.com")).toBe(
+      "not_official_domain",
+    );
+  });
+
   it("refuses a company's other documentation domain: only the primary domain is probed", () => {
     expect(reason("https://slack.dev/oauth", "slack.com")).toBe(
       "not_official_domain",

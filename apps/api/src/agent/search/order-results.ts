@@ -27,6 +27,7 @@ export type TaggedHit = SearchHit & { topic?: string };
 export function toSearchResults(
   hits: TaggedHit[],
   domains: OfficialDomains,
+  options: { appName?: string } = {},
 ): SearchResult[] {
   const byPage = new Map<string, SearchResult>();
   for (const hit of hits) {
@@ -34,7 +35,7 @@ export function toSearchResults(
     const kept = byPage.get(key);
     const tiered: SearchResult = {
       url: hit.url,
-      tier: sourceTier(hit.url, domains),
+      tier: sourceTier(hit.url, domains, options),
       ...(hit.title === "" ? {} : { title: hit.title }),
       score: hit.score,
     };

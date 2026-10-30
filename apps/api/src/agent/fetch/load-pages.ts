@@ -14,9 +14,14 @@ import { sourceTier } from "../evidence/source-tier.js";
 import type { PageCachePort, PageRecord } from "../page-record.js";
 import { MIN_PAGE_CHARS } from "./select-pages.js";
 
+const tierOptions = (ctx: { appName?: string }): { appName?: string } =>
+  ctx.appName === undefined ? {} : { appName: ctx.appName };
+
 export type LoadContext = {
   /** The app's official domains; every page's tier is decided against them. */
   domains: readonly string[];
+  /** The app's name, so a documentation platform host named after it is tiered official. */
+  appName?: string;
   timeoutMs: number;
   signal?: AbortSignal;
   usage: RunUsage;
@@ -62,7 +67,7 @@ async function keep(
   try {
     return await (ctx.cache?.store ?? storePage)({
       url: page.url,
-      tier: sourceTier(page.url, ctx.domains),
+      tier: sourceTier(page.url, ctx.domains, tierOptions(ctx)),
       text: page.text,
     });
   } catch (err) {
@@ -89,7 +94,7 @@ export async function loadPages(
     if (hit) {
       byHash.set(hit.urlHash, {
         ...hit,
-        tier: sourceTier(hit.url, ctx.domains),
+        tier: sourceTier(hit.url, ctx.domains, tierOptions(ctx)),
       });
     } else {
       misses.push(url);

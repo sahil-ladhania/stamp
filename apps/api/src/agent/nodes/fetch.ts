@@ -33,6 +33,7 @@ export const fetchNode = stageNode("fetch", async (state, config) => {
     picks.map((pick) => pick.url),
     {
       domains: app.domains,
+      appName: app.appName,
       timeoutMs: callTimeoutMs(config, "fetch", { retryPass }),
       signal: config.signal,
       usage: deps.usage,
