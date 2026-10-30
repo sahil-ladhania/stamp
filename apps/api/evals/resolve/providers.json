@@ -1,0 +1,426 @@
+[
+  {
+    "typed": "Spotify",
+    "types": [
+      "dev_subdomain"
+    ],
+    "expected": [
+      "spotify.com"
+    ],
+    "docs": "https://developer.spotify.com/documentation/web-api",
+    "note": "The reported failure: NO_PUBLIC_DOCS at Resolve"
+  },
+  {
+    "typed": "Box",
+    "types": [
+      "dev_subdomain",
+      "common_word"
+    ],
+    "expected": [
+      "box.com"
+    ],
+    "docs": "https://developer.box.com/guides/authentication/oauth2/",
+    "note": "Three letters: below the 4-letter partial and title rules"
+  },
+  {
+    "typed": "Twitch",
+    "types": [
+      "dev_subdomain",
+      "other_tld"
+    ],
+    "expected": [
+      "twitch.tv"
+    ],
+    "docs": "https://dev.twitch.tv/docs/authentication/"
+  },
+  {
+    "typed": "QuickBooks",
+    "types": [
+      "parent_domain",
+      "brand_differs"
+    ],
+    "expected": [
+      "intuit.com"
+    ],
+    "docs": "https://developer.intuit.com/app/developer/qbo/docs/develop/authentication-and-authorization/oauth-2.0",
+    "note": "quickbooks.com is the product site; the docs are on Intuit's domain"
+  },
+  {
+    "typed": "Instagram",
+    "types": [
+      "parent_domain",
+      "consumer_site_first",
+      "denied_brand_host"
+    ],
+    "expected": [
+      "facebook.com"
+    ],
+    "docs": "https://developers.facebook.com/docs/instagram-platform/",
+    "note": "instagram.com is on the denylist but exact-allowed; the docs are on Meta's developer site"
+  },
+  {
+    "typed": "YouTube",
+    "types": [
+      "parent_domain",
+      "consumer_site_first",
+      "denied_brand_host"
+    ],
+    "expected": [
+      "google.com"
+    ],
+    "docs": "https://developers.google.com/youtube/v3/guides/authentication",
+    "note": "youtube.com is on the denylist but exact-allowed; the docs are on developers.google.com"
+  },
+  {
+    "typed": "LinkedIn",
+    "types": [
+      "parent_domain",
+      "consumer_site_first",
+      "denied_brand_host"
+    ],
+    "expected": [
+      "microsoft.com"
+    ],
+    "docs": "https://learn.microsoft.com/en-us/linkedin/shared/authentication/authentication",
+    "note": "linkedin.com is on the denylist but exact-allowed; the docs are on Microsoft Learn"
+  },
+  {
+    "typed": "Twitter",
+    "types": [
+      "brand_differs",
+      "denied_brand_host"
+    ],
+    "expected": [
+      "x.com",
+      "twitter.com"
+    ],
+    "docs": "https://docs.x.com/fundamentals/authentication/oauth-2-0/authorization-code",
+    "note": "Renamed to X; developer.twitter.com redirects"
+  },
+  {
+    "typed": "X",
+    "types": [
+      "brand_differs",
+      "single_letter",
+      "denied_brand_host"
+    ],
+    "expected": [
+      "x.com"
+    ],
+    "docs": "https://docs.x.com/fundamentals/authentication/oauth-2-0/authorization-code",
+    "note": "A one-letter name"
+  },
+  {
+    "typed": "Monday",
+    "types": [
+      "common_word",
+      "dev_subdomain"
+    ],
+    "expected": [
+      "monday.com"
+    ],
+    "docs": "https://developer.monday.com/apps/docs/oauth"
+  },
+  {
+    "typed": "Square",
+    "types": [
+      "common_word",
+      "brand_differs"
+    ],
+    "expected": [
+      "squareup.com"
+    ],
+    "docs": "https://developer.squareup.com/docs/oauth-api/overview",
+    "note": "The company domain is squareup.com"
+  },
+  {
+    "typed": "Linear",
+    "types": [
+      "common_word"
+    ],
+    "expected": [
+      "linear.app"
+    ],
+    "docs": "https://linear.app/developers/oauth-2-0-authentication",
+    "note": "Older docs host: developers.linear.app"
+  },
+  {
+    "typed": "Front",
+    "types": [
+      "common_word",
+      "brand_differs"
+    ],
+    "expected": [
+      "frontapp.com"
+    ],
+    "docs": "https://dev.frontapp.com/docs/oauth",
+    "note": "The product site is front.com; the docs are on frontapp.com"
+  },
+  {
+    "typed": "Google Calendar",
+    "types": [
+      "multi_word",
+      "parent_domain"
+    ],
+    "expected": [
+      "google.com"
+    ],
+    "docs": "https://developers.google.com/workspace/calendar/api/auth"
+  },
+  {
+    "typed": "Zoho CRM",
+    "types": [
+      "multi_word"
+    ],
+    "expected": [
+      "zoho.com"
+    ],
+    "docs": "https://www.zoho.com/crm/developer/docs/api/v6/oauth-overview.html"
+  },
+  {
+    "typed": "Microsoft Teams",
+    "types": [
+      "multi_word",
+      "parent_domain"
+    ],
+    "expected": [
+      "microsoft.com"
+    ],
+    "docs": "https://learn.microsoft.com/en-us/microsoftteams/platform/"
+  },
+  {
+    "typed": "Adobe Sign",
+    "types": [
+      "multi_word"
+    ],
+    "expected": [
+      "adobe.com"
+    ],
+    "docs": "https://developer.adobe.com/acrobat-sign/docs/overview/developer_guide/",
+    "note": "Also on opensource.adobe.com"
+  },
+  {
+    "typed": "Dropbox Sign",
+    "types": [
+      "multi_word",
+      "brand_differs"
+    ],
+    "expected": [
+      "hellosign.com",
+      "dropbox.com"
+    ],
+    "docs": "https://developers.hellosign.com/docs/oauth/overview",
+    "note": "Formerly HelloSign: the brand and the docs domain differ (the holdout's Dropbox failure)"
+  },
+  {
+    "typed": "Reddit",
+    "types": [
+      "docs_on_code_host",
+      "denied_brand_host"
+    ],
+    "expected": [
+      "reddit.com",
+      "github.com"
+    ],
+    "docs": "https://github.com/reddit-archive/reddit/wiki/oauth2",
+    "note": "The OAuth guide is a GitHub wiki; reddit.com is on the denylist but exact-allowed"
+  },
+  {
+    "typed": "GitLab",
+    "types": [
+      "denied_brand_host"
+    ],
+    "expected": [
+      "gitlab.com"
+    ],
+    "docs": "https://docs.gitlab.com/ee/api/oauth2.html"
+  },
+  {
+    "typed": "Zapier",
+    "types": [
+      "denied_brand_host"
+    ],
+    "expected": [
+      "zapier.com"
+    ],
+    "docs": "https://docs.zapier.com/platform/build/oauth"
+  },
+  {
+    "typed": "Basecamp",
+    "types": [
+      "docs_on_code_host",
+      "brand_differs"
+    ],
+    "expected": [
+      "github.com",
+      "basecamp.com",
+      "37signals.com"
+    ],
+    "docs": "https://github.com/basecamp/bc3-api/blob/master/sections/authentication.md",
+    "note": "The API docs are a GitHub repo; the company is 37signals"
+  },
+  {
+    "typed": "TikTok",
+    "types": [
+      "dev_subdomain",
+      "denied_brand_host"
+    ],
+    "expected": [
+      "tiktok.com"
+    ],
+    "docs": "https://developers.tiktok.com/doc/login-kit-manage-user-access-tokens"
+  },
+  {
+    "typed": "Shopify",
+    "types": [
+      "other_tld"
+    ],
+    "expected": [
+      "shopify.dev",
+      "shopify.com"
+    ],
+    "docs": "https://shopify.dev/docs/apps/build/authentication-authorization/access-tokens/authorization-code-grant",
+    "note": "Docs on a .dev domain; the brand's .com is the marketing site"
+  },
+  {
+    "typed": "Pipedrive",
+    "types": [
+      "docs_platform"
+    ],
+    "expected": [
+      "pipedrive.com",
+      "pipedrive.readme.io"
+    ],
+    "docs": "https://pipedrive.readme.io/docs/marketplace-oauth-authorization",
+    "note": "Docs on a readme.io subdomain (also developers.pipedrive.com). Already seen in the fresh holdout"
+  },
+  {
+    "typed": "钉钉",
+    "types": [
+      "non_latin"
+    ],
+    "expected": [
+      "dingtalk.com",
+      "dingtalk.io"
+    ],
+    "docs": "https://open.dingtalk.com/",
+    "note": "DingTalk typed in Chinese; the docs are on dingtalk.com and mirrored on dingtalk.io"
+  },
+  {
+    "typed": "Cal.com",
+    "types": [
+      "typed_domain"
+    ],
+    "expected": [
+      "cal.com"
+    ],
+    "docs": "https://cal.com/docs",
+    "note": "A name that looks like a domain is read as one"
+  },
+  {
+    "typed": "https://developer.spotify.com/documentation/web-api",
+    "types": [
+      "typed_domain",
+      "dev_subdomain"
+    ],
+    "expected": [
+      "spotify.com"
+    ],
+    "docs": "https://developer.spotify.com/documentation/web-api",
+    "note": "A typed docs URL"
+  },
+  {
+    "typed": "pipedrive.readme.io",
+    "types": [
+      "typed_domain",
+      "docs_platform"
+    ],
+    "expected": [
+      "pipedrive.readme.io",
+      "pipedrive.com"
+    ],
+    "docs": "https://pipedrive.readme.io/docs/marketplace-oauth-authorization",
+    "note": "A typed docs-platform host: its registrable domain is the platform's"
+  },
+  {
+    "typed": "youtube.com",
+    "types": [
+      "typed_domain",
+      "consumer_site_first"
+    ],
+    "expected": [
+      "google.com"
+    ],
+    "docs": "https://developers.google.com/youtube/v3/guides/authentication",
+    "note": "A typed consumer site whose docs are elsewhere"
+  },
+  {
+    "typed": "GitHub",
+    "types": [
+      "control"
+    ],
+    "expected": [
+      "github.com"
+    ],
+    "docs": "https://docs.github.com/en/apps/oauth-apps",
+    "control": true
+  },
+  {
+    "typed": "Gmail",
+    "types": [
+      "control",
+      "parent_domain",
+      "brand_differs"
+    ],
+    "expected": [
+      "google.com"
+    ],
+    "docs": "https://developers.google.com/workspace/gmail",
+    "control": true
+  },
+  {
+    "typed": "HubSpot",
+    "types": [
+      "control"
+    ],
+    "expected": [
+      "hubspot.com"
+    ],
+    "docs": "https://developers.hubspot.com/docs/apps",
+    "control": true
+  },
+  {
+    "typed": "Microsoft",
+    "types": [
+      "control"
+    ],
+    "expected": [
+      "microsoft.com"
+    ],
+    "docs": "https://learn.microsoft.com/en-us/entra/identity-platform/",
+    "control": true
+  },
+  {
+    "typed": "Notion",
+    "types": [
+      "control"
+    ],
+    "expected": [
+      "notion.com"
+    ],
+    "docs": "https://developers.notion.com/guides/get-started/authorization",
+    "control": true
+  },
+  {
+    "typed": "Slack",
+    "types": [
+      "control"
+    ],
+    "expected": [
+      "slack.dev",
+      "slack.com"
+    ],
+    "docs": "https://docs.slack.dev/authentication/",
+    "control": true
+  }
+]

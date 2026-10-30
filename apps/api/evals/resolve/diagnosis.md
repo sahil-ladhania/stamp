@@ -1,0 +1,152 @@
+# Resolve diagnosis (2026-10-30)
+
+Why "Spotify" ended NO_PUBLIC_DOCS at Resolve, what else breaks Resolve for providers a reviewer may type, and a plan. **Nothing in Resolve has been changed.** Run: `apps/api/evals/runs/2026-10-30T09-57-25Z-resolve` (git-ignored), 32 Tavily credits; Spotify repeated 5 more times (5 credits). Total 37.
+
+## 1. What can end a run at Resolve
+
+Only `nodes/resolve.ts` ends a run at stage 0. Every rule that can:
+
+| # | Rule | Ends with |
+| --- | --- | --- |
+| 1 | The typed text is empty after cleaning | NO_PUBLIC_DOCS |
+| 2 | The one search throws, times out (6 s cap) or is aborted | INTERNAL (not NO_PUBLIC_DOCS) |
+| 3 | `rankCandidates` finds no candidate: no hits, or every hit is on a denied domain (and does not match the name exactly), or none parses | NO_PUBLIC_DOCS |
+| 4 | The best candidate has `match: none`: its brand label does not equal or contain the name, and no hit title contains the name (names under 4 letters get no partial or title match) | NO_PUBLIC_DOCS |
+| 5 | Two candidates with different brand labels both match the name by label (exact or partial) and the second scores at least 60% of the first | AMBIGUOUS_APP |
+| 6 | Any candidate with another brand label and any match (even a page title) scores at least 90% of the leader | AMBIGUOUS_APP |
+
+Typed domains and URLs make no search and cannot fail. A search error is **not** treated as "no docs": rule 2 ends INTERNAL, and there is no retry. What changed since the tuning runs: PR 2 added the official-domain list and product phrase (no new failure rule); PR 6b raised the exact-label weight to 4.5 and added rule 6's 90% close call; the tiering fix did not touch Resolve.
+
+## 2. The Spotify run
+
+- `api.log` (repo root, last written 29 Oct) holds no Spotify run, and the API on :3000 writes its log to the terminal it was started in, which I cannot read. **The failing run's `resolve summary` line (hits, candidates, decision) is what would settle it.**
+- Not reproduced: Resolve on "Spotify" decided `official spotify.com` in 6 of 6 searches. The hits varied from 2 to 8, always including `developer.spotify.com`.
+- The rules above give one way to end at stage 0 in about 4 s with this name: the search returned no hit that matched `spotify`. That needs an odd result set, and Resolve makes one search and never looks again.
+- One more possibility I cannot rule out: the API on :3000 runs from this working tree with `tsx watch`, and I switched branches under it several times today, so a run could have used code from a branch in between.
+
+## 3. A finding that affects every provider
+
+On 29 Oct the same query returned **8 hits for each of the six tuning apps**. Today it returned **2 or 3 for 28 of 32 searches** (histogram of hits per search: 2 hits 16, 3 hits 12, 4 hits 1, 6 hits 2, 7 hits 1). I do not know why (our query and `maxResults: 8` are unchanged). The thresholds in Resolve were tuned on 8 hits. With 2 hits, one denied or off-brand hit leaves nothing to decide on: 5 of the 6 failures below that came from a search had exactly 2 hits.
+
+## 4. Results: 36 entries
+
+Outcomes: ok 28, ok_asks 1, wrong_domain 4, no_docs 3, error 0. All six controls ok. Per type, every `dev_subdomain` (6), `common_word` (5), `multi_word` (5), `single_letter` and `other_tld` entry was ok. Not ok, of each type: `consumer_site_first` 4 of 4, `non_latin` 1 of 1, `parent_domain` 4 of 7, `denied_brand_host` 4 of 9, `brand_differs` 2 of 8, `typed_domain` 2 of 4, `docs_platform` 1 of 2. Basecamp and Reddit are ok by my rule but their docs are on github.com (see R4).
+
+| Provider | Types | Expected | What Resolve did | Hits | Outcome | Root cause |
+| --- | --- | --- | --- | --- | --- | --- |
+| Spotify | dev_subdomain | spotify.com | official spotify.com | 3 | ok | Not reproduced: 6 of 6 searches resolved ok (see section 2) |
+| Box | dev_subdomain, common_word | box.com | official box.com | 2 | ok |  |
+| Twitch | dev_subdomain, other_tld | twitch.tv | official twitch.tv | 2 | ok |  |
+| QuickBooks | parent_domain, brand_differs | intuit.com | asks: apitracker.io, intuit.com | 2 | ok_asks | R5 an aggregator page competes (apitracker.io); R1 two hits |
+| Instagram | parent_domain, consumer_site_first, denied_brand_host | facebook.com | NO_PUBLIC_DOCS | 2 | no_docs | R4 the denylist drops developers.facebook.com; R2 the name is in the URL and snippet, not the title; R1 two hits |
+| YouTube | parent_domain, consumer_site_first, denied_brand_host | google.com | official youtube.com | 6 | wrong_domain | R3 the exact-label consumer site (a video page) outranks the docs host |
+| LinkedIn | parent_domain, consumer_site_first, denied_brand_host | microsoft.com | official linkedin.com | 2 | wrong_domain | R3 the consumer site wins; R1 the docs host is not in the two hits |
+| Twitter | brand_differs, denied_brand_host | x.com, twitter.com | NO_PUBLIC_DOCS | 2 | no_docs | R2 the name appears nowhere in the hits (the rebrand); R1 two hits |
+| X | brand_differs, single_letter, denied_brand_host | x.com | official x.com | 3 | ok |  |
+| Monday | common_word, dev_subdomain | monday.com | official monday.com | 2 | ok |  |
+| Square | common_word, brand_differs | squareup.com | official squareup.com | 3 | ok |  |
+| Linear | common_word | linear.app | official linear.app | 3 | ok |  |
+| Front | common_word, brand_differs | frontapp.com | official frontapp.com | 3 | ok |  |
+| Google Calendar | multi_word, parent_domain | google.com | official google.com | 7 | ok |  |
+| Zoho CRM | multi_word | zoho.com | official zoho.com | 2 | ok |  |
+| Microsoft Teams | multi_word, parent_domain | microsoft.com | official microsoft.com | 3 | ok |  |
+| Adobe Sign | multi_word | adobe.com | official adobe.com | 2 | ok |  |
+| Dropbox Sign | multi_word, brand_differs | hellosign.com, dropbox.com | official dropbox.com | 2 | ok |  |
+| Reddit | docs_on_code_host, denied_brand_host | reddit.com, github.com | official reddit.com | 2 | ok | ok by rule, but the OAuth guide is a GitHub wiki (R4) |
+| GitLab | denied_brand_host | gitlab.com | official gitlab.com | 2 | ok |  |
+| Zapier | denied_brand_host | zapier.com | official zapier.com | 2 | ok |  |
+| Basecamp | docs_on_code_host, brand_differs | github.com, basecamp.com, 37signals.com | official basecamp.com | 3 | ok | ok by rule, but the docs are on github.com, which can never be official (R4) |
+| TikTok | dev_subdomain, denied_brand_host | tiktok.com | official tiktok.com | 2 | ok |  |
+| Shopify | other_tld | shopify.dev, shopify.com | official shopify.dev | 3 | ok |  |
+| Pipedrive | docs_platform | pipedrive.com, pipedrive.readme.io | official pipedrive.com | 4 | ok |  |
+| 钉钉 | non_latin | dingtalk.com, dingtalk.io | NO_PUBLIC_DOCS | 2 | no_docs | R2 the name is only in a snippet, and name keys are Latin-only; R1 two hits |
+| Cal.com | typed_domain | cal.com | official cal.com (typed) | n/a | ok |  |
+| https://developer.spotify.com/documentation/web-api | typed_domain, dev_subdomain | spotify.com | official spotify.com (typed) | n/a | ok |  |
+| pipedrive.readme.io | typed_domain, docs_platform | pipedrive.readme.io, pipedrive.com | official readme.io (typed) | n/a | wrong_domain | R6 a typed docs-platform host resolves to the platform |
+| youtube.com | typed_domain, consumer_site_first | google.com | official youtube.com (typed) | n/a | wrong_domain | R7 a typed consumer domain is taken as the official site (by design) |
+| GitHub | control | github.com | official github.com | 3 | ok |  |
+| Gmail | control, parent_domain, brand_differs | google.com | official google.com | 6 | ok |  |
+| HubSpot | control | hubspot.com | official hubspot.com | 3 | ok |  |
+| Microsoft | control | microsoft.com | official microsoft.com | 3 | ok |  |
+| Notion | control | notion.com | official notion.com | 3 | ok |  |
+| Slack | control | slack.dev, slack.com | official slack.dev | 2 | ok |  |
+
+## 5. Root causes, ranked by providers broken
+
+| Rank | Cause | Broken here | Also exposed |
+| --- | --- | --- | --- |
+| R1 | **Thin evidence, one query.** Two or three hits, one search, no second look, no retry. A single denied, off-brand or aggregator hit decides the run, and the docs host may not be in the results at all (LinkedIn) | 5: QuickBooks, Instagram, LinkedIn, Twitter, 钉钉 | Every provider; a search error or timeout ends INTERNAL with no retry (0 errors in 37 searches today) |
+| R2 | **The name is not in the evidence Resolve reads.** It matches only a domain label or a page title. Instagram's name is in the URL path and snippet, 钉钉's in a snippet, and Twitter's nowhere (the rebrand to X). Name keys keep only Latin letters, so a non-Latin name never matches | 3: Twitter, 钉钉, Instagram | Any rebrand or non-Latin name |
+| R3 | **An exact-label consumer site outranks the docs host.** The 4.5 exact bonus beats three docs hits (youtube.com from one video page: 4.7, against developers.google.com: 3.67) | 2: YouTube, LinkedIn (+ typed youtube.com) | Any brand whose consumer site shares its name |
+| R4 | **The denylist drops a company's own docs host**, and docs on github.com can never be official | 1: Instagram (developers.facebook.com is on `facebook.com`) | Meta's other products, and Basecamp and Reddit (ok by rule, docs on GitHub) |
+| R5 | **An aggregator page counts as a candidate.** A page title that names the app is enough, even on a directory (apitracker.io/a/quickbooks), and a tie asks "did you mean" | 1: QuickBooks | Noise in three more (ones.com, skillsdirectory.com, latenode.com) |
+| R6 | **A typed docs-platform host resolves to the platform**: `pipedrive.readme.io` is read as the domain `readme.io`, named "Readme" | 1 | `acme.gitbook.io`, `acme.mintlify.app` |
+| R7 | **A typed consumer domain is taken as the official site** (`youtube.com`) | 1 | By design: a typed domain is the user's statement |
+
+Not a cause: search errors or timeouts treated as "no docs". They end INTERNAL, and there is no case of it in the run.
+
+## 6. Fixes (plan: nothing is built)
+
+Every fix is generic: no provider name, no name-to-domain list. Every fix is checked by **replay**, which decides again from saved hits for 0 credits: the 36 hits saved today (with snippets) and the Oct 29 resolve hits of the 13 apps in the tuning, holdout and fresh sets (8 hits each, URL and title only). Five of the six tuning apps decide `official` today with a docs-looking hit on the winning domain. **Slack is the fragile control:** it decides on one hit, `https://slack.dev/` (exact label, no docs host or path), beside a directory page, and today's search found no `docs.slack.dev` page. A1 would make one extra search for it, and C1 below is written so it keeps its exact match.
+
+### A. Look again when the first look is thin (R1)
+
+| Option | What | Cost | Risk |
+| --- | --- | --- | --- |
+| A1 (pick) | One second search, only when the first ends none, asks, or has a winner with no docs-looking hit: a different query form (the name and "developers", still no "OAuth", which broke Gmail), hits merged and de-duplicated, then decided again. One retry on a search error or timeout before INTERNAL | +1 credit and about 2 s, only on those runs | Low: runs that decide cleanly are unchanged |
+| A2 | Always two searches | +1 credit on every run | Low, but doubles Resolve cost |
+| A3 | `searchDepth: advanced`, or more results | 2 credits a search | No evidence it helps: `maxResults` is 8 and Tavily returned 2 |
+
+Risk to the six tuning apps: no second search for five of them; one for Slack, whose answer should not change (replay shows it). Tests: a fake search returns none then good, error then good, good first (called once); merge and de-dup; the call stays inside the stage's time cap; credit accounting; replay.
+
+### B. Count the name wherever it is said (R2)
+
+| Option | What | Risk |
+| --- | --- | --- |
+| B1 (pick) | A hit mentions the name when it is in the title, the URL path or the snippet. A mention gives the `title` weight (1), never more, so it cannot beat an exact label. Name keys keep Unicode letters and digits | A page that names an app in passing (a Zapier page about Slack) gains a weak match. The 90% close-call rule is the guard; replay shows whether any tuning app turns ambiguous |
+| B2 (pick, with B1) | When nothing matches the name but at least two hits sit on one docs-looking registrable domain, ask "did you mean" with that one option instead of ending. The user confirms; Resolve never guesses | Adds a question where a run used to end. Aggregators do not count (not docs-looking) |
+| B3 | Ask the model for aliases ("Twitter is X") | Adds a model call to Resolve and an unsourced fact. Rejected: only code decides the domain |
+
+Rescues, on today's hits: Instagram and 钉钉 (B1, with D1 for Instagram), Twitter (B2). Tests: a name only in URL or snippet; Unicode names; B2 only when no named candidate exists, with at least two hits on one docs host; the tuning hits unchanged.
+
+### C. Docs evidence gates the exact bonus (R3)
+
+| Option | What | Risk |
+| --- | --- | --- |
+| C1 (pick) | The exact-label bonus is cut to a `title` match only when another candidate has a docs-looking hit and the exact-label candidate has none. A title-matched candidate with docs hits can then win, and the brand domain joins `domains` as a sibling | The 6b fix for Dropbox (exact 4.5 over hellosign.com) must hold: Dropbox's saved holdout hits are a fixture. Slack (an exact hit with no docs hint, beside a directory page with none) must keep its exact match: it is a fixture too |
+| C2 | Ask when a consumer exact-label site and a docs host disagree | More questions for reviewers |
+| C3 | Remove consumer sites from the exact rule | Breaks "GitHub" and "Slack" typed names |
+
+Tests: a YouTube-shaped fixture (a video page against three docs hits); the Dropbox holdout hits still give dropbox.com; today's Slack hits still give slack.dev; the six tuning hits unchanged; a docs-looking helper table.
+
+### D. Let a denied domain's docs host through (R4)
+
+| Option | What | Risk |
+| --- | --- | --- |
+| D1 (pick) | A hit on a denied domain is kept when its host is docs-looking (`developers.`, `docs.`, `dev.`) and it mentions the name (B1) | A denied site's docs page that names another app (a GitHub docs page about Slack) becomes a weak candidate; the mention rule and the close-call rule contain it |
+| D2 | Shrink the denylist to forums and directories | Higher risk: consumer brands return to every search |
+| D3 | Treat `github.com/<org>/` as the brand's when the org matches | A tiering change as well (pages on github.com are third party today). Not in this plan |
+
+### E. A title-only candidate needs docs evidence (R5)
+
+| Option | What | Risk |
+| --- | --- | --- |
+| E1 (pick) | A candidate with no label match counts only if one of its hits is docs-looking (docs host label or docs path). It then cannot make the run ambiguous or become official | A provider whose docs are on a plain-looking host and match only by title would end none instead of official; B2 asks in that case. Replay on 13 apps shows how often |
+| E2 | A list of aggregator domains | Never finished, and a hardcoded list |
+
+### F. A typed docs-platform host is a name, not a domain (R6)
+
+F1 (pick): when a typed host's registrable domain is a docs platform (readme.io, gitbook.io, mintlify.app), use the leftmost label as the typed name and search as for a name, keeping the typed host as an extra official host. One shared platform list for Resolve and tiering (today the tiering fix and `SHARED_HOSTING_DOMAINS` each hold one). F2: keep the platform's domain: that is today's bug. Risk to the tuning apps: none (they are typed as names). Tests: `pipedrive.readme.io`, `acme.gitbook.io`, a plain domain unchanged.
+
+### G. Not fixed
+
+R7 (typed `youtube.com`): a typed domain is the user's statement; asking would add a search to every typed domain. Docs on GitHub (D3): a separate tiering plan if you want it.
+
+## 7. Order and cost
+
+1. A (retry and second look, plus a log line when Resolve ends none, with its hits).
+2. E and C (docs evidence gates).
+3. B and D (mention evidence, Unicode, ask on consensus, denied docs hosts).
+4. F (typed docs-platform host).
+
+Each PR: unit tests, replay on the saved hits (0 credits), `pnpm lint`, `check-types`, `build`, `test`. One confirming stress run (32 credits) at the end, and one tuning eval (about 70 credits) to prove no trust metric moved. About 53 credits are left today (about 90 minus 37), so the tuning eval waits for the 1 Nov reset. The stress list is the evidence; the golden sets stay untouched.

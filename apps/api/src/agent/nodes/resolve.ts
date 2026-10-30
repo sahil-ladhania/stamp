@@ -11,9 +11,7 @@ import { makeFailure } from "../agent-failure.js";
 import { getDeps } from "../deps.js";
 import { emit } from "../emit.js";
 import { callTimeoutMs } from "../node-timing.js";
-import { rankCandidates } from "../resolve/candidates.js";
-import { decideOfficial } from "../resolve/decide.js";
-import { deriveIdentity } from "../resolve/identity.js";
+import { resolveFromHits } from "../resolve/resolve-from-hits.js";
 import { parseTyped } from "../resolve/typed-input.js";
 import { stageNode } from "../stage-node.js";
 
@@ -71,12 +69,7 @@ export const resolveNode = stageNode("resolve", async (state, config) => {
     return { failure: makeFailure(0, "INTERNAL") };
   }
 
-  const candidates = rankCandidates(typed.name, hits);
-  const decision = decideOfficial(candidates);
-  const identity =
-    decision.kind === "official"
-      ? deriveIdentity(typed.name, hits, candidates, decision.domain)
-      : null;
+  const { candidates, decision, identity } = resolveFromHits(typed.name, hits);
   // The scores are what the ambiguity thresholds are tuned against; no page text is logged.
   logger.info("resolve summary", {
     runId: deps.runId,

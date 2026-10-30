@@ -16,14 +16,10 @@ import { loadGolden } from "./lib/golden.js";
 import { tapLogs } from "./lib/log-tap.js";
 import { planBatch } from "./lib/plan-batch.js";
 import { runRepeats } from "./lib/run-repeats.js";
+import { runFolder } from "./lib/run-folder.js";
 import { runOne } from "./lib/run-one.js";
 
 const RUNS_DIR = fileURLToPath(new URL("./runs/", import.meta.url));
-
-/** A folder name from the clock: 2026-10-29T10-00-00Z. */
-function runFolder(now: Date): string {
-  return `${now.toISOString().slice(0, 19).replace(/:/g, "-")}Z`;
-}
 
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
