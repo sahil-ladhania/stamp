@@ -42,7 +42,7 @@ Example (HubSpot):
 
 | Mode | What it is | When to use |
 | --- | --- | --- |
-| Library | 5 hand-checked guides: GitHub, HubSpot, Gmail, LinkedIn, Salesforce | Instant answer for common apps |
+| Library | Guides the agent already researched, each checked by code before it is added (GitHub, HubSpot, Notion, Slack; see D26) | Instant answer for common apps |
 | Live | An agent researches any app and writes its guide in real time | The app is not in the library |
 
 The five library apps each show a different kind of hard: instant, hidden limits, review needed, partner-gated, enterprise.
