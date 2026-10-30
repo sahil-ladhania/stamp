@@ -7,7 +7,7 @@
 import type { RunErrorCode } from "@stamp/schema";
 
 export const RUN_ERROR_MESSAGES: Record<RunErrorCode, string> = {
-  AMBIGUOUS_APP: "That name matches more than one app. Pick the one you mean.",
+  AMBIGUOUS_APP: "Stamp is not sure which app you mean. Pick the one you mean.",
   NOT_OAUTH:
     "This app uses API keys, not OAuth, so Stamp cannot write a guide for it.",
   NO_PUBLIC_DOCS:

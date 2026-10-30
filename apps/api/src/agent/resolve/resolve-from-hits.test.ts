@@ -5,7 +5,7 @@
  * Used by: vitest
  */
 import { describe, expect, it } from "vitest";
-import { resolveFromHits } from "./resolve-from-hits.js";
+import { agreedDocsSite, resolveFromHits } from "./resolve-from-hits.js";
 
 const hit = (url: string, title: string) => ({ url, title });
 
@@ -30,5 +30,68 @@ describe("resolveFromHits", () => {
 
   it("decides none for no hits at all", () => {
     expect(resolveFromHits("Acme", []).decision).toEqual({ kind: "none" });
+  });
+});
+
+describe("resolveFromHits when nothing matches the name but the hits agree on one documentation site", () => {
+  const docs = [
+    hit("https://developer.x.com/", "X Developer Platform"),
+    hit("https://docs.x.com/overview", "X Developer Platform - X"),
+  ];
+
+  it("asks about that one site instead of ending, and never picks it", () => {
+    const result = resolveFromHits("Twitter", docs);
+    expect(result.decision).toEqual({
+      kind: "ambiguous",
+      options: [{ name: "X", domain: "x.com" }],
+    });
+    expect(result.identity).toBeNull();
+  });
+
+  it.each([
+    ["one hit", [docs[0] as { url: string; title: string }]],
+    [
+      "a hit that is not documentation",
+      [...docs, hit("https://x.com/someone/status/1", "A post")],
+    ],
+    [
+      "two sites",
+      [
+        docs[0] as { url: string; title: string },
+        hit("https://docs.other.com/a", "Other"),
+      ],
+    ],
+    [
+      "a shared host",
+      [
+        hit("https://a.readme.io/docs/x", "A"),
+        hit("https://b.readme.io/docs/y", "B"),
+      ],
+    ],
+    ["no hits", []],
+  ])("still ends with nothing for %s", (_label, hits) => {
+    expect(resolveFromHits("Twitter", hits).decision).toEqual({ kind: "none" });
+  });
+
+  it("does not ask when a candidate matches the name", () => {
+    const named = [
+      hit("https://developers.acme.com/docs/a", "Acme"),
+      hit("https://developers.acme.com/docs/b", "Acme"),
+    ];
+    expect(resolveFromHits("Acme", named).decision.kind).toBe("official");
+  });
+});
+
+describe("agreedDocsSite", () => {
+  it("names the site by its brand label", () => {
+    expect(
+      agreedDocsSite([
+        hit("https://docs.dingtalk.com/a", ""),
+        hit("https://open.dingtalk.com/api/b", ""),
+      ]),
+    ).toEqual({
+      name: "Dingtalk",
+      domain: "dingtalk.com",
+    });
   });
 });

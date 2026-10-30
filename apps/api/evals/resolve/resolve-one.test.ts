@@ -48,26 +48,38 @@ describe("resolveOne", () => {
     });
   });
 
-  it("scores a typed docs-platform host by its platform domain, which is wrong", async () => {
+  it("reads a typed docs-platform host as the app's name and searches it", async () => {
+    const search = searchOf([
+      hit("https://developers.pipedrive.com/docs/api/v1", "Pipedrive API"),
+      hit(
+        "https://developers.pipedrive.com/docs/api/v1/Oauth",
+        "OAuth | Pipedrive API",
+      ),
+    ]);
     const record = await resolveOne(
-      entry("pipedrive.readme.io", ["pipedrive.readme.io"]),
-      searchOf([]),
+      entry("pipedrive.readme.io", ["pipedrive.com"]),
+      search,
     );
-    expect(record.domain).toBe("readme.io");
-    expect(record.outcome).toBe("wrong_domain");
+    expect(search).toHaveBeenCalledWith(RESOLVE_QUERY("Pipedrive"), "first");
+    expect(record).toMatchObject({
+      via: "search",
+      name: "Pipedrive",
+      domain: "pipedrive.com",
+      outcome: "ok",
+    });
   });
 
   it("searches a name once with the resolve node's query and keeps the hits and credits", async () => {
     const search = searchOf(SPOTIFY_HITS, 1);
     const record = await resolveOne(entry("Spotify", ["spotify.com"]), search);
     expect(search).toHaveBeenCalledTimes(1);
-    expect(search).toHaveBeenCalledWith(RESOLVE_QUERY("Spotify"));
+    expect(search).toHaveBeenCalledWith(RESOLVE_QUERY("Spotify"), "first");
     expect(record).toMatchObject({
       via: "search",
       decision: "official",
       outcome: "ok",
       credits: 1,
-      query: RESOLVE_QUERY("Spotify"),
+      queries: [RESOLVE_QUERY("Spotify")],
     });
     expect(record.hits).toEqual(SPOTIFY_HITS);
     expect(record.candidates[0]?.domain).toBe("spotify.com");

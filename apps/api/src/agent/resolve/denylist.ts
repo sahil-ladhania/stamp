@@ -1,8 +1,8 @@
 /**
  * File: denylist.ts
  * Purpose: Sites that talk about an app but are never its official site, and the hints that a page is developer documentation.
- * Exports: DENY_DOMAINS, SHARED_HOSTING_DOMAINS, DOCS_HOST_LABELS, DOCS_PATH_HINT
- * Used by: agent/resolve/candidates.ts, agent/resolve/official-domains.ts
+ * Exports: DENY_DOMAINS, SHARED_HOSTING_DOMAINS, DOCS_PLATFORM_DOMAINS, DOCS_HOST_LABELS, DOCS_PATH_HINT
+ * Used by: agent/resolve/candidates.ts, agent/resolve/official-domains.ts, agent/resolve/typed-input.ts, agent/evidence/source-tier.ts
  */
 
 /**
@@ -48,6 +48,17 @@ export const DENY_DOMAINS: ReadonlySet<string> = new Set([
 ]);
 
 /**
+ * Hosting platforms for documentation. A page there is the provider's own when its subdomain is the app's name
+ * (pipedrive.readme.io): the platform's domain says nothing about who wrote the page.
+ */
+export const DOCS_PLATFORM_DOMAINS: readonly string[] = [
+  "readme.io",
+  "gitbook.io",
+  "mintlify.app",
+  "mintlify.dev",
+];
+
+/**
  * Domains that rent subdomains and paths to anyone, so their brand label belongs to whoever owns the page
  * (someone.github.io). They are never added as a company's second official domain.
  */
@@ -59,7 +70,7 @@ export const SHARED_HOSTING_DOMAINS: ReadonlySet<string> = new Set([
   "pages.dev",
   "herokuapp.com",
   "readthedocs.io",
-  "gitbook.io",
+  ...DOCS_PLATFORM_DOMAINS,
   "notion.site",
   "blogspot.com",
   "wordpress.com",

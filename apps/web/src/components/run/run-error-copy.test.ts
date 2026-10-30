@@ -23,7 +23,7 @@ describe('getErrorNotice', () => {
 
   it('leaves the choice to the options when there are options', () => {
     const notice = getErrorNotice('AMBIGUOUS_APP', 0, true)
-    expect(notice.title).toBe('More than one app matches')
+    expect(notice.title).toBe('Which app do you mean?')
     expect(notice.actions).toEqual([])
   })
 

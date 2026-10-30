@@ -82,7 +82,7 @@ function whatTheSearchSaw(record: ResolveRecord): string[] {
   const top = record.candidates.map((c) => `${c.domain} ${c.match} ${c.score}`);
   return [
     `### ${record.typed}: ${record.outcome}`,
-    `- Query: ${record.query ?? "none (no search)"}`,
+    `- Queries: ${record.queries.length > 0 ? record.queries.join(" | ") : "none (no search)"}`,
     `- Expected: ${record.expected.join(", ")}`,
     `- Top candidates: ${top.length > 0 ? top.join("; ") : "none"}`,
     `- Hits (${record.hits.length}): ${hits.length > 0 ? hits.join("; ") : "none"}`,
@@ -97,10 +97,12 @@ export function renderReport(
 ): string {
   const credits = records.reduce((sum, r) => sum + (r.credits ?? 0), 0);
   const failed = records.filter((r) => r.outcome !== "ok");
+  const looked = records.filter((r) => r.lookedAgain).length;
+  const wouldLook = records.filter((r) => r.wouldLookAgain).length;
   return [
     `# ${heading}`,
     "",
-    `${records.length} providers, ${records.filter((r) => r.via === "search").length} searched, ${credits} Tavily credits reported.`,
+    `${records.length} providers, ${records.filter((r) => r.via === "search").length} searched, ${credits} Tavily credits reported. ${looked} looked a second time; ${wouldLook} would look again (a replay does not make that search).`,
     "",
     ...countsByOutcome(records),
     "",

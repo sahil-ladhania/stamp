@@ -1,13 +1,16 @@
 /**
  * File: resolve-one.ts
- * Purpose: Runs Resolve alone for one typed provider (read the typed text, one search, rank, decide, derive the identity) and keeps what it saw, so a run can be read later and decided again for free.
+ * Purpose: Runs Resolve alone for one typed provider (read the typed text, search, rank, decide, derive the identity) the way the resolve node does, and keeps what it saw, so a run can be read later and decided again for free.
  * Exports: resolveOne, replayOne, ResolveRecord, SearchFn, Entry
  * Used by: evals/resolve/cli.ts
  */
 import type { ResolveHit } from "../../src/agent/resolve/candidates.js";
 import { resolveFromHits } from "../../src/agent/resolve/resolve-from-hits.js";
 import { parseTyped } from "../../src/agent/resolve/typed-input.js";
-import { RESOLVE_QUERY } from "../../src/agent/nodes/resolve.js";
+import {
+  needsSecondLook,
+  resolveWithSearch,
+} from "../../src/agent/resolve/resolve-search.js";
 import { errorText } from "../../src/utils/error-text.js";
 import { classify, type Decided, type Outcome } from "./classify.js";
 import type { Provider } from "./providers.js";
@@ -24,10 +27,17 @@ export type ResolveRecord = {
   types: Provider["types"];
   expected: string[];
   control: boolean;
-  /** "typed": a domain or URL, no search. "search": a name, one search. "empty": nothing to look up. */
+  /** "typed": a domain or URL, no search. "search": a name, searched. "empty": nothing to look up. */
   via: "typed" | "search" | "empty";
   name: string;
-  query: string | null;
+  /** Every query made: the first, and the second look when there was one. */
+  queries: string[];
+  /** The second look ran. */
+  lookedAgain: boolean;
+  /** The first search failed once and was tried again. */
+  retried: boolean;
+  /** Set on a replay: the saved hits are one search's, and Resolve would now look again. That second search is not replayed. */
+  wouldLookAgain: boolean;
   hits: ResolveHit[];
   decision: Decided["decision"];
   domain: string | null;
@@ -42,7 +52,14 @@ export type ResolveRecord = {
 
 type Looked = Pick<
   ResolveRecord,
-  "via" | "name" | "query" | "hits" | "credits" | "error"
+  | "via"
+  | "name"
+  | "queries"
+  | "hits"
+  | "credits"
+  | "error"
+  | "lookedAgain"
+  | "retried"
 >;
 
 function recordOf(
@@ -60,6 +77,7 @@ function recordOf(
     product: null,
     candidates: [],
     ...decided,
+    wouldLookAgain: decided.wouldLookAgain ?? false,
     outcome: classify(decided, entry.expected),
   };
 }
@@ -83,11 +101,10 @@ function decideFrom(entry: Entry, looked: Looked): ResolveRecord {
       options: [],
     });
   }
-  const { candidates, decision, identity } = resolveFromHits(
-    looked.name,
-    looked.hits,
-  );
+  const found = resolveFromHits(looked.name, looked.hits);
+  const { candidates, decision, identity } = found;
   return recordOf(entry, looked, {
+    wouldLookAgain: !looked.lookedAgain && needsSecondLook(found),
     decision:
       decision.kind === "official"
         ? "official"
@@ -113,31 +130,38 @@ export async function resolveOne(
   search: SearchFn,
 ): Promise<ResolveRecord> {
   const typed = parseTyped(entry.typed);
-  const none = { query: null, hits: [], credits: null, error: null };
+  const none = {
+    queries: [],
+    hits: [],
+    credits: null,
+    error: null,
+    lookedAgain: false,
+    retried: false,
+  };
   if (typed.kind === "domain") {
     return decideFrom(entry, { via: "typed", name: typed.name, ...none });
   }
   if (typed.name === "") {
     return decideFrom(entry, { via: "empty", name: "", ...none });
   }
-  const query = RESOLVE_QUERY(typed.name);
   try {
-    const { hits, credits } = await search(query);
+    const searched = await resolveWithSearch(typed.name, search);
+    const { hits, queries, credits, lookedAgain, retried } = searched;
     return decideFrom(entry, {
       via: "search",
       name: typed.name,
-      query,
+      queries,
       hits,
       credits,
       error: null,
+      lookedAgain,
+      retried,
     });
   } catch (err) {
     return decideFrom(entry, {
       via: "search",
       name: typed.name,
-      query,
-      hits: [],
-      credits: null,
+      ...none,
       error: errorText(err),
     });
   }
@@ -151,12 +175,24 @@ export function replayOne(
   entry: Entry | undefined,
   saved: ResolveRecord,
 ): ResolveRecord {
-  const { via, name, query, hits, credits, error } = saved;
+  const { via, name, hits, credits, error } = saved;
+  // A run saved before the second look kept one `query`.
+  const old = (saved as { query?: string | null }).query;
+  const queries = saved.queries ?? (old ? [old] : []);
   const kept: Entry = entry ?? {
     typed: saved.typed,
     types: saved.types,
     expected: saved.expected,
     ...(saved.control ? { control: true as const } : {}),
   };
-  return decideFrom(kept, { via, name, query, hits, credits, error });
+  return decideFrom(kept, {
+    via,
+    name,
+    queries,
+    hits,
+    credits,
+    error,
+    lookedAgain: queries.length > 1,
+    retried: saved.retried ?? false,
+  });
 }

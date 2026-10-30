@@ -8,6 +8,7 @@ import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";
 import { parseTyped } from "../../src/agent/resolve/typed-input.js";
+import { hostFromTyped } from "../../src/utils/registrable-domain.js";
 
 export const PROVIDER_TYPES = [
   "dev_subdomain",
@@ -56,10 +57,10 @@ export async function loadProviders(
     seen.add(key);
     if (
       provider.types.includes("typed_domain") !==
-      (parseTyped(provider.typed).kind === "domain")
+      (hostFromTyped(provider.typed) !== null)
     ) {
       throw new Error(
-        `"${provider.typed}": the typed_domain type must match how it is read`,
+        `"${provider.typed}": the typed_domain type goes with text that is a domain or a URL`,
       );
     }
     if ((provider.control === true) !== provider.types.includes("control")) {

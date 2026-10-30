@@ -57,6 +57,7 @@ Red = the rule. Blue = product decisions. Green = technical decisions.
 | 24 | A model may only downgrade a label | One batched check after the quote check; it can lower a label, never raise one |
 | 25 | No number when the review gate is unverified | Archetype `unknown`; the web app says "Not rated" |
 | 26 | The library is saved agent guides, checked by code | Six saved guides, each seeded only if it passes a code check; LinkedIn and Salesforce dropped |
+| 27 | Resolve looks again, and asks when it cannot match | A second search on a thin first answer, the name counted in an address or snippet, a question instead of an ending |
 
 ---
 
@@ -288,6 +289,15 @@ Red = the rule. Blue = product decisions. Green = technical decisions.
 | Why | A guide written by hand puts provider facts in the repo with no quote check behind them. The agent's guides carry a source, a quote and a label set by code for every claim, so the library is held to the same evidence rules as a live guide. The owner dropped LinkedIn and Salesforce; the facts at the time: neither has a saved guide or a golden answer set, and this month's search credits are spent |
 | Rejected | Hand-written guides: the facts would not be checked by code. Researching LinkedIn and Salesforce now: credits, and no golden answers to measure them against. Editing a saved guide to make it pass: it would change a provider fact, and only code sets labels |
 | Cost | "One app per kind of hard" (D5) no longer holds. The saved set has two `hidden_limits` guides and four that read "Not rated"; no guide is `instant`, `review`, `partner_gated` or `enterprise`. Gmail (22 Sourced claims on a personal blog) and Microsoft (a `/.default` scope) fail the check today and are held out unless the owner decides otherwise (library-plan.md, L1) |
+
+### D27. Resolve looks again, and asks when it cannot match
+
+| | |
+| --- | --- |
+| Chosen | Resolve stays code only and makes one more search, with another query, when its first answer is thin (nothing decided, a question, or a winner with no documentation page); a failed search is tried once more. A name counts as found when it is in a title, an address or the start of a snippet, in any script, and a title-only match needs a documentation page. A documentation page on a denied site is kept when it names the app. An exact label with no documentation page loses to another brand's documentation that names the app. When nothing matches the name but every hit is a documentation page on one site, the run asks about that one site. A typed documentation-platform host is looked up by its name |
+| Why | A stress run of 36 providers (`apps/api/evals/resolve/diagnosis.md`) broke 8: a rebrand (Twitter), a non-Latin name, Instagram's docs on Meta's site, YouTube and LinkedIn behind their consumer sites, a directory page that made QuickBooks ambiguous. The search returned 2 or 3 hits for 28 of 32 names, where the rules were tuned on 8. On replay: ok 28 to 33, no docs 3 to 0, wrong domain 4 to 2, and the six tuning apps decide what they decided |
+| Rejected | Always two searches (+1 credit on every run). A model asking for aliases ("Twitter is X"): an unsourced fact in a stage that only code may decide. A smaller denylist: consumer sites return to every search. A list of aggregator domains, or of names and domains: never finished |
+| Cost | One extra credit and up to 3 seconds on a run whose first answer is thin (5 of 33 searches today). A question where a run used to end: the person chooses, Resolve never guesses. The second query is unproven until the confirming run after the 1 Nov credit reset; LinkedIn needs it |
 
 ---
 

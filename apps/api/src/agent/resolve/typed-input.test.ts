@@ -92,3 +92,24 @@ describe("parseTyped", () => {
     expect(parseTyped("   ")).toEqual({ kind: "name", name: "" });
   });
 });
+
+describe("parseTyped with a documentation-platform host", () => {
+  it.each([
+    ["pipedrive.readme.io", "Pipedrive"],
+    ["https://acme.gitbook.io/docs/oauth", "Acme"],
+    ["docs.acme.mintlify.app", "Acme"],
+  ])("reads %s as the name %s, to be looked up", (typed, name) => {
+    expect(parseTyped(typed)).toEqual({ kind: "name", name });
+  });
+
+  it("keeps the platform's own domain and an ordinary domain as domains", () => {
+    expect(parseTyped("readme.io")).toMatchObject({
+      kind: "domain",
+      domain: "readme.io",
+    });
+    expect(parseTyped("developer.spotify.com")).toMatchObject({
+      kind: "domain",
+      domain: "spotify.com",
+    });
+  });
+});

@@ -41,7 +41,7 @@ export function getApiErrorMessage(error: {
 
 /** Lead text for each run.error code, shown by the Live run page. */
 export const RUN_ERROR_COPY: Record<RunErrorCode, string> = {
-  AMBIGUOUS_APP: 'More than one app matches that name. Choose the one you mean.',
+  AMBIGUOUS_APP: 'Stamp is not sure which app you mean. Choose the one you mean.',
   NOT_OAUTH:
     'This app uses API keys, not OAuth. Stamp covers provider OAuth apps only, so search for a different app.',
   NO_PUBLIC_DOCS:

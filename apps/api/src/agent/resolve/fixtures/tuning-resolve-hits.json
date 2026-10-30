@@ -1,0 +1,761 @@
+[
+  {
+    "slug": "github",
+    "source": "baseline repetition 1 (2026-10-29)",
+    "typed": "GitHub",
+    "hits": [
+      {
+        "url": "https://blog.namespacecomm.in/github-api-demystified-a-developers-handbook",
+        "title": "Mastering the GitHub API: REST, GraphQL, Automation, and Collaboration"
+      },
+      {
+        "url": "https://docs.github.com/en/rest",
+        "title": "GitHub REST API documentation - GitHub Docs"
+      },
+      {
+        "url": "https://docs.github.com/en/integrations/concepts/github-developer-program",
+        "title": "GitHub Developer Program - GitHub Docs"
+      },
+      {
+        "url": "https://docs.github.com/en/get-started/using-github-docs/github-docs-api",
+        "title": "GitHub Docs API - GitHub Docs"
+      },
+      {
+        "url": "https://docs.github.com/",
+        "title": "GitHub Docs"
+      },
+      {
+        "url": "https://docs.github.com/rest/repos",
+        "title": "REST API endpoints for repositories - GitHub Docs"
+      },
+      {
+        "url": "https://docs.github.com/rest/guides/getting-started-with-the-rest-api",
+        "title": "Getting started with the REST API"
+      }
+    ],
+    "answer": {
+      "kind": "official",
+      "domain": "github.com",
+      "domains": [
+        "github.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "slug": "github",
+    "source": "tuning run 2026-10-29T18-29-23Z",
+    "typed": "GitHub",
+    "hits": [
+      {
+        "url": "https://blog.namespacecomm.in/github-api-demystified-a-developers-handbook",
+        "title": "Mastering the GitHub API: REST, GraphQL, Automation, and Collaboration"
+      },
+      {
+        "url": "https://docs.github.com/en/rest",
+        "title": "GitHub REST API documentation - GitHub Docs"
+      },
+      {
+        "url": "https://nordicapis.com/walkthrough-of-using-github-to-host-api-documentation",
+        "title": "Walkthrough of Using GitHub to Host API Documentation | Nordic APIs |"
+      },
+      {
+        "url": "https://docs.github.com/en/integrations/concepts/github-developer-program",
+        "title": "GitHub Developer Program - GitHub Docs"
+      },
+      {
+        "url": "https://docs.github.com/rest/about-the-rest-api/about-the-rest-api",
+        "title": "About the REST API - GitHub Docs"
+      },
+      {
+        "url": "https://docs.github.com/en/get-started/using-github-docs/github-docs-api",
+        "title": "GitHub Docs API - GitHub Docs"
+      },
+      {
+        "url": "https://docs.github.com/",
+        "title": "GitHub Docs"
+      },
+      {
+        "url": "https://docs.github.com/rest/repos",
+        "title": "REST API endpoints for repositories - GitHub Docs"
+      }
+    ],
+    "answer": {
+      "kind": "official",
+      "domain": "github.com",
+      "domains": [
+        "github.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "slug": "github",
+    "source": "tuning run 2026-10-29T18-43-33Z",
+    "typed": "GitHub",
+    "hits": [
+      {
+        "url": "https://blog.namespacecomm.in/github-api-demystified-a-developers-handbook",
+        "title": "Mastering the GitHub API: REST, GraphQL, Automation, and Collaboration"
+      },
+      {
+        "url": "https://docs.github.com/en/rest",
+        "title": "GitHub REST API documentation - GitHub Docs"
+      },
+      {
+        "url": "https://docs.github.com/en/integrations/concepts/github-developer-program",
+        "title": "GitHub Developer Program - GitHub Docs"
+      },
+      {
+        "url": "https://docs.github.com/en/get-started/using-github-docs/github-docs-api",
+        "title": "GitHub Docs API - GitHub Docs"
+      },
+      {
+        "url": "https://docs.github.com/",
+        "title": "GitHub Docs"
+      },
+      {
+        "url": "https://docs.github.com/rest/repos",
+        "title": "REST API endpoints for repositories - GitHub Docs"
+      },
+      {
+        "url": "https://docs.github.com/rest/guides/getting-started-with-the-rest-api",
+        "title": "Getting started with the REST API"
+      },
+      {
+        "url": "https://nordicapis.com/walkthrough-of-using-github-to-host-api-documentation",
+        "title": "Walkthrough of Using GitHub to Host API Documentation | Nordic APIs |"
+      }
+    ],
+    "answer": {
+      "kind": "official",
+      "domain": "github.com",
+      "domains": [
+        "github.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "slug": "gmail",
+    "source": "baseline repetition 1 (2026-10-29)",
+    "typed": "Gmail",
+    "hits": [
+      {
+        "url": "https://developers.google.com/workspace/gmail/api/guides",
+        "title": "Gmail API overview  |  Google for Developers"
+      },
+      {
+        "url": "https://dev.to/googleworkspace/gmail-api-developer-intro-spotting-chatty-threads-jnp",
+        "title": "Gmail API developer intro: spotting chatty threads - DEV Community"
+      },
+      {
+        "url": "https://developers.google.com/workspace/gmail/api/reference/rest",
+        "title": "Gmail API  |  Google for Developers"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=_yzh068bjbw&vl=en",
+        "title": "How to Create Gmail API App in the Google Developer (Step by Step Tutorial and Guide 2026-2027)"
+      },
+      {
+        "url": "https://mailmeteor.com/blog/gmail-api",
+        "title": "How to Setup and Use Gmail API"
+      },
+      {
+        "url": "https://medium.com/@jasmosez/a-journey-into-the-gmail-api-and-back-be94900d4e19",
+        "title": "A Journey into the Gmail API and Back"
+      },
+      {
+        "url": "https://www.reddit.com/r/googlecloud/comments/tcefqb/the_gmail_api_experience",
+        "title": "The Gmail API Experience : r/googlecloud"
+      },
+      {
+        "url": "https://cloud.google.com/apis",
+        "title": "Cloud APIs | Google Cloud"
+      }
+    ],
+    "answer": {
+      "kind": "official",
+      "domain": "google.com",
+      "domains": [
+        "google.com"
+      ],
+      "product": "Gmail API",
+      "options": []
+    }
+  },
+  {
+    "slug": "gmail",
+    "source": "tuning run 2026-10-29T18-29-23Z",
+    "typed": "Gmail",
+    "hits": [
+      {
+        "url": "https://developers.google.com/workspace/gmail/api/guides",
+        "title": "Gmail API overview  |  Google for Developers"
+      },
+      {
+        "url": "https://developers.google.com/workspace/gmail/api/reference/rest",
+        "title": "Gmail API  |  Google for Developers"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=_yzh068bjbw&vl=en",
+        "title": "How to Create Gmail API App in the Google Developer (Step by Step Tutorial and Guide 2026-2027)"
+      },
+      {
+        "url": "https://mailmeteor.com/blog/gmail-api",
+        "title": "How to Setup and Use Gmail API"
+      },
+      {
+        "url": "https://www.postman.com/postman/google-api-workspace/collection/r07891g/google-gmail-api",
+        "title": "Google Gmail API | Get Started"
+      },
+      {
+        "url": "https://medium.com/@jasmosez/a-journey-into-the-gmail-api-and-back-be94900d4e19",
+        "title": "A Journey into the Gmail API and Back"
+      },
+      {
+        "url": "https://www.reddit.com/r/googlecloud/comments/tcefqb/the_gmail_api_experience",
+        "title": "The Gmail API Experience : r/googlecloud"
+      },
+      {
+        "url": "https://cloud.google.com/apis",
+        "title": "Cloud APIs | Google Cloud"
+      }
+    ],
+    "answer": {
+      "kind": "official",
+      "domain": "google.com",
+      "domains": [
+        "google.com"
+      ],
+      "product": "Gmail API",
+      "options": []
+    }
+  },
+  {
+    "slug": "hubspot",
+    "source": "baseline repetition 1 (2026-10-29)",
+    "typed": "HubSpot",
+    "hits": [
+      {
+        "url": "https://developers.hubspot.com/docs",
+        "title": "HubSpot Developer Documentation - HubSpot docs"
+      },
+      {
+        "url": "https://developers.hubspot.com/postman",
+        "title": "HubSpot Developers | Postman"
+      },
+      {
+        "url": "https://apidog.com/blog/hubspot-api",
+        "title": "Must-know Guide for HubSpot API"
+      },
+      {
+        "url": "https://apitracker.io/a/hubspot",
+        "title": "HubSpot API Documentation - CRM & Marketing Integration"
+      },
+      {
+        "url": "https://developers.hubspot.com/",
+        "title": "HubSpot Developers | Create tomorrow's solutions today on HubSpot's Developer Platform."
+      },
+      {
+        "url": "https://www.postman.com/hubspot/hubspot-public-api-workspace/overview",
+        "title": "HubSpot Public API Workspace"
+      },
+      {
+        "url": "https://developers.hubspot.com/blog",
+        "title": "Developer Blog"
+      },
+      {
+        "url": "https://community.hubspot.com/t/where-is-my-developer-api-key/113930",
+        "title": "Page Not Found - HubSpot Community"
+      }
+    ],
+    "answer": {
+      "kind": "official",
+      "domain": "hubspot.com",
+      "domains": [
+        "hubspot.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "slug": "hubspot",
+    "source": "tuning run 2026-10-29T17-58-08Z",
+    "typed": "HubSpot",
+    "hits": [
+      {
+        "url": "https://developers.hubspot.com/docs",
+        "title": "HubSpot Developer Documentation - HubSpot docs"
+      },
+      {
+        "url": "https://developers.hubspot.com/postman",
+        "title": "HubSpot Developers | Postman"
+      },
+      {
+        "url": "https://www.reddit.com/r/hubspot/comments/1kc7k17/lets_talk_hubspot_developer_documentation_api",
+        "title": "Let's Talk HubSpot Developer Documentation & API ..."
+      },
+      {
+        "url": "https://developers.hubspot.com/",
+        "title": "HubSpot Developers | Create tomorrow's solutions today on HubSpot's Developer Platform."
+      },
+      {
+        "url": "https://www.postman.com/hubspot/hubspot-public-api-workspace/overview",
+        "title": "HubSpot Public API Workspace"
+      },
+      {
+        "url": "https://developers.hubspot.com/blog",
+        "title": "Developer Blog"
+      },
+      {
+        "url": "https://community.hubspot.com/t/where-is-my-developer-api-key/113930",
+        "title": "Page Not Found - HubSpot Community"
+      }
+    ],
+    "answer": {
+      "kind": "official",
+      "domain": "hubspot.com",
+      "domains": [
+        "hubspot.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "slug": "hubspot",
+    "source": "tuning run 2026-10-29T18-11-45Z",
+    "typed": "HubSpot",
+    "hits": [
+      {
+        "url": "https://developers.hubspot.com/docs",
+        "title": "HubSpot Developer Documentation - HubSpot docs"
+      },
+      {
+        "url": "https://developers.hubspot.com/postman",
+        "title": "HubSpot Developers | Postman"
+      },
+      {
+        "url": "https://apidog.com/blog/hubspot-api",
+        "title": "Must-know Guide for HubSpot API"
+      },
+      {
+        "url": "https://apitracker.io/a/hubspot",
+        "title": "HubSpot API Documentation - CRM & Marketing Integration"
+      },
+      {
+        "url": "https://developers.hubspot.com/",
+        "title": "HubSpot Developers | Create tomorrow's solutions today on HubSpot's Developer Platform."
+      },
+      {
+        "url": "https://developers.hubspot.com/blog",
+        "title": "Developer Blog"
+      },
+      {
+        "url": "https://www.postman.com/hubspot/hubspot-public-api-workspace/overview",
+        "title": "HubSpot Public API Workspace"
+      },
+      {
+        "url": "https://community.hubspot.com/t/where-is-my-developer-api-key/113930",
+        "title": "Page Not Found - HubSpot Community"
+      }
+    ],
+    "answer": {
+      "kind": "official",
+      "domain": "hubspot.com",
+      "domains": [
+        "hubspot.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "slug": "hubspot",
+    "source": "tuning run 2026-10-29T18-29-23Z",
+    "typed": "HubSpot",
+    "hits": [
+      {
+        "url": "https://developers.hubspot.com/docs",
+        "title": "HubSpot Developer Documentation - HubSpot docs"
+      },
+      {
+        "url": "https://developers.hubspot.com/postman",
+        "title": "HubSpot Developers | Postman"
+      },
+      {
+        "url": "https://www.reddit.com/r/hubspot/comments/1kc7k17/lets_talk_hubspot_developer_documentation_api",
+        "title": "Let's Talk HubSpot Developer Documentation & API ..."
+      },
+      {
+        "url": "https://developers.hubspot.com/",
+        "title": "HubSpot Developers | Create tomorrow's solutions today on HubSpot's Developer Platform."
+      },
+      {
+        "url": "https://www.postman.com/hubspot/hubspot-public-api-workspace/overview",
+        "title": "HubSpot Public API Workspace"
+      },
+      {
+        "url": "https://developers.hubspot.com/blog",
+        "title": "Developer Blog"
+      },
+      {
+        "url": "https://community.hubspot.com/t/where-is-my-developer-api-key/113930",
+        "title": "Page Not Found - HubSpot Community"
+      },
+      {
+        "url": "https://apidog.com/blog/hubspot-api",
+        "title": "Must-know Guide for HubSpot API"
+      }
+    ],
+    "answer": {
+      "kind": "official",
+      "domain": "hubspot.com",
+      "domains": [
+        "hubspot.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "slug": "microsoft",
+    "source": "baseline repetition 1 (2026-10-29)",
+    "typed": "Microsoft",
+    "hits": [
+      {
+        "url": "https://apitracker.io/a/microsoft",
+        "title": "Microsoft API - Docs, SDKs & Integration"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/azure/api-management",
+        "title": "API Management documentation | Microsoft Learn"
+      },
+      {
+        "url": "https://developer.microsoft.com/en-us/graph",
+        "title": "Microsoft Graph Dev Center | APIs and app development"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/rest/api/azure",
+        "title": "Azure REST API reference documentation | Microsoft Learn"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/microsoft-365/developer",
+        "title": "Microsoft 365 developer documentation - Microsoft 365 Developer | Microsoft Learn"
+      },
+      {
+        "url": "https://developer.microsoft.com/en-us",
+        "title": "Microsoft Developer"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=TK_sK3_wL3U",
+        "title": "A Developer's Guide: From API Design to Deployment to Consumption"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/graph",
+        "title": "Microsoft Graph documentation | Microsoft Learn"
+      }
+    ],
+    "answer": {
+      "kind": "official",
+      "domain": "microsoft.com",
+      "domains": [
+        "microsoft.com"
+      ],
+      "product": "Microsoft Graph",
+      "options": []
+    }
+  },
+  {
+    "slug": "microsoft",
+    "source": "tuning run 2026-10-29T17-58-08Z",
+    "typed": "Microsoft",
+    "hits": [
+      {
+        "url": "https://apitracker.io/a/microsoft",
+        "title": "Microsoft API - Docs, SDKs & Integration"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/azure/api-management",
+        "title": "API Management documentation | Microsoft Learn"
+      },
+      {
+        "url": "https://developer.microsoft.com/en-us/graph",
+        "title": "Microsoft Graph Dev Center | APIs and app development"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/rest/api/azure",
+        "title": "Azure REST API reference documentation | Microsoft Learn"
+      },
+      {
+        "url": "https://developer.microsoft.com/en-us",
+        "title": "Microsoft Developer"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=TK_sK3_wL3U",
+        "title": "A Developer's Guide: From API Design to Deployment to Consumption"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/graph",
+        "title": "Microsoft Graph documentation | Microsoft Learn"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/graph/use-the-api",
+        "title": "Use the Microsoft Graph API - Microsoft Graph | Microsoft Learn"
+      }
+    ],
+    "answer": {
+      "kind": "official",
+      "domain": "microsoft.com",
+      "domains": [
+        "microsoft.com"
+      ],
+      "product": "Microsoft Graph",
+      "options": []
+    }
+  },
+  {
+    "slug": "microsoft",
+    "source": "tuning run 2026-10-29T21-32-26Z",
+    "typed": "Microsoft",
+    "hits": [
+      {
+        "url": "https://learn.microsoft.com/en-us/azure/api-management/developer-portal-overview",
+        "title": "Overview of the developer portal in Azure API Management - Azure API Management | Microsoft Learn"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/azure/api-management",
+        "title": "API Management documentation | Microsoft Learn"
+      },
+      {
+        "url": "https://developer.microsoft.com/en-us/build-apis",
+        "title": "Build APIs | Microsoft Developer"
+      },
+      {
+        "url": "https://developer.microsoft.com/en-us/graph",
+        "title": "Microsoft Graph Dev Center | APIs and app development"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/rest/api/azure",
+        "title": "Azure REST API reference documentation | Microsoft Learn"
+      },
+      {
+        "url": "https://developer.microsoft.com/en-us",
+        "title": "Microsoft Developer"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/docs",
+        "title": "Technical documentation | Microsoft Learn"
+      }
+    ],
+    "answer": {
+      "kind": "official",
+      "domain": "microsoft.com",
+      "domains": [
+        "microsoft.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "slug": "notion",
+    "source": "baseline repetition 1 (2026-10-29)",
+    "typed": "Notion",
+    "hits": [
+      {
+        "url": "https://developers.notion.com/reference/intro",
+        "title": "Introduction - Notion Docs"
+      },
+      {
+        "url": "https://developers.notion.com/guides/get-started/overview",
+        "title": "Overview - Notion Docs"
+      },
+      {
+        "url": "https://www.notion.com/help/create-integrations-with-the-notion-api",
+        "title": "Create integrations with the Notion API | Notion Help – Notion Help Center"
+      },
+      {
+        "url": "https://www.notion.com/templates/category/api-documentation",
+        "title": "API Documentation Templates for Notion | Endpoints, Auth, Errors, Examples | Notion Marketplace"
+      },
+      {
+        "url": "https://www.notion.com/product/dev",
+        "title": "Build with Notion’s Developer Platform – Notion"
+      },
+      {
+        "url": "https://developers.notion.com/reference/property-object",
+        "title": "Data source properties - Notion Docs"
+      },
+      {
+        "url": "https://www.notion.com/help/guides/connect-tools-to-notion-api",
+        "title": "Connect your tools to Notion with the API"
+      },
+      {
+        "url": "https://developers.notion.com/reference/database",
+        "title": "Database - Notion Docs"
+      }
+    ],
+    "answer": {
+      "kind": "official",
+      "domain": "notion.com",
+      "domains": [
+        "notion.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "slug": "slack",
+    "source": "baseline repetition 1 (2026-10-29)",
+    "typed": "Slack",
+    "hits": [
+      {
+        "url": "https://docs.slack.dev/",
+        "title": "Slack developer docs | Slack Developer Docs"
+      },
+      {
+        "url": "https://slack.com/terms-of-service/api",
+        "title": "Slack API Terms of Service | Legal | Slack"
+      },
+      {
+        "url": "https://slack.com/marketplace/APXEJ79UY-slack-developer-tools",
+        "title": "Slack Developer Tools & Slack Integration | Slack Marketplace"
+      },
+      {
+        "url": "https://slack.com/help/articles/13345326945043-Build-apps-with-Slacks-developer-tools",
+        "title": "Build apps with Slack's developer tools | Slack"
+      },
+      {
+        "url": "https://github.com/slackhq/slack-api-docs",
+        "title": "GitHub - slackhq/slack-api-docs: API Docs for Slack.com · GitHub"
+      },
+      {
+        "url": "https://apitracker.io/a/slack",
+        "title": "Slack API - Developer docs, APIs, SDKs, and auth. | API Tracker"
+      },
+      {
+        "url": "https://slack.dev/",
+        "title": "Developer Hub | Slack Developers"
+      },
+      {
+        "url": "https://x.com/SlackAPI?lang=en",
+        "title": "Slack Developers (@SlackAPI) / X"
+      }
+    ],
+    "answer": {
+      "kind": "official",
+      "domain": "slack.dev",
+      "domains": [
+        "slack.dev",
+        "slack.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "slug": "slack",
+    "source": "tuning run 2026-10-29T18-29-23Z",
+    "typed": "Slack",
+    "hits": [
+      {
+        "url": "https://docs.slack.dev/",
+        "title": "Slack developer docs | Slack Developer Docs"
+      },
+      {
+        "url": "https://slack.com/terms-of-service/api",
+        "title": "Slack API Terms of Service | Legal | Slack"
+      },
+      {
+        "url": "https://slack.com/marketplace/APXEJ79UY-slack-developer-tools",
+        "title": "Slack Developer Tools & Slack Integration | Slack Marketplace"
+      },
+      {
+        "url": "https://slack.com/help/articles/13345326945043-Build-apps-with-Slacks-developer-tools",
+        "title": "Build apps with Slack's developer tools | Slack"
+      },
+      {
+        "url": "https://github.com/slackhq/slack-api-docs",
+        "title": "GitHub - slackhq/slack-api-docs: API Docs for Slack.com · GitHub"
+      },
+      {
+        "url": "https://medium.com/slack-developer-blog/getting-started-with-slacks-apis-f930c73fc889",
+        "title": "Which API is right for your Slack app?"
+      },
+      {
+        "url": "https://slack.dev/",
+        "title": "Developer Hub | Slack Developers"
+      },
+      {
+        "url": "https://x.com/SlackAPI?lang=en",
+        "title": "Slack Developers (@SlackAPI) / X"
+      }
+    ],
+    "answer": {
+      "kind": "official",
+      "domain": "slack.dev",
+      "domains": [
+        "slack.dev",
+        "slack.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "slug": "slack",
+    "source": "tuning run 2026-10-29T21-32-26Z",
+    "typed": "Slack",
+    "hits": [
+      {
+        "url": "https://docs.slack.dev/",
+        "title": "Slack developer docs | Slack Developer Docs"
+      },
+      {
+        "url": "https://slack.com/terms-of-service/api",
+        "title": "Slack API Terms of Service | Legal | Slack"
+      },
+      {
+        "url": "https://slack.com/marketplace/APXEJ79UY-slack-developer-tools",
+        "title": "Slack Developer Tools & Slack Integration | Slack Marketplace"
+      },
+      {
+        "url": "https://slack.com/help/articles/13345326945043-Build-apps-with-Slacks-developer-tools",
+        "title": "Build apps with Slack's developer tools | Slack"
+      },
+      {
+        "url": "https://github.com/slackhq/slack-api-docs",
+        "title": "GitHub - slackhq/slack-api-docs: API Docs for Slack.com · GitHub"
+      },
+      {
+        "url": "https://slack.dev/",
+        "title": "Developer Hub | Slack Developers"
+      },
+      {
+        "url": "https://x.com/SlackAPI?lang=en",
+        "title": "Slack Developers (@SlackAPI) / X"
+      },
+      {
+        "url": "https://api.slack.com/types",
+        "title": "API object types | Slack"
+      }
+    ],
+    "answer": {
+      "kind": "official",
+      "domain": "slack.com",
+      "domains": [
+        "slack.com",
+        "slack.dev"
+      ],
+      "product": null,
+      "options": []
+    }
+  }
+]

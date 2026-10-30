@@ -9,6 +9,7 @@ import {
   hostFromTyped,
   registrableDomain,
 } from "../../utils/registrable-domain.js";
+import { DOCS_PLATFORM_DOMAINS } from "./denylist.js";
 
 export const MAX_NAME_LENGTH = 100;
 
@@ -39,10 +40,33 @@ export function displayName(text: string): string {
   );
 }
 
-/** A typed URL or domain gives the official domain directly; anything else is an app name to look up. */
+/**
+ * The label next to a documentation platform in a typed host ("pipedrive" in pipedrive.readme.io), or null. The
+ * platform's own domain says nothing about the app, so such a host is looked up by that name instead.
+ */
+function platformSubdomain(host: string): string | null {
+  const platform = DOCS_PLATFORM_DOMAINS.find((domain) =>
+    host.endsWith(`.${domain}`),
+  );
+  if (platform === undefined) {
+    return null;
+  }
+  return (
+    host
+      .slice(0, -(platform.length + 1))
+      .split(".")
+      .pop() ?? null
+  );
+}
+
+/** A typed URL or domain gives the official domain directly; anything else, and a docs-platform host, is an app name to look up. */
 export function parseTyped(typed: string): TypedInput {
   const host = hostFromTyped(typed);
   if (host !== null && VALID_HOST.test(host)) {
+    const subdomain = platformSubdomain(host);
+    if (subdomain !== null) {
+      return { kind: "name", name: displayName(subdomain) };
+    }
     return {
       kind: "domain",
       domain: registrableDomain(host),

@@ -13,7 +13,7 @@ A list of providers to check Stage 0 (Resolve) alone: does the name or URL a rev
 | `note` | Why the entry is hard, when that is not obvious |
 | `control` | One of the six tuning apps, where Resolve has worked in every eval. A change to Resolve must keep them correct |
 
-36 entries: 26 names and 6 controls need one search each (32 credits), 4 typed domains or URLs need none.
+36 entries: 27 names and 6 controls need one search each (33 credits, and up to 1 more for each answer that is thin and gets a second look), 3 typed domains or URLs need none. A typed docs-platform host (`pipedrive.readme.io`) is looked up by its name since the fix of 2026-10-30.
 
 ## Types
 
