@@ -40,6 +40,20 @@ yarn-error.log*
 # pnpm local store index
 .pnpm-store/
 
+# Docs stay on disk. Only this set is published.
+docs/*
+!docs/problem.md
+!docs/solution.md
+!docs/product.md
+!docs/product-architecture.md
+!docs/agent-architecture.md
+!docs/design-decisions.md
+!docs/features.md
+!docs/tech-stack.md
+
+# Local eval scorecards
+docs/evals/
+
 # Misc
 .DS_Store
 *.pem
