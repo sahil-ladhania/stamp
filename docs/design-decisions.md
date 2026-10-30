@@ -54,6 +54,9 @@ Red = the rule. Blue = product decisions. Green = technical decisions.
 | 21 | One loop | A live dot that pulses while a run works, and nothing else repeats |
 | 22 | Follow the end of the trace | The page follows the newest row until the reader scrolls up |
 | 23 | Labels beside their own text | Each label sits next to its text; a quiet fact has no label until it opens |
+| 24 | A model may only downgrade a label | One batched check after the quote check; it can lower a label, never raise one |
+| 25 | No number when the review gate is unverified | Archetype `unknown`; the web app says "Not rated" |
+| 26 | The library is saved agent guides, checked by code | Six saved guides, each seeded only if it passes a code check; LinkedIn and Salesforce dropped |
 
 ---
 
@@ -100,6 +103,8 @@ Red = the rule. Blue = product decisions. Green = technical decisions.
 | Cost | Could features are cut first if time runs short |
 
 ### D5. Library apps
+
+**Superseded by D26** (LinkedIn and Salesforce dropped; the library is built from saved agent guides).
 
 | | |
 | --- | --- |
@@ -273,7 +278,16 @@ Red = the rule. Blue = product decisions. Green = technical decisions.
 | Chosen | A guide whose review gate was not verified gets the archetype `unknown`, and the web app shows "Not rated" instead of the dots, the stamp's number and the card number. The stored difficulty is kept as a lower bound for sorting, and the breakdown says "points so far" |
 | Why | The review gate is the biggest factor. An unknown gate scored 0 points, so apps with an unverified gate came out as an easy 2 of 5, a confident number built on nothing. A confident wrong claim is worse than an honest "Not rated" |
 | Rejected | A nullable difficulty: needs a schema change and a database migration (`guides.difficulty` is a non-null, indexed column). A new "lower bound" field in the shared schema: the clearest contract, but the same cost for a flag the archetype already carries |
-| Cost | More guides read "Not rated" until the gate is verified. The library, whose guides are reviewed, is unaffected |
+| Cost | More guides read "Not rated" until the gate is verified. Revised by D26: the library is built from saved agent guides, so it holds Not rated guides too |
+
+### D26. The library is saved agent guides, checked by code
+
+| | |
+| --- | --- |
+| Chosen | The library is the guides the agent already wrote and saved in the Stage 5 tuning run (2026-10-29): GitHub, HubSpot, Notion, Slack, Gmail and Microsoft. A guide is exported and seeded only if a code check passes (it parses, is full coverage, has no Sourced claim without an official source, and has no scope name that fails the scope rules). The exporter copies a guide and never edits it. **LinkedIn and Salesforce are dropped** from the library, decided by the owner on 2026-10-30. Plan and file list: [library-plan.md](./library-plan.md) |
+| Why | A guide written by hand puts provider facts in the repo with no quote check behind them. The agent's guides carry a source, a quote and a label set by code for every claim, so the library is held to the same evidence rules as a live guide. The owner dropped LinkedIn and Salesforce; the facts at the time: neither has a saved guide or a golden answer set, and this month's search credits are spent |
+| Rejected | Hand-written guides: the facts would not be checked by code. Researching LinkedIn and Salesforce now: credits, and no golden answers to measure them against. Editing a saved guide to make it pass: it would change a provider fact, and only code sets labels |
+| Cost | "One app per kind of hard" (D5) no longer holds. The saved set has two `hidden_limits` guides and four that read "Not rated"; no guide is `instant`, `review`, `partner_gated` or `enterprise`. Gmail (22 Sourced claims on a personal blog) and Microsoft (a `/.default` scope) fail the check today and are held out unless the owner decides otherwise (library-plan.md, L1) |
 
 ---
 
