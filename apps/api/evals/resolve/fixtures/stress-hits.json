@@ -1,0 +1,1276 @@
+[
+  {
+    "typed": "Spotify",
+    "types": [
+      "dev_subdomain"
+    ],
+    "expected": [
+      "spotify.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://developer.spotify.com/documentation/web-api",
+        "title": "Web API | Spotify for Developers",
+        "snippet": "You can follow the Getting started tutorial to learn how to make your first Web API call.\n\n## Documentation\n\nThe documentation is organized as follows:\n\n Concepts that clarify key topics\n Tutorials, w"
+      },
+      {
+        "url": "https://developer.spotify.com/blog/2026-02-06-update-on-developer-access-and-platform-security",
+        "title": "Update on Developer Access and Platform Security | Spotify for Developers",
+        "snippet": "Starting Wednesday, 11 February, all newly created Development Mode Client IDs will be created under the updated Development Mode rules and will have the following restrictions applied by default:\n\n D"
+      },
+      {
+        "url": "https://developer.spotify.com/",
+        "title": "Home | Spotify for Developers",
+        "snippet": "Skip to content\n\nUpdate on Developer Access and Platform Security  \nWe are making changes to Spotify for Developers to better protect creators, partners, listeners and the platform. Read more about th"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "spotify.com",
+      "domains": [
+        "spotify.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "Box",
+    "types": [
+      "dev_subdomain",
+      "common_word"
+    ],
+    "expected": [
+      "box.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://daily.dev/blog/box-developer-documentation-getting-started",
+        "title": "Box Developer Documentation - Getting Started | daily.dev",
+        "snippet": "Box Developer Documentation provides a comprehensive resource for developers to leverage Box APIs and tools, simplifying workflows, facilitating collaboration, and enhancing security. This guide cover"
+      },
+      {
+        "url": "https://blog.box.com/box-launches-new-ai-first-developer-documentation-site",
+        "title": "Box launches new AI-First developer documentation site | Box Blog",
+        "snippet": "Our new interactive API testing experience lets you experiment with Box APIs directly within the documentation. Simply select an endpoint, click the Try it button, configure your parameters within the"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "box.com",
+      "domains": [
+        "box.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "Twitch",
+    "types": [
+      "dev_subdomain",
+      "other_tld"
+    ],
+    "expected": [
+      "twitch.tv"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://dev.twitch.tv/docs/extensions/reference",
+        "title": "Extensions Reference | Twitch Developers",
+        "snippet": "| Property | Type | Description |\n --- \n| `channelId` | string | Channel ID of the page where the extension is iframe embedded. |\n| `clientId` | string | Client ID of the extension. |\n| `token` | JWT "
+      },
+      {
+        "url": "https://dev.twitch.tv/products",
+        "title": "Products | Twitch Developers",
+        "snippet": "Docs\n Amazon Interactive Video Service (IVS)\n\n  #### Amazon Interactive Video Service (IVS)\n\n  A managed live streaming solution that is quick and easy to set up, and ideal for creating interactive vi"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "twitch.tv",
+      "domains": [
+        "twitch.tv"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "QuickBooks",
+    "types": [
+      "parent_domain",
+      "brand_differs"
+    ],
+    "expected": [
+      "intuit.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://apitracker.io/a/quickbooks",
+        "title": "QuickBooks API - Developer docs, APIs, SDKs, and auth. | API Tracker",
+        "snippet": "### Python\n\nNative API\n\n## QuickBooks API profile\n\nApideck Unified API\n\nApideckAccounting API\n\nApideck Connector\n\nApideckQuickBooks Connector\n\nAPI styles\n\nRESTGraphQL\n\nDeveloper docs\n\nAPI Reference\n\nW"
+      },
+      {
+        "url": "https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop",
+        "title": "QuickBooks Desktop API Reference",
+        "snippet": "This set of pages provides detailed information on the qbXML messages sent to, and received from, QuickBooks Desktop."
+      }
+    ],
+    "before": {
+      "outcome": "ok_asks",
+      "decision": "ambiguous",
+      "domain": null,
+      "domains": [],
+      "product": null,
+      "options": [
+        "apitracker.io",
+        "intuit.com"
+      ]
+    }
+  },
+  {
+    "typed": "Instagram",
+    "types": [
+      "parent_domain",
+      "consumer_site_first",
+      "denied_brand_host"
+    ],
+    "expected": [
+      "facebook.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://github.com/Z786ZA/instagram-api-documentation",
+        "title": "GitHub - Z786ZA/instagram-api-documentation: instagram api documentation reference guide · GitHub",
+        "snippet": "## Introduction\n\n> This repository explains the structure and usage of Instagram’s APIs — the Basic Display API and Graph API — covering authentication, data permissions, and usage limits. Ideal for d"
+      },
+      {
+        "url": "https://developers.facebook.com/documentation/instagram-platform/content-publishing",
+        "title": "Content Publishing | Meta for Developers",
+        "snippet": "## Requirements\n\nThis guide assumes you have read the Instagram Platform Overview and implemented the needed components for using this API, such as a Meta login flow and a webhooks server to receive n"
+      }
+    ],
+    "before": {
+      "outcome": "no_docs",
+      "decision": "none",
+      "domain": null,
+      "domains": [],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "YouTube",
+    "types": [
+      "parent_domain",
+      "consumer_site_first",
+      "denied_brand_host"
+    ],
+    "expected": [
+      "google.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://developers.google.com/youtube/data/reference/rest",
+        "title": "API Reference  |  YouTube Data API  |  Google for Developers",
+        "snippet": "| Method | HTTP request | Description |\n --- \n| URIs relative to ` |\n| `insert` | `POST /videos` | Uploads a video to YouTube and optionally sets the video's metadata. |\n| `list` | `GET /videos` | Ret"
+      },
+      {
+        "url": "https://developers.google.com/youtube/documentation",
+        "title": "YouTube Developer Documentation  |  Google for Developers",
+        "snippet": "| API | Type | Description | Primary Users | Auth |\n ---  --- \n| YouTube app features | | | | |\n| YouTube Data API | Public | Add YouTube app features to your application, including the ability to upl"
+      },
+      {
+        "url": "https://mallary.ai/blog/youtube-api",
+        "title": "Mastering the YouTube API: Developer's Guide 2026 | Mallary Blog",
+        "snippet": "The center of gravity is the YouTube Data API v3. Google positions it as part of its developer platform for applications that interact with YouTube, and its getting-started material makes the setup re"
+      },
+      {
+        "url": "https://youtube-data-api.readthedocs.io/en/latest/youtube_api.html",
+        "title": "API Guide — youtube-data-api 0.0.17 documentation",
+        "snippet": "Every function from the `youtube_api.youtube_api` class has an argument for `parser`. `parser` can be any function that takes a dictionary as input. Here are the default parser fucntions for each func"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=XEZYadc2o-8",
+        "title": "YouTube API Tutorial | For Beginners",
+        "snippet": "[1:10] you will now see API key created for you just copy this value as we will need it later we can now go back to the previous link which is this documentation of how\n[1:17] to use the YouTube data "
+      },
+      {
+        "url": "https://developers.google.com/youtube/data",
+        "title": "YouTube Data API  |  Google for Developers",
+        "snippet": "Stay organized with collections   Save and categorize content based on your preferences.    \n\n## Add YouTube functionality to your app\n\n[](\n\n### Add YouTube functionality to your site\n\nWith the YouTub"
+      }
+    ],
+    "before": {
+      "outcome": "wrong_domain",
+      "decision": "official",
+      "domain": "youtube.com",
+      "domains": [
+        "youtube.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "LinkedIn",
+    "types": [
+      "parent_domain",
+      "consumer_site_first",
+      "denied_brand_host"
+    ],
+    "expected": [
+      "microsoft.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://github.com/linkedin-developers",
+        "title": "LinkedIn Developers · GitHub",
+        "snippet": "Explore the API products available in our product catalog\n Create a developer application from the Developer Portal and request API products\n Read through the API docs\n Easily generate an access token"
+      },
+      {
+        "url": "https://www.linkedin.com/help/linkedin/answer/a526048",
+        "title": "Accessing LinkedIn APIs | LinkedIn Help",
+        "snippet": "Login to the LinkedIn Developer portal. · Click My Apps from the top of the page and select Create App. · Complete the app details and add your company page. · For ...Read more"
+      }
+    ],
+    "before": {
+      "outcome": "wrong_domain",
+      "decision": "official",
+      "domain": "linkedin.com",
+      "domains": [
+        "linkedin.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "Twitter",
+    "types": [
+      "brand_differs",
+      "denied_brand_host"
+    ],
+    "expected": [
+      "x.com",
+      "twitter.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://developer.x.com/",
+        "title": "X Developer Platform",
+        "snippet": "{\n  \"data\": [\n    {\n      \"id\": \"16\",\n      \"text\": \"Real-time tweet streaming is working flawlessly\"\n    }\n  ]\n}\n\n200 OK application/json json\n\n{\n  \"data\": [\n    {\n      \"id\": \"9\",\n      \"text\": \"API"
+      },
+      {
+        "url": "https://docs.x.com/overview",
+        "title": "X Developer Platform - X",
+        "snippet": "Owned Reads let you access your own data at reduced cost. Requests for your own posts, bookmarks, followers, likes, and more are priced at $0.001 per resource.\n\n## Quickstart\n\nGet your API keys and ma"
+      }
+    ],
+    "before": {
+      "outcome": "no_docs",
+      "decision": "none",
+      "domain": null,
+      "domains": [],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "X",
+    "types": [
+      "brand_differs",
+      "single_letter",
+      "denied_brand_host"
+    ],
+    "expected": [
+      "x.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://developer.x.com/",
+        "title": "X Developer Platform",
+        "snippet": "{\n  \"data\": [\n    {\n      \"id\": \"15\",\n      \"text\": \"X API documentation is actually helpful for once\"\n    }\n  ]\n}\n\n200 OK application/json json\n\n{\n  \"data\": [\n    {\n      \"id\": \"16\",\n      \"text\": \"R"
+      },
+      {
+        "url": "https://docs.x.com/x-api/introduction",
+        "title": "X API - X",
+        "snippet": "> ## Documentation Index\n>\n> Fetch the complete documentation index at:</llms.txt>\n>\n> Use this file to discover all available pages before exploring further.\n\nX home pagelight logodark logo\n\n Support"
+      },
+      {
+        "url": "https://docs.x.com/overview",
+        "title": "X Developer Platform - X",
+        "snippet": "> ## Documentation Index\n>\n> Fetch the complete documentation index at:</llms.txt>\n>\n> Use this file to discover all available pages before exploring further.\n\nX home pagelight logodark logo\n\n Support"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "x.com",
+      "domains": [
+        "x.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "Monday",
+    "types": [
+      "common_word",
+      "dev_subdomain"
+    ],
+    "expected": [
+      "monday.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://developer-community.monday.com/api-apps-framework-4",
+        "title": "General | Community",
+        "snippet": "get back to you. Please read this post for resources, helpful threads, and guidelines for new posts. Resources to get started! As you begin exploring the monday developers framework, check out these r"
+      },
+      {
+        "url": "https://apitracker.io/a/monday",
+        "title": "monday.com API - Developer docs, APIs, SDKs, and auth. | API Tracker",
+        "snippet": "monday.com powers teams to run processes, workflows, and projects in one digital workspace, unleashing their potential to achieve extraordinary results in all aspects of their work.\n\n## 1 API\n\n### mon"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "monday.com",
+      "domains": [
+        "monday.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "Square",
+    "types": [
+      "common_word",
+      "brand_differs"
+    ],
+    "expected": [
+      "squareup.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://developer.squareup.com/docs",
+        "title": "Square API and SDK Documentation",
+        "snippet": "Partnerships\n Sign In\n Sign In\n\nDocs Home\nDev Essentials\nPaymentsCommerceCustomersStaffMerchants\nRelease notes\n\nDocs Home\n\nDev Essentials\n\nCommerce\n\nCustomers\n\nStaff\n\nMerchants\n\nRelease notes\n\n# Squar"
+      },
+      {
+        "url": "https://developer.squareup.com/us/en",
+        "title": "Square APIs & SDKs: Build Custom Solutions on Square",
+        "snippet": "#### Square sample applications\n\nExperiment with OAuth, Square SDKs, GraphQL, and mobile.\n\nGo to dev essentials docs\n\n## Compose your app or integration with a robust suite of Square APIs and develope"
+      },
+      {
+        "url": "https://developer.squareup.com/reference/square",
+        "title": "Square API Reference",
+        "snippet": "This API Reference has all the detailed API endpoint information you need to build with our APIs. Square APIs let you take payments securely, integrate your application with Square first-party product"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "squareup.com",
+      "domains": [
+        "squareup.com"
+      ],
+      "product": "Square API",
+      "options": []
+    }
+  },
+  {
+    "typed": "Linear",
+    "types": [
+      "common_word"
+    ],
+    "expected": [
+      "linear.app"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://linear.app/developers",
+        "title": "Linear Developers",
+        "snippet": "## Guides\n\n### Upload a file\n\nLearn how to reference a file in markdown content, or upload with the API### Create issues via URL\n\nOpen issue creation with pre-filled fields from a URL### CLI importer\n"
+      },
+      {
+        "url": "https://linear.app/docs/api-and-webhooks",
+        "title": "API and Webhooks – Linear Docs",
+        "snippet": "## Basics⁠\n\n### API⁠\n\nYou own your data in Linear and our GraphQL API lets you query that data. In addition to querying, Linear has full support for mutating all entities. Any mutations you make via t"
+      },
+      {
+        "url": "https://github.com/linear/linear",
+        "title": "GitHub - linear/linear: Tools, SDK's and plugins for Linear · GitHub",
+        "snippet": "Linear is released under the MIT license.\nBuild github action status.\nRelease github action status.\nSchema github action status.\nDependencies github action status.\n\n## ⚠️ Monorepo Readme\n\nIf you are l"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "linear.app",
+      "domains": [
+        "linear.app"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "Front",
+    "types": [
+      "common_word",
+      "brand_differs"
+    ],
+    "expected": [
+      "frontapp.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://dev.frontapp.com/docs/core-api-overview",
+        "title": "Overview",
+        "snippet": "Front\n\n# Overview\n\nThe Core API allows you as a Front developer to access core data and actions within Front. You can use your own custom logic to assign messages, update contact info, manage user acc"
+      },
+      {
+        "url": "https://dev.frontapp.com/docs/welcome",
+        "title": "Welcome",
+        "snippet": "Whether you’re looking to build a custom integration just for your team or looking to publicly launch a Front integration, you’re in the right place! Our documentation can help you build everything fr"
+      },
+      {
+        "url": "https://dev.frontapp.com/reference/introduction",
+        "title": "Introduction",
+        "snippet": "For AI agents: the docs index is at  Append .md to any documentation page URL to get its markdown version.\n\nJump to Content\n\nFront PlatformGuidesAPI ReferenceChangelogCommunity\n\nGuidesAPI Reference\n\nG"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "frontapp.com",
+      "domains": [
+        "frontapp.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "Google Calendar",
+    "types": [
+      "multi_word",
+      "parent_domain"
+    ],
+    "expected": [
+      "google.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://www.postman.com/postman/google-api-workspace/documentation/54xuf9z/google-calendar-api",
+        "title": "🗓️ Google Calendar API | Documentation",
+        "snippet": "The Google Calendar API allows developers to integrate their applications with Google Calendar, enabling them to create, modify, and manage"
+      },
+      {
+        "url": "https://developers.google.com/workspace/calendar/api/v3/reference",
+        "title": "API Reference  |  Google Calendar  |  Google for Developers",
+        "snippet": "| Method | HTTP request | Description |\n --- \n| URIs relative to  unless otherwise noted |\n| delete | `calendarId` | Removes a calendar from the user's calendar list. |\n| get | `calendarId` | Returns "
+      },
+      {
+        "url": "https://developers.google.com/workspace/calendar/api/guides/overview",
+        "title": "Google Calendar API overview  |  Google for Developers",
+        "snippet": "The Google Calendar API is a RESTful API that can be accessed through explicit HTTP calls or using the Google Client Libraries. The API exposes most of the features available in the Google Calendar We"
+      },
+      {
+        "url": "https://www.unipile.com/guide-to-google-calendar-api-integration",
+        "title": "Guide to Google Calendar API Integration",
+        "snippet": "Google Calendar API is a tool that allows developers to access and manipulate events, calendars, and settings associated with Google Calendar."
+      },
+      {
+        "url": "https://developers.google.com/workspace/calendar",
+        "title": "Google Calendar  |  Google for Developers",
+        "snippet": "### All samples\n\nExplore add-on samples by featured Google products, language, sample type, and type.\n\nExplore catalog\n\n### Connect your service to Google Calendar\n\nUse the REST APIs below to interact"
+      },
+      {
+        "url": "https://ones.com/blog/what-is-google-calendar-api-features-use-cases-architecture",
+        "title": "What Is Google Calendar API? Features, Use Cases & Architecture",
+        "snippet": "Google Calendar API is a RESTful web service that lets your applications create, read, modify, and delete calendar events, access calendars, and manage settings programmatically. Think of it as a dire"
+      },
+      {
+        "url": "https://console.cloud.google.com/agent-platform/model-garden",
+        "title": "Agent Platform - Models",
+        "snippet": "Google Cloud Console has failed to load JavaScript sources from www.gstatic.com. Possible reasons are: www.gstatic.com or its IP addresses are blocked by"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "google.com",
+      "domains": [
+        "google.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "Zoho CRM",
+    "types": [
+      "multi_word"
+    ],
+    "expected": [
+      "zoho.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://www.facebook.com/fb-answers/zoho-crm-api-documentation",
+        "title": "Zoho CRM API Documentation and Integration Help",
+        "snippet": "Zoho CRM API docs are at https://www.zoho. com/crm/developer/docs/api/overview.html, and most developers use API 2.0 since V1 was deprecated in 2019.Read more"
+      },
+      {
+        "url": "https://www.zoho.com/developer/rest-api.html",
+        "title": "Zoho REST APIs | Zoho Developer",
+        "snippet": "### Automate workflows in your own account\n\nSet up backend scripts, create scheduled jobs, or just test API endpoints with your own data.\n\nGet started by creating a self client. No need for redirect U"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "zoho.com",
+      "domains": [
+        "zoho.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "Microsoft Teams",
+    "types": [
+      "multi_word",
+      "parent_domain"
+    ],
+    "expected": [
+      "microsoft.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://learn.microsoft.com/en-us/answers/questions/4441219/microsoft-teams-api",
+        "title": "Microsoft Teams API - Microsoft Q&A",
+        "snippet": "Yes, Microsoft Teams has an API that allows you to create custom integrations with Teams. You can use the API to create custom shortcuts like toggle mute, toggle camera etc. that work with Stream Deck"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/microsoftteams/platform",
+        "title": "Microsoft Teams Platform Developer Documentation - Teams | Microsoft Learn",
+        "snippet": "### Quickstart\n\n Quickstart: Create an agent and chat with it in Teams\n\n### How-To Guide\n\n Port a Slack Bolt app to Teams\n\n### Concept\n\n Best practices and features checklist\n Agents in Teams\n Agent b"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/graph/api/resources/teams-api-overview?view=graph-rest-1.0",
+        "title": "Use the Microsoft Graph API to work with Microsoft Teams - Microsoft Graph v1.0 | Microsoft Learn",
+        "snippet": "| Use cases | REST resources | See also |\n --- \n| Create and manage teams, groups, and channels | team, channel, group | create team, list teams, create channel |\n| Add tabs, manage, or install apps i"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "microsoft.com",
+      "domains": [
+        "microsoft.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "Adobe Sign",
+    "types": [
+      "multi_word"
+    ],
+    "expected": [
+      "adobe.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://helpx.adobe.com/sign/web/integrations/api.html",
+        "title": "Adobe Acrobat Sign Developer Documentation | Adobe Acrobat Sign",
+        "snippet": "Adobe Acrobat Sign\n\nAdobe Acrobat Sign\nHelp\n\n# Adobe Acrobat Sign Developer Documentation\n\n## Overview\n\nAcrobat Sign APIs allow you to create apps and embed the Acrobat Sign UI and functionality into "
+      },
+      {
+        "url": "https://developer.adobe.com/acrobat-sign",
+        "title": "Adobe Sign Developer",
+        "snippet": "# Adobe Sign Developer\n\n# Getting Started\n\n### Developer Guide\n\nLearn more\n\n### Application Quickstart\n\nLearn more\n\n### Create Dev Account\n\nLearn more\n\n### Rest API Reference\n\nLearn more\n\n### Security"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "adobe.com",
+      "domains": [
+        "adobe.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "Dropbox Sign",
+    "types": [
+      "multi_word",
+      "brand_differs"
+    ],
+    "expected": [
+      "hellosign.com",
+      "dropbox.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://sign.dropbox.com/developers",
+        "title": "Developers | Dropbox Sign (Formerly HelloSign)",
+        "snippet": "logo dropboxsign\n\nContact Sales\n\nSign in\n\nExpand or collapse accordion\n\nDropbox SignDropbox Fax\n\nFree trial\n\nDocumentationDeveloper BlogWalkthroughsSupportLibraries & SDKAPI Status\n\nDevelopers\n\n# Buil"
+      },
+      {
+        "url": "https://sign.dropbox.com/products/dropbox-sign-api/pricing",
+        "title": "Plans & Pricing | Dropbox Sign API",
+        "snippet": "icon tooltip\n\nA single view to track API requests and responses, view the status of API requests, and inspect your callbacks for easy troubleshooting.\n\nAPI technical support\n\nicon tooltip\n\nGet assista"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "dropbox.com",
+      "domains": [
+        "dropbox.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "Reddit",
+    "types": [
+      "docs_on_code_host",
+      "denied_brand_host"
+    ],
+    "expected": [
+      "reddit.com",
+      "github.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://developers.reddit.com/docs/capabilities/server/reddit-api",
+        "title": "Reddit API Overview | Reddit for Developers",
+        "snippet": "# Reddit API Overview\n\nThe Reddit API allows you to read and write Reddit content such as posts / comments / upvotes, in order to integrate your app's behavior with the content of the community it's i"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=xOmIOTLvxGw",
+        "title": "How To Get Reddit API Key - Step-by-Step Tutorial",
+        "snippet": "⏱️ Timestamps:\n0:00 - Introduction\n0:30 - Creating Reddit Developer Account\n2:15 - Generating Your API Key\n4:30 - Understanding Your Credentials\n5:45 - Security Best Practices\n💡 Why You Need a Reddit"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "reddit.com",
+      "domains": [
+        "reddit.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "GitLab",
+    "types": [
+      "denied_brand_host"
+    ],
+    "expected": [
+      "gitlab.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://docs.gitlab.com/api/rest",
+        "title": "REST API | GitLab Docs",
+        "snippet": "To make a REST API request:\n\n Submit a request to an API endpoint by using a REST API client.\n The GitLab instance responds to the request. It returns a status code and if applicable, the requested da"
+      },
+      {
+        "url": "https://docs.gitlab.com/api/api_resources",
+        "title": "REST API resources | GitLab Docs",
+        "snippet": "| Instance-level CI/CD variables | `/admin/ci/variables` |\n| Issues Statistics | `/issues_statistics` (also available for groups and projects) |\n| Issues | `/issues` (also available for groups and pro"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "gitlab.com",
+      "domains": [
+        "gitlab.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "Zapier",
+    "types": [
+      "denied_brand_host"
+    ],
+    "expected": [
+      "zapier.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://docs.zapier.com/",
+        "title": "Zapier developer docs: MCP, SDK, integrations, and embedding",
+        "snippet": "> ## Documentation Index\n>\n> Fetch the complete documentation index at:</llms.txt>\n>\n> Use this file to discover all available pages before exploring further.\n\nZapier home page\n\nAPI reference\n\n# Zapie"
+      },
+      {
+        "url": "https://github.com/zapier/zapier-platform",
+        "title": "GitHub - zapier/zapier-platform: The toolkit for you to build an integration on Zapier · GitHub",
+        "snippet": "Public-facing docs:\n  + Platform Docs\n  + CLI Command Reference\n  + Schema Reference\n  + Platform News (RSS feed) - latest updates, release notes, changelogs, and tips\n  + Old Changelog Archive - old "
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "zapier.com",
+      "domains": [
+        "zapier.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "Basecamp",
+    "types": [
+      "docs_on_code_host",
+      "brand_differs"
+    ],
+    "expected": [
+      "github.com",
+      "basecamp.com",
+      "37signals.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://github.com/basecamp/bc-api",
+        "title": "GitHub - basecamp/bc-api: API documentation for Basecamp · GitHub",
+        "snippet": "You must use HTTP freshness headers to speed up your application and lighten the load on our servers. Most API responses will include an `ETag` or `Last-Modified` header. When you first request a reso"
+      },
+      {
+        "url": "https://ones.com/blog/basecamp-api-documentation-a-practical-setup-walkthrough",
+        "title": "Basecamp API Documentation: A Practical Setup Walkthrough",
+        "snippet": "3. Set up your authorization header. The Basecamp API uses OAuth 2.0 Bearer tokens. For every request, include `Authorization: Bearer YOUR_TOKEN` in the header. That’s it — no complex OAuth dance for "
+      },
+      {
+        "url": "https://basecamp.com/integrations",
+        "title": "Basecamp — Basecamp Integrations",
+        "snippet": "### Apideck\n\nApideck helps developers build native integrations faster through one API. ### OAuth.io\n\nOAuth that just works! Ease the OAuth integration of Basecamp API v3 and interact with its API in "
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "basecamp.com",
+      "domains": [
+        "basecamp.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "TikTok",
+    "types": [
+      "dev_subdomain",
+      "denied_brand_host"
+    ],
+    "expected": [
+      "tiktok.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://developers.tiktok.com/doc/overview",
+        "title": "TikTok Developer Docs",
+        "snippet": "TikTok for Developers\n\n# Developer Docs\n\n## TikTok Developer Documentation\n\nLearn how to start integrating with TikTok’s ecosystem.\n\nGet started›\n\n## Browse by product area\n\nExplore TikTok’s developer"
+      },
+      {
+        "url": "https://github.com/tiktok/tiktok-business-api-sdk",
+        "title": "GitHub - tiktok/tiktok-business-api-sdk: An SDK built to facilitate application development to integrate with TikTok Business API. · GitHub",
+        "snippet": "## Give feedback\n\n If you want to report bugs or issues, please visit TikTok API for Business Developer Portal and click \"?\" on the top right to submit a ticket under Marketing API category.\n\n## Refer"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "tiktok.com",
+      "domains": [
+        "tiktok.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "Shopify",
+    "types": [
+      "other_tld"
+    ],
+    "expected": [
+      "shopify.dev",
+      "shopify.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://shopify.dev/docs/api",
+        "title": "Shopify APIs, libraries, and tools",
+        "snippet": "# Shopify APIs, libraries, and tools\n\nReference documentation for Shopify's APIs, libraries, and developer tools, plus the concepts that apply across all of them.\n\nAuthentication\n\nHow authentication w"
+      },
+      {
+        "url": "https://shopify.dev/docs",
+        "title": "Shopify Dev Docs",
+        "snippet": "1\n\nshopify app init\n\n## Initialize your theme instance\n\n1\n\nshopify theme init\n\n## Initialize your storefront instance\n\n1\n\nshopify hydrogen init\n\n## Install Shopify CLI\n\n1\n\nnpm i -g @shopify/cli@latest"
+      },
+      {
+        "url": "https://www.shopify.com/partners/blog/topics/shopify-api",
+        "title": "Shopify API | Ecommerce tips & how tos - Shopify",
+        "snippet": "Shopify\nShopify\n\n# Shopify API\n\nIntroducing Customer Account API for headless stores\n\nAug 8, 2023\n\nShopify API Release: April 2022\n\nApr 7, 2022\n\napi-deprecation\n\nFeb 17, 2022\n\nJan 5, 2022\n\nNov 25, 202"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "shopify.dev",
+      "domains": [
+        "shopify.dev"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "Pipedrive",
+    "types": [
+      "docs_platform"
+    ],
+    "expected": [
+      "pipedrive.com",
+      "pipedrive.readme.io"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://developer.pipedrive.com/docs/api/v1",
+        "title": "Pipedrive API Reference and Documentation",
+        "snippet": "Notice!\n\nPipedrive's API and extension points cover the majority of our core product's functionality. As our product is constantly growing, so is our API. To be up to date with new additions and updat"
+      },
+      {
+        "url": "https://developers.pipedrive.com/docs/api/v1?_escaped_fragment_=%2FDeals",
+        "title": "Pipedrive API Reference and Documentation",
+        "snippet": "Notice!\n\nPipedrive's API and extension points cover the majority of our core product's functionality. As our product is constantly growing, so is our API. To be up to date with new additions and updat"
+      },
+      {
+        "url": "https://developers.pipedrive.com/docs/api/v1",
+        "title": "Pipedrive API Reference and Documentation",
+        "snippet": "Notice!\n\nPipedrive's API and extension points cover the majority of our core product's functionality. As our product is constantly growing, so is our API. To be up to date with new additions and updat"
+      },
+      {
+        "url": "https://developers.pipedrive.com/docs/api",
+        "title": "Pipedrive API Reference and Documentation",
+        "snippet": "Notice!\n\nPipedrive's API and extension points cover the majority of our core product's functionality. As our product is constantly growing, so is our API. To be up to date with new additions and updat"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "pipedrive.com",
+      "domains": [
+        "pipedrive.com"
+      ],
+      "product": "Pipedrive API",
+      "options": []
+    }
+  },
+  {
+    "typed": "钉钉",
+    "types": [
+      "non_latin"
+    ],
+    "expected": [
+      "dingtalk.com",
+      "dingtalk.io"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://open.dingtalk.com/document/development/queries-the-details-of-a-dedicated-account",
+        "title": "查询企业账号用户详情 - 开放平台",
+        "snippet": "[](\n\nImage 1: 钉钉开放平台\n\n应用中心\n\n开发者文档\n\n开发者后台\n\n登录\n\n文档中心\n\n｜\n\n应用开发\n\n开发指南\n\n服务端 API\n\n客户端 JSAPI\n\n事件订阅\n\n钉钉 CLI\n\n平台服务 开发工具\n\nAPI 调用指南\n\n事件订阅\n\n认证与授权\n\n应用授权\n\n通讯录管理\n\n概述\n\n集成方案\n\n获取用户基本信息\n\n获取通讯录权限范围\n\n获取用户通讯录个人信息\n\n用户管理\n\n部门"
+      },
+      {
+        "url": "https://open.dingtalk.com/document/development/api-notable-listrecords",
+        "title": "列出多行记录",
+        "snippet": "Aug 19, 2026 — 基本信息 ; HTTP URL. https://api.dingtalk.com/v1.0/notable/bases/{baseId}/sheets/{sheetIdOrName}/records/list ; HTTP Method. POST ; 支持的应用类型.Read more"
+      }
+    ],
+    "before": {
+      "outcome": "no_docs",
+      "decision": "none",
+      "domain": null,
+      "domains": [],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "Cal.com",
+    "types": [
+      "typed_domain"
+    ],
+    "expected": [
+      "cal.com"
+    ],
+    "via": "typed",
+    "hits": [],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "cal.com",
+      "domains": [
+        "cal.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "https://developer.spotify.com/documentation/web-api",
+    "types": [
+      "typed_domain",
+      "dev_subdomain"
+    ],
+    "expected": [
+      "spotify.com"
+    ],
+    "via": "typed",
+    "hits": [],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "spotify.com",
+      "domains": [
+        "spotify.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "pipedrive.readme.io",
+    "types": [
+      "typed_domain",
+      "docs_platform"
+    ],
+    "expected": [
+      "pipedrive.readme.io",
+      "pipedrive.com"
+    ],
+    "via": "typed",
+    "hits": [],
+    "before": {
+      "outcome": "wrong_domain",
+      "decision": "official",
+      "domain": "readme.io",
+      "domains": [
+        "readme.io"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "youtube.com",
+    "types": [
+      "typed_domain",
+      "consumer_site_first"
+    ],
+    "expected": [
+      "google.com"
+    ],
+    "via": "typed",
+    "hits": [],
+    "before": {
+      "outcome": "wrong_domain",
+      "decision": "official",
+      "domain": "youtube.com",
+      "domains": [
+        "youtube.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "GitHub",
+    "types": [
+      "control"
+    ],
+    "expected": [
+      "github.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://docs.github.com/en/rest",
+        "title": "GitHub REST API documentation - GitHub Docs",
+        "snippet": "Skip to content\n\nCollapse sidebar\n\nExpand sidebar\n\nThe REST API is now versioned. For more information, see \"About API versioning.\"\n\n# GitHub REST API documentation\n\nCreate integrations, retrieve data"
+      },
+      {
+        "url": "https://docs.github.com/",
+        "title": "GitHub Docs",
+        "snippet": "### Developers\n\n Apps\n REST API\n GraphQL API\n Webhooks\n\n### Community\n\n Building communities\n GitHub Sponsors\n GitHub Education\n GitHub for Nonprofits\n GitHub Support\n Contribute to GitHub Docs\n\n### M"
+      },
+      {
+        "url": "https://docs.github.com/rest/guides/getting-started-with-the-rest-api",
+        "title": "Getting started with the REST API",
+        "snippet": "Choose an endpoint to make a request to. You can explore GitHub's REST API documentation to discover endpoints that you can use to interact with GitHub."
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "github.com",
+      "domains": [
+        "github.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "Gmail",
+    "types": [
+      "control",
+      "parent_domain",
+      "brand_differs"
+    ],
+    "expected": [
+      "google.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://developers.google.com/workspace/gmail/api/guides",
+        "title": "Gmail API overview  |  Google for Developers",
+        "snippet": "The Gmail API is a RESTful API that lets you access Gmail mailboxes and send mail. For most web applications, the Gmail API is the best choice for authorized access to a user's Gmail data and is suita"
+      },
+      {
+        "url": "https://developers.google.com/workspace/gmail/api/reference/rest",
+        "title": "Gmail API  |  Google for Developers",
+        "snippet": "| Methods |\n| `create` | `POST /gmail/v1/users/{userId}/settings/cse/identities`   Creates and configures a client-side encryption identity that's authorized to send mail from the user account. |\n| `d"
+      },
+      {
+        "url": "https://www.postman.com/postman/google-api-workspace/collection/r07891g/google-gmail-api",
+        "title": "Google Gmail API | Get Started",
+        "snippet": "The Gmail API allows developers to access and manage a user's mail within Gmail. · To make requests to the Gmail API, you need an OAuth 2.0 token: · The Gmail API"
+      },
+      {
+        "url": "https://medium.com/@jasmosez/a-journey-into-the-gmail-api-and-back-be94900d4e19",
+        "title": "A Journey into the Gmail API and Back",
+        "snippet": "This is the fun part: getting your hands on real data. We spent lots of time pouring over these two resources:\n\n   Google’s API Docs Reference, which summarizes how the API is structured and the diffe"
+      },
+      {
+        "url": "https://www.reddit.com/r/googlecloud/comments/tcefqb/the_gmail_api_experience",
+        "title": "The Gmail API Experience : r/googlecloud",
+        "snippet": "Skip to main contentThe Gmail API Experience : r/googlecloud\n\nOpen menu Open navigation via a Python script.\n\n> Good news - there's a Gmail API!\n\nOkay, great. How do I use it?\n\n> First, create a crede"
+      },
+      {
+        "url": "https://cloud.google.com/apis",
+        "title": "Cloud APIs | Google Cloud",
+        "snippet": "# Google Cloud APIs\n\nGoogle Cloud APIs allow you to automate your workflows by using your favorite language. Use these Cloud APIs with REST calls or client libraries in popular programming languages.\n"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "google.com",
+      "domains": [
+        "google.com"
+      ],
+      "product": "Gmail API",
+      "options": []
+    }
+  },
+  {
+    "typed": "HubSpot",
+    "types": [
+      "control"
+    ],
+    "expected": [
+      "hubspot.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://developers.hubspot.com/docs",
+        "title": "HubSpot Developer Documentation - HubSpot docs",
+        "snippet": "Welcome to the HubSpot Developer Documentation. Build custom CRM and data-driven website experiences on HubSpot. Follow the steps below to get started, or jump directly into a quickstart that fits you"
+      },
+      {
+        "url": "https://developers.hubspot.com/",
+        "title": "HubSpot Developers | Create tomorrow's solutions today on HubSpot's Developer Platform.",
+        "snippet": "Skip to footer\n\n# Create tomorrow's solutions today on HubSpot's Developer Platform.\n\nTerminal | HubSpot Developers\n\n$ last login: Thu Oct 29 2026 20:41:27 on 127.0.0.1\n\n$ hs|\n\nExplore our docs to lea"
+      },
+      {
+        "url": "https://www.postman.com/hubspot/hubspot-public-api-workspace/overview",
+        "title": "HubSpot Public API Workspace",
+        "snippet": "This workspace includes a series of APIs and collections, each corresponding to a specific HubSpot product or feature, such as 'CRM,' 'CMS,' '"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "hubspot.com",
+      "domains": [
+        "hubspot.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "Microsoft",
+    "types": [
+      "control"
+    ],
+    "expected": [
+      "microsoft.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://developer.microsoft.com/en-us/graph",
+        "title": "Microsoft Graph Dev Center | APIs and app development",
+        "snippet": "# Microsoft Graph is the unified API for modern work\n\nUse the data and intelligence in Microsoft 365 to build apps that reach millions of users.\n\nGet started  Read documentation\n\n## What can I do with"
+      },
+      {
+        "url": "https://developer.microsoft.com/en-us",
+        "title": "Microsoft Developer",
+        "snippet": "Skip to main content\n\nImage 1: Microsoft\n\nDeveloper\n\nProducts \n\nDynamics 365GitHubMicrosoft 365Microsoft AzureMicrosoft EdgeMicrosoft FoundryMicrosoft GraphMicrosoft Identity PlatformMicrosoft TeamsPo"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/docs",
+        "title": "Technical documentation | Microsoft Learn",
+        "snippet": "This browser is no longer supported.\n\nUpgrade to Microsoft Edge to take advantage of the latest features, security updates, and technical support.\n\nDocumentation\n\n# Technical documentation\n\nSearch for"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "microsoft.com",
+      "domains": [
+        "microsoft.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "Notion",
+    "types": [
+      "control"
+    ],
+    "expected": [
+      "notion.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://developers.notion.com/reference/intro",
+        "title": "Introduction - Notion Docs",
+        "snippet": "## ​ Conventions\n\nThe base URL to send all API requests is ` HTTPS is required for all API requests. The Notion API follows RESTful conventions when possible, with most operations performed via `GET`,"
+      },
+      {
+        "url": "https://developers.notion.com/guides/get-started/overview",
+        "title": "Overview - Notion Docs",
+        "snippet": "3\n\nPublic connections — Build apps for other Notion users with OAuth 2.0.\n\n4\n\nAuthorization — Implement the OAuth 2.0 flow for public connections.\n\n5\n\nSecure API credentials — Secure and manage your A"
+      },
+      {
+        "url": "https://www.notion.com/product/dev",
+        "title": "Build with Notion’s Developer Platform – Notion",
+        "snippet": "```\nPOST /sessions/{id} POST /sessions/{id}/messages GET /sessions/{id}/events \n```\n\n## CLI, API, MCP, SDK — LFG.\n\n### Notion CLIBeta\n\nLet coding agents use token‑efficient commands to build and deplo"
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "notion.com",
+      "domains": [
+        "notion.com"
+      ],
+      "product": null,
+      "options": []
+    }
+  },
+  {
+    "typed": "Slack",
+    "types": [
+      "control"
+    ],
+    "expected": [
+      "slack.dev",
+      "slack.com"
+    ],
+    "via": "search",
+    "hits": [
+      {
+        "url": "https://www.skillsdirectory.com/skills/slackapi-slack-api",
+        "title": "Slack Api (Grade A) - Claude Skill | Skills Directory",
+        "snippet": "--- name: slack-api description: \"Use when a developer asks which Slack Web API method does something, needs a method's OAuth scopes or token type, wants to call or test a family.method endpoint (chat"
+      },
+      {
+        "url": "https://slack.dev/",
+        "title": "Developer Hub | Slack Developers",
+        "snippet": "### Slack CLI\n\nCreate and manage Slack apps from the command line. Manage your app’s full lifecycle, from development to deployment.\n\nRead More ### Agents\n\nCreate an agent for Slack with ready-to-use "
+      }
+    ],
+    "before": {
+      "outcome": "ok",
+      "decision": "official",
+      "domain": "slack.dev",
+      "domains": [
+        "slack.dev"
+      ],
+      "product": null,
+      "options": []
+    }
+  }
+]
