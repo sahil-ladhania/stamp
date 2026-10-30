@@ -2,7 +2,22 @@
 
 Everything here is done by hand in each dashboard. Replace every `UPPER_CASE` placeholder; never commit a real value. Order: Aiven, then migrate and seed from your laptop, then Render, then Vercel, then set `WEB_ORIGIN` on Render to the Vercel address.
 
+## A0. By hand in the Aiven console
+
+1. Create a MySQL service on the **Free** plan, in a region near the Render region you will use, and wait until it shows **Running**. You do not create a database or a user: `defaultdb` and `avnadmin` exist.
+2. On the service's Overview page, under **Connection information**, copy **Host**, **Port**, **User** and the **Password** (click the eye icon), and **download the CA certificate** (`ca.pem`). Keep the password: you paste it into Render later.
+3. On the same page, check **Allowed IP addresses**: your laptop must be allowed now, and Render's free instances have no fixed address, so for Render the list has to stay open to all (`0.0.0.0/0`, the default).
+4. A free service that nobody uses may be powered off by Aiven. If it shows **Powered off**, power it on.
+
 ## A. Database on Aiven, from your laptop
+
+**One command does the steps below** (it asks for host, port, user, database, the password with a hidden prompt, and the CA file; it never prints the password):
+
+```bash
+bash scripts/db-setup-aiven.sh
+```
+
+It runs `prisma migrate deploy`, then `db:seed --dry-run`, asks you to type `yes`, then seeds. If a step fails it stops and says the likely fix. What follows is what it does, for running a step yourself.
 
 1. In the Aiven service page, under **Connection information**, note host, port, user (`avnadmin`), password, database (`defaultdb`), and download the **CA certificate** as `aiven-ca.pem`. Check that your own IP is allowed in the service's allowed IP addresses.
 2. **Migrate.** `prisma migrate deploy` uses the Prisma engine, which reads TLS settings from its own URL arguments (`sslaccept`, `sslcert`), not from `ssl-mode`:
