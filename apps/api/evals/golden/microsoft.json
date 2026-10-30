@@ -129,7 +129,7 @@
       "severity": "hard",
       "hostPathHints": ["learn.microsoft.com/en-us/azure/active-directory-b2c", "learn.microsoft.com/azure/active-directory-b2c"],
       "why": "Customer identity service with its own app registrations; not the way an agent calls Microsoft Graph for a user",
-      "evidence": "Stored microsoft guide cited a B2C client credentials page in 9 of 24 claims (08b, case 3)"
+      "evidence": "Stored microsoft guide cited a B2C client credentials page in 9 of 24 claims"
     },
     {
       "name": "Azure DevOps OAuth",

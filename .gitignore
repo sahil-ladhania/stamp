@@ -35,6 +35,10 @@ apps/api/evals/runs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+*.log
+
+# pnpm local store index
+.pnpm-store/
 
 # Misc
 .DS_Store
