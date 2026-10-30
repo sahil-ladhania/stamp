@@ -32,26 +32,33 @@ const CHANGED: Record<string, ResolveRecord["outcome"]> = {
   QuickBooks: "ok",
   // Fix C: an exact label with no documentation page loses to another brand's documentation that names the app.
   YouTube: "ok",
+  // Fixes B and D: the name counts in an address or a snippet, and a denied site's documentation page that names the app is kept.
+  Instagram: "ok",
+  钉钉: "ok",
+  // Fix B: one documentation site is all the hits agree on, so Resolve asks about it instead of ending.
+  Twitter: "ok_asks",
+  // Fix F: a typed docs-platform host is looked up by its name.
+  "pipedrive.readme.io": "ok",
 };
 
-/** Fix A: the providers whose first answer is thin, so Resolve searches once more (7 of 32 searches: +7 credits on a full run). */
-const LOOK_AGAIN = [
-  "Box",
-  "Instagram",
-  "LinkedIn",
-  "Twitter",
-  "Basecamp",
-  "钉钉",
-  "Slack",
-];
+/** Fix A: the providers whose first answer is thin, so Resolve searches once more (5 of 33 searches: +5 credits on a full run). */
+const LOOK_AGAIN = ["Box", "LinkedIn", "Twitter", "Basecamp", "Slack"];
+
+/** A typed docs-platform host is now looked up by its name, so it takes the hits of that name's search. */
+const BORROWED_HITS: Record<string, Entry["hits"]> = Object.fromEntries(
+  entries
+    .filter((e) => e.typed === "Pipedrive")
+    .map((e) => ["pipedrive.readme.io", e.hits]),
+);
 
 /** The first search returns the saved hits; a second look finds nothing new. */
 async function replay(entry: Entry): Promise<ResolveRecord> {
+  const hits =
+    entry.hits.length > 0 ? entry.hits : (BORROWED_HITS[entry.typed] ?? []);
   let calls = 0;
   return resolveOne(
     { typed: entry.typed, types: entry.types, expected: entry.expected },
-    () =>
-      Promise.resolve({ hits: calls++ === 0 ? entry.hits : [], credits: null }),
+    () => Promise.resolve({ hits: calls++ === 0 ? hits : [], credits: null }),
   );
 }
 

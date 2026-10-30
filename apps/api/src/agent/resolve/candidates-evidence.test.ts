@@ -1,6 +1,6 @@
 /**
  * File: candidates-evidence.test.ts
- * Purpose: Tests what counts as evidence for a domain: a title-only match needs a documentation page, and an exact label without one loses to another brand's documentation that names the app.
+ * Purpose: Tests what counts as evidence for a domain: a name in a title, an address or the start of a snippet, a title-only match needing a documentation page, an exact label without one losing to another brand's documentation, and a denied site's documentation page.
  * Exports: (none)
  * Used by: vitest
  */
@@ -93,5 +93,103 @@ describe("an exact label with no documentation page", () => {
     ]);
     expect(found["mercury.com"]?.match).toBe("exact");
     expect(found["mercuryapp.io"]?.match).toBe("partial");
+  });
+});
+
+describe("the app's name in an address or a snippet", () => {
+  const instagram = hit(
+    "https://developers.meta.example/documentation/instagram-platform/content-publishing",
+    "Content Publishing | Meta for Developers",
+  );
+
+  it("counts when it is in the address, not the title", () => {
+    expect(byDomain("Instagram", [instagram])["meta.example"]?.match).toBe(
+      "title",
+    );
+  });
+
+  it("counts when it is in the start of the snippet", () => {
+    const found = byDomain("Instagram", [
+      {
+        url: "https://developers.acme.example/guide",
+        title: "Guide",
+        snippet: "This guide assumes you read the Instagram Platform Overview.",
+      },
+    ]);
+    expect(found["acme.example"]?.match).toBe("title");
+  });
+
+  it("ignores the snippet past its first 200 characters", () => {
+    const late = `${"x ".repeat(120)}Instagram`;
+    const found = byDomain("Instagram", [
+      {
+        url: "https://developers.acme.example/guide",
+        title: "Guide",
+        snippet: late,
+      },
+    ]);
+    expect(found["acme.example"]?.match).toBe("none");
+  });
+
+  it("finds a name in another script, which the Latin-only key could not compare", () => {
+    const found = byDomain("钉钉", [
+      {
+        url: "https://open.dingtalk.example/document/api-list",
+        title: "列出多行记录",
+        snippet: "钉钉开放平台 应用中心",
+      },
+    ]);
+    expect(found["dingtalk.example"]?.match).toBe("title");
+  });
+
+  it("does not match a one-letter Latin name on a page, but does a two-character name in Chinese", () => {
+    expect(
+      byDomain("X", [hit("https://docs.acme.example/x-guide", "X guide")])[
+        "acme.example"
+      ]?.match,
+    ).toBe("none");
+  });
+});
+
+describe("a documentation page on a denied site", () => {
+  it("is kept when it names the app, so Instagram's docs on developers.facebook.com count", () => {
+    const found = byDomain("Instagram", [
+      hit(
+        "https://developers.facebook.com/documentation/instagram-platform/overview",
+        "Overview | Meta for Developers",
+      ),
+    ]);
+    expect(found["facebook.com"]).toMatchObject({ match: "title", docs: true });
+  });
+
+  it("is kept for a name that only contains the denied brand (GitHub Actions)", () => {
+    const found = byDomain("GitHub Actions", [
+      hit("https://docs.github.com/en/actions", "GitHub Actions documentation"),
+    ]);
+    expect(found["github.com"]?.match).toBe("partial");
+  });
+
+  it("is dropped when it does not name the app", () => {
+    expect(
+      rankCandidates("Instagram", [
+        hit("https://developers.facebook.com/docs/pages", "Pages API"),
+      ]),
+    ).toEqual([]);
+  });
+
+  it("is dropped when the page is not documentation, whatever it names", () => {
+    expect(
+      rankCandidates("Instagram", [
+        hit("https://www.facebook.com/instagram/posts/1", "Instagram"),
+      ]),
+    ).toEqual([]);
+    expect(
+      rankCandidates("Instagram", [
+        hit(
+          "https://github.com/someone/instagram-api-documentation",
+          "Instagram API",
+        ),
+      ]),
+    ).toEqual([]);
   });
 });

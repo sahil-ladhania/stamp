@@ -6,6 +6,7 @@
  */
 import type { SourceTier } from "@stamp/schema";
 import { nameKey } from "../../utils/name-key.js";
+import { DOCS_PLATFORM_DOMAINS } from "../resolve/denylist.js";
 
 // Sites that are user-generated Q&A or discussion, whoever runs them.
 const FORUM_HOSTS = [
@@ -22,14 +23,6 @@ const FORUM_HOSTS = [
 const FORUM_LABELS = new Set(["discuss", "discourse", "answers"]);
 /** Words that make a subdomain label a forum wherever they sit in it: community, devcommunity, forums, devforum. */
 const FORUM_WORDS = /community|communities|forum/;
-// Hosting platforms for documentation. A page there is the provider's own only when its subdomain is the app's name.
-const DOCS_PLATFORMS = [
-  "readme.io",
-  "gitbook.io",
-  "mintlify.app",
-  "mintlify.dev",
-];
-
 const isForumLabel = (label: string): boolean =>
   FORUM_LABELS.has(label) || FORUM_WORDS.test(label);
 
@@ -39,7 +32,7 @@ function onOwnDocsPlatform(host: string, appName: string | undefined): boolean {
   if (key === "") {
     return false;
   }
-  return DOCS_PLATFORMS.some((platform) => {
+  return DOCS_PLATFORM_DOMAINS.some((platform) => {
     if (!host.endsWith(`.${platform}`)) {
       return false;
     }

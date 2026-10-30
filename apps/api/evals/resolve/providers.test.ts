@@ -11,10 +11,10 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { PROVIDER_TYPES, loadProviders, needsSearch } from "./providers.js";
 
 describe("the committed stress list", () => {
-  it("is valid and has 36 entries, 32 of which need a search", async () => {
+  it("is valid and has 36 entries, 33 of which need a search", async () => {
     const providers = await loadProviders();
     expect(providers).toHaveLength(36);
-    expect(providers.filter(needsSearch)).toHaveLength(32);
+    expect(providers.filter(needsSearch)).toHaveLength(33);
   });
 
   it("has the six tuning apps as controls and nothing else", async () => {

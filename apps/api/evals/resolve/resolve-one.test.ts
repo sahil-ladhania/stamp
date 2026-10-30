@@ -48,13 +48,25 @@ describe("resolveOne", () => {
     });
   });
 
-  it("scores a typed docs-platform host by its platform domain, which is wrong", async () => {
+  it("reads a typed docs-platform host as the app's name and searches it", async () => {
+    const search = searchOf([
+      hit("https://developers.pipedrive.com/docs/api/v1", "Pipedrive API"),
+      hit(
+        "https://developers.pipedrive.com/docs/api/v1/Oauth",
+        "OAuth | Pipedrive API",
+      ),
+    ]);
     const record = await resolveOne(
-      entry("pipedrive.readme.io", ["pipedrive.readme.io"]),
-      searchOf([]),
+      entry("pipedrive.readme.io", ["pipedrive.com"]),
+      search,
     );
-    expect(record.domain).toBe("readme.io");
-    expect(record.outcome).toBe("wrong_domain");
+    expect(search).toHaveBeenCalledWith(RESOLVE_QUERY("Pipedrive"), "first");
+    expect(record).toMatchObject({
+      via: "search",
+      name: "Pipedrive",
+      domain: "pipedrive.com",
+      outcome: "ok",
+    });
   });
 
   it("searches a name once with the resolve node's query and keeps the hits and credits", async () => {

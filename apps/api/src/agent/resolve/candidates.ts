@@ -1,19 +1,27 @@
 /**
  * File: candidates.ts
  * Purpose: Scores the domains in a name search by how likely each is the app's official site.
- * Exports: rankCandidates, labelMatch, SCORE_WEIGHTS, Candidate, Match, ResolveHit
+ * Exports: rankCandidates, labelMatch, looksLikeDocs, parseHit, SCORE_WEIGHTS, SNIPPET_WINDOW, Candidate, Match, ResolveHit
  * Used by: agent/resolve/decide.ts, agent/nodes/resolve.ts
  */
-import { nameKey } from "../../utils/name-key.js";
+import { textKey } from "../../utils/name-key.js";
 import {
   domainLabel,
   registrableDomain,
 } from "../../utils/registrable-domain.js";
 import { DENY_DOMAINS, DOCS_HOST_LABELS, DOCS_PATH_HINT } from "./denylist.js";
 
-export type ResolveHit = { url: string; title: string };
+export type ResolveHit = {
+  url: string;
+  title: string;
+  /** The start of the page text the search returned, when it returned any. */
+  snippet?: string;
+};
 
-/** How the app's name relates to a domain: its brand label equals/contains it, or only a page title mentions it. */
+/** How much of a snippet is read for the app's name: the start, where a page says what it is about. */
+export const SNIPPET_WINDOW = 200;
+
+/** How the app's name relates to a domain: its brand label equals/contains it, or only a page (its title, address or start) mentions it. */
 export type Match = "exact" | "partial" | "title" | "none";
 
 export type Candidate = {
@@ -67,7 +75,7 @@ type Group = {
   hits: number;
 };
 
-function parseHit(url: string): URL | null {
+export function parseHit(url: string): URL | null {
   try {
     const parsed = new URL(url);
     return parsed.protocol === "http:" || parsed.protocol === "https:"
@@ -78,19 +86,43 @@ function parseHit(url: string): URL | null {
   }
 }
 
-function looksLikeDocs(parsed: URL): boolean {
+/** True for a documentation page: a docs-looking host label (docs., developers.) or path (/docs/, /api/). */
+export function looksLikeDocs(parsed: URL): boolean {
   const first = parsed.hostname.replace(/^www\./, "").split(".")[0] ?? "";
   return DOCS_HOST_LABELS.has(first) || DOCS_PATH_HINT.test(parsed.pathname);
 }
 
+/** The shortest name key that may match a page: four characters of Latin text, two of a script like Chinese, where two is a word. */
+function minKeyLength(key: string): number {
+  return /[^\p{ASCII}]/u.test(key) ? 2 : SCORE_WEIGHTS.minPartialLength;
+}
+
+function decodedPath(parsed: URL): string {
+  try {
+    return decodeURIComponent(parsed.pathname);
+  } catch {
+    return parsed.pathname;
+  }
+}
+
+/** A hit names the app when its title, its address or the start of its text holds the name. */
+function mentionsName(parsed: URL, hit: ResolveHit, key: string): boolean {
+  const texts = [
+    hit.title,
+    decodedPath(parsed),
+    (hit.snippet ?? "").slice(0, SNIPPET_WINDOW),
+  ];
+  return texts.some((text) => textKey(text).includes(key));
+}
+
 /**
  * Domains from the search hits, best first. Hits on denied sites are ignored unless the app's name is the
- * site's own name. A domain's score adds up its hits' search positions, a bonus for docs-looking pages,
+ * site's own name, or the hit is a documentation page that names the app (developers.facebook.com for Instagram). A domain's score adds up its hits' search positions, a bonus for docs-looking pages,
  * and a bonus for how well its brand label matches the name.
  */
 export function rankCandidates(name: string, hits: ResolveHit[]): Candidate[] {
-  const key = nameKey(name);
-  const titleOk = key.length >= SCORE_WEIGHTS.minPartialLength;
+  const key = textKey(name);
+  const mentionOk = key.length >= minKeyLength(key);
   const groups = new Map<string, Group>();
 
   hits.forEach((hit, index) => {
@@ -100,8 +132,13 @@ export function rankCandidates(name: string, hits: ResolveHit[]): Candidate[] {
     }
     const domain = registrableDomain(parsed.hostname);
     const label = domainLabel(parsed.hostname);
-    const match = labelMatch(key, nameKey(label));
-    if (DENY_DOMAINS.has(domain) && match !== "exact") {
+    const match = labelMatch(key, textKey(label));
+    const mentioned = mentionOk && mentionsName(parsed, hit, key);
+    if (
+      DENY_DOMAINS.has(domain) &&
+      match !== "exact" &&
+      !(mentioned && looksLikeDocs(parsed))
+    ) {
       return;
     }
     const group = groups.get(domain) ?? {
@@ -121,7 +158,7 @@ export function rankCandidates(name: string, hits: ResolveHit[]): Candidate[] {
         group.docs + SCORE_WEIGHTS.docsHintPerHit,
       );
     }
-    if (titleOk && nameKey(hit.title).includes(key)) {
+    if (mentioned) {
       group.titleMatch = true;
     }
     groups.set(domain, group);

@@ -28,7 +28,7 @@ export function getErrorNotice(code: RunErrorCode, stage: number, hasOptions: bo
       return { title: "No public docs for this app", lead: RUN_ERROR_COPY.NO_PUBLIC_DOCS, actions: [SEARCH_AGAIN] };
     case "AMBIGUOUS_APP":
       return {
-        title: "More than one app matches",
+        title: "Which app do you mean?",
         lead: RUN_ERROR_COPY.AMBIGUOUS_APP,
         // The options are the action. Without them (the API restarted) the visitor searches again.
         actions: hasOptions ? [] : [SEARCH_AGAIN],
